@@ -202,6 +202,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
     <div class="hero-badge">✦ 八字 · 五行 · 易经 ✦</div>
     <h1><span>今天，</span><br>适合做什么？</h1>
     <p>输入你的生辰信息，融合五行与易经<br>看看今天的气场对你意味着什么</p>
+    <div id="visitCount" style="display:none;margin-top:16px;background:rgba(157,123,255,0.1);border:1px solid rgba(157,123,255,0.2);border-radius:100px;padding:5px 16px;font-size:12px;color:var(--accent);letter-spacing:1px;"></div>
   </div>
 
   <!-- 步骤指示器 -->
@@ -372,6 +373,30 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 </div>
 
 <script>
+// ──────────── 数据收集 ────────────
+const WORKER_URL = "https://fortune-collector.fortune1723.workers.dev";
+
+async function collectData(data) {
+  try {
+    await fetch(WORKER_URL + "/collect", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+  } catch(e) {}
+}
+
+async function loadCount() {
+  try {
+    const r = await fetch(WORKER_URL + "/count");
+    const j = await r.json();
+    if (j.count > 0) {
+      document.getElementById('visitCount').textContent = "已有 " + j.count.toLocaleString() + " 人测算";
+      document.getElementById('visitCount').style.display = "inline-flex";
+    }
+  } catch(e) {}
+}
+
 // ──────────── 星空粒子 ────────────
 (function(){
   const c=document.getElementById('cosmos'),ctx=c.getContext('2d');
@@ -578,6 +603,19 @@ function startCalc(){
   state.year=parseInt(document.getElementById('birthYear').value);
   state.month=parseInt(document.getElementById('birthMonth').value);
   state.day=parseInt(document.getElementById('birthDay').value);
+
+  // 上报数据
+  collectData({
+    year: state.year,
+    month: state.month,
+    day: state.day,
+    gender: state.gender,
+    shichen: state.shichen,
+    shichenName: state.shichen >= 0 ? SHICHEN[state.shichen].name : '未知',
+    focuses: state.focuses.map(i => FOCUSES[i].text),
+    intuition: state.intuition >= 0 ? INTUITIONS[state.intuition].text : '',
+    mood: state.mood,
+  });
 
   document.getElementById('page4').classList.remove('active');
   document.getElementById('stepsBar').style.display='none';
@@ -870,6 +908,7 @@ function resetAll(){
 }
 
 initForm();
+loadCount();
 </script>
 </body>
 </html>
