@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>命理推算 · 今日天机</title>
+<title>今日运势</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -177,8 +177,19 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 .btn-redo:hover{border-color:var(--accent);color:var(--accent)}
 .disclaimer{font-size:11px;color:var(--muted);margin-top:20px;opacity:.5;letter-spacing:.5px}
 
-/* 提示 */
-.hint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6}
+/* 结论卡片 */
+.conclusion-card{background:linear-gradient(135deg,rgba(157,123,255,0.08),rgba(255,126,179,0.06));border:1px solid rgba(157,123,255,0.2);border-radius:24px;padding:32px;margin-bottom:16px;position:relative;overflow:hidden}
+.conclusion-card::after{content:'';position:absolute;bottom:-60px;right:-60px;width:180px;height:180px;background:radial-gradient(circle,rgba(255,126,179,0.1),transparent 70%);pointer-events:none}
+.conclusion-label{font-size:11px;letter-spacing:3px;color:var(--accent);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.conclusion-label::before{content:'';display:block;width:3px;height:12px;border-radius:2px;background:var(--accent2)}
+.conclusion-body{font-size:15px;line-height:2;color:rgba(238,238,255,0.9);position:relative;z-index:1}
+.conclusion-body .c-highlight{color:#fff;font-weight:600}
+.conclusion-body .c-soft{color:var(--muted2)}
+.conclusion-tips{margin-top:20px;display:flex;flex-direction:column;gap:10px}
+.c-tip{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--muted2);line-height:1.7}
+.c-tip-icon{font-size:16px;margin-top:1px;flex-shrink:0}
+.c-tip b{color:var(--text);font-weight:600}
+
 </style>
 </head>
 <body>
@@ -188,9 +199,9 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
   <!-- 顶部 -->
   <div class="hero">
-    <div class="hero-badge">✦ 命理推算 · 今日天机 ✦</div>
-    <h1><span>洞见今日</span><br>命运之机</h1>
-    <p>融合生辰八字、五行生克、易经六十四卦<br>为你推演今日运势轨迹</p>
+    <div class="hero-badge">✦ 八字 · 五行 · 易经 ✦</div>
+    <h1><span>今天，</span><br>适合做什么？</h1>
+    <p>输入你的生辰信息，融合五行与易经<br>看看今天的气场对你意味着什么</p>
   </div>
 
   <!-- 步骤指示器 -->
@@ -300,6 +311,13 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
   <!-- ── 结果页 ── -->
   <div id="resultPage">
+
+  <!-- 结论卡片（在结果页顶部，卦象前） -->
+    <div class="conclusion-card" id="conclusionCard">
+      <div class="conclusion-label">✦ 今日总览</div>
+      <div class="conclusion-body" id="conclusionBody"></div>
+      <div class="conclusion-tips" id="conclusionTips"></div>
+    </div>
 
     <div class="result-hero">
       <div class="result-gua" id="resGua"></div>
@@ -606,6 +624,9 @@ function renderResult(){
   const taglines=['✦ 紫气东来，诸事顺遂','✦ 厚积薄发，时机已至','✦ 守正待时，运势渐开','✦ 贵人扶持，事半功倍','✦ 内外和谐，进退有据'];
   document.getElementById('resTagline').textContent=pick(taglines,seed+3);
 
+  // ── 结论文字 ──
+  renderConclusion(seed, finalScore, gua);
+
   // 爻辞
   const yaoEl=document.getElementById('guaYao');
   yaoEl.innerHTML='';
@@ -728,6 +749,107 @@ function drawRadar(scores){
     const r=R*(s/100);
     ctx.beginPath();ctx.arc(cx+Math.cos(a)*r,cy+Math.sin(a)*r,3,0,Math.PI*2);
     ctx.fillStyle=RADAR_DIMS[i].color;ctx.fill();
+  });
+}
+
+// ──────────── 结论文字生成 ────────────
+function renderConclusion(seed, score, gua) {
+  const focusNames = state.focuses.map(i => FOCUSES[i].text);
+  const gender = state.gender === 'male' ? '你' : '你';
+  const moodLevel = state.mood;
+
+  // 开场白（根据分数段）
+  const openings = score >= 85 ? [
+    '今天的气场对你来说相当不错。',
+    '今天是个值得用心把握的日子。',
+    '从命盘来看，今天有股顺劲在你身边。',
+  ] : score >= 70 ? [
+    '今天整体平稳，没有大起伏，但细节里藏着机会。',
+    '今天是那种不温不火、却能稳稳推进的日子。',
+    '今天的运势属于"踏实型"——不会有惊喜，但也不会踩坑。',
+  ] : [
+    '今天的能量场有些收敛，更适合向内看而不是向外冲。',
+    '今天不太适合强行推进，但非常适合沉淀和思考。',
+    '今天气场偏阴，这不是坏事——有时候慢下来，反而走得更远。',
+  ];
+
+  // 关注领域的针对性建议
+  const focusAdvice = {
+    '事业与工作': score >= 80
+      ? '工作上今天有不错的推进力，遇到卡住的事不妨主动推一把，比平时更容易打开局面。'
+      : '工作上今天能量偏内敛，适合整理思路、做规划，而不是硬推结果。',
+    '感情与姻缘': score >= 80
+      ? '感情方面今天场能偏暖，有话想说的可以开口，对方比你想的更容易接受。'
+      : '感情上今天容易敏感，别把自己的情绪投射到对方身上，先照顾好自己的感受。',
+    '财运与投资': score >= 80
+      ? '财运今天有小惊喜的可能，留意身边偶然提到的机会，但不必大动。'
+      : '财运今天偏平，不是出手的好时机，守住已有的比追求新的更稳妥。',
+    '学业与考试': score >= 80
+      ? '学习状态今天在线，记忆力和理解力都不错，适合攻克那个一直没搞懂的知识点。'
+      : '学习上今天容易走神，与其强迫自己高强度专注，不如分成小段来做。',
+    '健康与身体': score >= 80
+      ? '身体状态今天比较舒展，适合运动或户外活动，给身体充充电。'
+      : '健康上今天注意别透支，该休息就休息，身体在给你发信号时不要硬撑。',
+    '家庭与亲情': score >= 80
+      ? '家庭氛围今天顺畅，适合主动和家人沟通，一个小小的关心动作效果会加倍。'
+      : '家庭方面今天容易有摩擦，保持耐心，先听后说，很多误解只是时机不对。',
+    '人际与贵人': score >= 80
+      ? '今天人缘场能量高，去见想见的人，说不定有意外收获——贵人往往就藏在闲聊里。'
+      : '人际上今天能量偏低，不必勉强社交，专注自己的事，缘分不强求。',
+    '个人成长': score >= 80
+      ? '今天特别适合做那件"一直想做但没开始"的事，气场支持你迈出第一步。'
+      : '成长这件事今天更适合向内，读书、写日记、复盘都比向外行动更有收获。',
+  };
+
+  // 心情对应的收尾
+  const closings = moodLevel >= 8 ? [
+    '你现在的状态本身就是今天最大的资产，把这份能量用在真正重要的事上。',
+    '状态好的时候最容易高估自己，记得留一点余量给意外。',
+  ] : moodLevel >= 5 ? [
+    '平稳的状态其实是最好做决定的状态——不冲动，也不消极。',
+    '今天就保持这种稳劲，一件一件来，会比你预期的收获多。',
+  ] : [
+    '状态不好的时候，不要强迫自己表现，今天的任务是好好照顾自己。',
+    '低能量的日子里，完成一件小事就是胜利，别用高标准为难自己。',
+  ];
+
+  const opening = pick(openings, seed + 200);
+  const closing = pick(closings, seed + 201);
+
+  // 组合正文
+  let body = `${opening} `;
+  if (focusNames.length > 0) {
+    const mainFocus = focusNames[0];
+    const advice = focusAdvice[mainFocus] || '';
+    body += advice + ' ';
+  }
+  body += `今日起卦为<span class="c-highlight">「${gua.name}」</span>，`;
+  body += score >= 80
+    ? `整体上是个<span class="c-highlight">顺势而为</span>的好时机，该推的事今天推，该说的话今天说。`
+    : `提醒你今天<span class="c-highlight">以稳为主</span>，不必强求结果，顺其自然反而更顺。`;
+  body += `<br><br><span class="c-soft">${closing}</span>`;
+
+  document.getElementById('conclusionBody').innerHTML = body;
+
+  // Tips（3条针对性小建议）
+  const allTips = [
+    { icon: '☀️', text: `<b>最佳行动时段</b>：今天上午精力最旺，把最难的事排在早上。` },
+    { icon: '💬', text: `<b>沟通提示</b>：今天表达欲${score >= 75 ? '在线' : '偏低'}，${score >= 75 ? '有重要的话可以今天说出口' : '重要谈话可以推到明天，今天先想清楚'}。` },
+    { icon: '🌙', text: `<b>今晚建议</b>：${moodLevel >= 6 ? '今天消耗了不少能量，晚上早点收工，好好睡一觉。' : '今晚适合做让自己放松的事，不要强迫自己继续工作。'}` },
+    { icon: '⚡', text: `<b>一件值得做的事</b>：${focusNames.length > 0 ? '把今天最在意的「' + focusNames[0] + '」相关的事，写下来一个具体的下一步行动。' : '今天随便做一件拖了很久的小事，完成它会让你心情变好。'}` },
+    { icon: '🧘', text: `<b>心态提示</b>：${score >= 80 ? '今天运势不错，但别把所有事都堆在今天——好状态要细水长流。' : '今天不是展示自己的最佳时机，踏实做好本分，积累比爆发更持久。'}` },
+  ];
+
+  // 选3条
+  const tipIdx = [0, 1 + (seed % 2), 3];
+  const tipsEl = document.getElementById('conclusionTips');
+  tipsEl.innerHTML = '';
+  tipIdx.forEach(i => {
+    const t = allTips[i % allTips.length];
+    const div = document.createElement('div');
+    div.className = 'c-tip';
+    div.innerHTML = `<span class="c-tip-icon">${t.icon}</span><span>${t.text}</span>`;
+    tipsEl.appendChild(div);
   });
 }
 
