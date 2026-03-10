@@ -3,768 +3,751 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>今日运势</title>
+<title>命理推算 · 今日天机</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#07070f;--surface:#0e0e1c;--card:#13131f;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.12);
+  --accent:#9d7bff;--accent2:#ff7eb3;--accent3:#ffbe5c;
+  --text:#eeeeff;--muted:#6b6b90;--muted2:#9494b8;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;min-height:100vh;overflow-x:hidden}
 
-  :root {
-    --bg: #0a0a12;
-    --card: #12121e;
-    --border: rgba(255,255,255,0.07);
-    --accent: #7c6aff;
-    --accent2: #ff6ab0;
-    --text: #e8e8f0;
-    --muted: #6b6b8a;
-  }
+/* ── 粒子画布 ── */
+#cosmos{position:fixed;inset:0;z-index:0;pointer-events:none}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+/* ── 布局 ── */
+.wrap{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:64px 20px 100px}
 
-  /* 星空背景 */
-  .starfield {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-  }
-  .starfield canvas { width: 100%; height: 100%; }
+/* ── 顶部 ── */
+.hero{text-align:center;margin-bottom:64px}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(157,123,255,0.1);border:1px solid rgba(157,123,255,0.25);border-radius:100px;padding:5px 14px;font-size:11px;color:var(--accent);letter-spacing:3px;margin-bottom:24px}
+.hero h1{font-size:clamp(30px,7vw,52px);font-weight:800;line-height:1.15;margin-bottom:16px}
+.hero h1 span{background:linear-gradient(135deg,#fff 0%,#c4b5ff 40%,#ff7eb3 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{color:var(--muted2);font-size:14px;line-height:1.8;max-width:380px;margin:0 auto}
 
-  .app {
-    position: relative;
-    z-index: 1;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 60px 24px 80px;
-  }
+/* ── 步骤指示器 ── */
+.steps{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:48px}
+.step-dot{width:28px;height:28px;border-radius:50%;border:1px solid var(--border2);background:var(--card);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);transition:all .4s;position:relative;z-index:1}
+.step-dot.active{border-color:var(--accent);background:rgba(157,123,255,0.2);color:var(--accent);box-shadow:0 0 20px rgba(157,123,255,0.3)}
+.step-dot.done{border-color:var(--accent);background:var(--accent);color:#fff}
+.step-line{width:40px;height:1px;background:var(--border2);transition:background .4s}
+.step-line.done{background:var(--accent)}
 
-  /* 标题区 */
-  .header {
-    text-align: center;
-    margin-bottom: 56px;
-  }
-  .header .eyebrow {
-    font-size: 11px;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--accent);
-    opacity: 0.8;
-    margin-bottom: 14px;
-  }
-  .header h1 {
-    font-size: clamp(32px, 6vw, 52px);
-    font-weight: 700;
-    background: linear-gradient(135deg, #fff 0%, #a89bff 50%, #ff6ab0 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    line-height: 1.2;
-    margin-bottom: 12px;
-  }
-  .header p {
-    color: var(--muted);
-    font-size: 14px;
-    letter-spacing: 0.5px;
-  }
+/* ── 卡片通用 ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:32px;margin-bottom:16px;transition:border-color .3s}
+.card:hover{border-color:var(--border2)}
+.card-title{font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.card-title::before{content:'';display:block;width:3px;height:12px;border-radius:2px;background:var(--accent)}
 
-  /* 日期胶囊 */
-  .date-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(124,106,255,0.1);
-    border: 1px solid rgba(124,106,255,0.25);
-    border-radius: 100px;
-    padding: 6px 16px;
-    font-size: 13px;
-    color: #a89bff;
-    margin-top: 20px;
-  }
-  .date-pill::before { content: '◎'; font-size: 10px; }
+/* ── 表单区块 ── */
+.form-page{display:none}
+.form-page.active{display:block;animation:fadeUp .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 
-  /* 星座选择器 */
-  .zodiac-section {
-    margin-bottom: 48px;
-  }
-  .zodiac-label {
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  .zodiac-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 10px;
-  }
-  @media (max-width: 600px) {
-    .zodiac-grid { grid-template-columns: repeat(4, 1fr); }
-  }
-  @media (max-width: 400px) {
-    .zodiac-grid { grid-template-columns: repeat(3, 1fr); }
-  }
+/* ── 日期输入 ── */
+.birth-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px}
+.field-group{display:flex;flex-direction:column;gap:8px}
+.field-label{font-size:11px;color:var(--muted);letter-spacing:1px}
+.field-select,.field-input{background:rgba(255,255,255,0.04);border:1px solid var(--border2);border-radius:12px;padding:12px 14px;color:var(--text);font-size:14px;outline:none;transition:border-color .3s;-webkit-appearance:none;width:100%}
+.field-select:focus,.field-input:focus{border-color:var(--accent)}
+.field-select option{background:#1a1a2e}
 
-  .zodiac-btn {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 14px 8px;
-    cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    color: var(--muted);
-    font-size: 12px;
-    user-select: none;
-  }
-  .zodiac-btn:hover {
-    border-color: rgba(124,106,255,0.4);
-    transform: translateY(-3px);
-    color: var(--text);
-    background: rgba(124,106,255,0.08);
-  }
-  .zodiac-btn.active {
-    border-color: var(--accent);
-    background: linear-gradient(135deg, rgba(124,106,255,0.2), rgba(255,106,176,0.1));
-    color: #fff;
-    transform: translateY(-4px);
-    box-shadow: 0 8px 32px rgba(124,106,255,0.3);
-  }
-  .zodiac-btn .emoji { font-size: 24px; line-height: 1; }
-  .zodiac-btn .name { font-size: 11px; letter-spacing: 0.5px; }
+/* ── 性别选择 ── */
+.gender-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.gender-btn{background:rgba(255,255,255,0.04);border:1px solid var(--border2);border-radius:14px;padding:16px;cursor:pointer;transition:all .25s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:12px;color:var(--muted2);font-size:14px}
+.gender-btn:hover{border-color:rgba(157,123,255,0.4);color:var(--text)}
+.gender-btn.active{border-color:var(--accent);background:rgba(157,123,255,0.12);color:var(--text);box-shadow:0 4px 24px rgba(157,123,255,0.15)}
+.gender-btn .g-icon{font-size:22px}
 
-  /* 运势卡片区 */
-  .result-section {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    pointer-events: none;
-  }
-  .result-section.visible {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
+/* ── 时辰选择 ── */
+.shichen-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px}
+@media(max-width:400px){.shichen-grid{grid-template-columns:repeat(3,1fr)}}
+.shichen-btn{background:rgba(255,255,255,0.04);border:1px solid var(--border2);border-radius:12px;padding:10px 6px;cursor:pointer;transition:all .25s;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted2)}
+.shichen-btn:hover{border-color:rgba(157,123,255,0.4);color:var(--text)}
+.shichen-btn.active{border-color:var(--accent);background:rgba(157,123,255,0.12);color:var(--text)}
+.shichen-btn .sc-name{font-size:13px;font-weight:600}
+.shichen-btn .sc-time{font-size:10px;color:var(--muted)}
 
-  /* 主卡片 */
-  .main-card {
-    background: linear-gradient(135deg, rgba(124,106,255,0.12) 0%, rgba(255,106,176,0.08) 100%);
-    border: 1px solid rgba(124,106,255,0.25);
-    border-radius: 28px;
-    padding: 40px;
-    margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
-  }
-  .main-card::before {
-    content: '';
-    position: absolute;
-    top: -60px; right: -60px;
-    width: 200px; height: 200px;
-    background: radial-gradient(circle, rgba(124,106,255,0.15) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .main-card::after {
-    content: '';
-    position: absolute;
-    bottom: -40px; left: -40px;
-    width: 160px; height: 160px;
-    background: radial-gradient(circle, rgba(255,106,176,0.12) 0%, transparent 70%);
-    pointer-events: none;
-  }
+/* ── 问题 ── */
+.q-list{display:flex;flex-direction:column;gap:10px;margin-bottom:8px}
+.q-item{background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:12px;font-size:14px;color:var(--muted2)}
+.q-item:hover{border-color:rgba(157,123,255,0.4);color:var(--text)}
+.q-item.active{border-color:var(--accent);background:rgba(157,123,255,0.1);color:var(--text)}
+.q-item .q-icon{font-size:18px;min-width:24px;text-align:center}
+.q-check{margin-left:auto;width:18px;height:18px;border-radius:50%;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .25s}
+.q-item.active .q-check{background:var(--accent);border-color:var(--accent);color:#fff}
 
-  .card-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 28px;
-  }
-  .big-emoji {
-    font-size: 56px;
-    line-height: 1;
-    filter: drop-shadow(0 0 20px rgba(124,106,255,0.5));
-  }
-  .card-title h2 {
-    font-size: 26px;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-  .card-title .dates {
-    font-size: 12px;
-    color: var(--muted);
-    letter-spacing: 0.5px;
-  }
+/* ── 心情滑块 ── */
+.mood-track{position:relative;margin:20px 0 8px}
+.mood-slider{width:100%;-webkit-appearance:none;height:4px;border-radius:100px;background:linear-gradient(90deg,#7c6aff,#ff6ab0);outline:none;cursor:pointer}
+.mood-slider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 0 12px rgba(157,123,255,0.5);cursor:grab}
+.mood-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:8px}
+.mood-emoji{text-align:center;font-size:28px;margin-bottom:8px;transition:all .3s}
 
-  /* 总运势分 */
-  .overall-score {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 28px;
-    padding: 20px 24px;
-    background: rgba(0,0,0,0.2);
-    border-radius: 16px;
-    border: 1px solid var(--border);
-  }
-  .score-number {
-    font-size: 48px;
-    font-weight: 800;
-    background: linear-gradient(135deg, #7c6aff, #ff6ab0);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    line-height: 1;
-    min-width: 70px;
-  }
-  .score-info { flex: 1; }
-  .score-label {
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  .score-stars { font-size: 18px; letter-spacing: 2px; }
-  .score-tagline {
-    font-size: 13px;
-    color: #a89bff;
-    margin-top: 4px;
-  }
+/* ── 按钮 ── */
+.btn-primary{width:100%;padding:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;transition:all .3s;letter-spacing:0.5px;margin-top:8px}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(157,123,255,0.4)}
+.btn-primary:active{transform:translateY(0)}
+.btn-primary:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+.btn-back{background:none;border:1px solid var(--border2);border-radius:12px;color:var(--muted2);font-size:13px;padding:10px 20px;cursor:pointer;transition:all .3s;margin-bottom:12px}
+.btn-back:hover{border-color:var(--border2);color:var(--text)}
 
-  /* 今日寄语 */
-  .daily-word {
-    font-size: 15px;
-    line-height: 1.8;
-    color: rgba(232,232,240,0.85);
-    padding: 0 4px;
-    border-left: 3px solid var(--accent);
-    padding-left: 16px;
-  }
+/* ── 加载页 ── */
+#loadingPage{display:none;text-align:center;padding:60px 20px}
+.loader-ring{width:80px;height:80px;border-radius:50%;border:2px solid var(--border);border-top-color:var(--accent);animation:spin 1s linear infinite;margin:0 auto 24px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-text{color:var(--muted2);font-size:14px;line-height:2}
+.loader-steps{margin-top:20px;display:flex;flex-direction:column;gap:6px}
+.loader-step{font-size:12px;color:var(--muted);opacity:0;transform:translateY(8px);transition:all .5s}
+.loader-step.show{opacity:1;transform:translateY(0)}
 
-  /* 四格运势 */
-  .fortune-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
-    margin-top: 20px;
-  }
-  @media (max-width: 500px) {
-    .fortune-grid { grid-template-columns: 1fr; }
-  }
+/* ── 结果页 ── */
+#resultPage{display:none}
 
-  .fortune-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 22px;
-    transition: border-color 0.3s;
-  }
-  .fortune-card:hover { border-color: rgba(124,106,255,0.3); }
+.result-hero{text-align:center;padding:40px 24px 32px;background:linear-gradient(135deg,rgba(157,123,255,0.12),rgba(255,126,179,0.08));border:1px solid rgba(157,123,255,0.2);border-radius:28px;margin-bottom:16px;position:relative;overflow:hidden}
+.result-hero::before{content:'';position:absolute;top:-80px;right:-80px;width:240px;height:240px;background:radial-gradient(circle,rgba(157,123,255,0.15),transparent 70%);pointer-events:none}
+.result-gua{font-size:72px;margin-bottom:16px;filter:drop-shadow(0 0 24px rgba(157,123,255,0.4));line-height:1}
+.result-gua-name{font-size:22px;font-weight:700;margin-bottom:4px}
+.result-gua-sub{font-size:12px;color:var(--muted2);letter-spacing:2px;margin-bottom:24px}
+.result-score-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px}
+.result-big-score{font-size:64px;font-weight:800;background:linear-gradient(135deg,#fff,#c4b5ff 50%,#ff7eb3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.result-score-unit{font-size:14px;color:var(--muted2);align-self:flex-end;padding-bottom:10px}
+.result-tagline{font-size:13px;color:var(--accent);letter-spacing:1px}
 
-  .fortune-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-  }
-  .fortune-type {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-  }
-  .fortune-icon {
-    width: 32px; height: 32px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-  }
-  .fortune-icon.love    { background: rgba(255,106,176,0.15); }
-  .fortune-icon.career  { background: rgba(124,106,255,0.15); }
-  .fortune-icon.wealth  { background: rgba(255,196,0,0.15); }
-  .fortune-icon.health  { background: rgba(0,224,150,0.15); }
+/* 五行能量 */
+.wuxing-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:16px}
+.wuxing-title{font-size:11px;color:var(--muted);letter-spacing:3px;margin-bottom:20px}
+.wuxing-bars{display:flex;flex-direction:column;gap:14px}
+.wx-row{display:grid;grid-template-columns:60px 1fr 36px;align-items:center;gap:12px}
+.wx-name{font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+.wx-dot{width:8px;height:8px;border-radius:50%}
+.wx-track{height:6px;background:rgba(255,255,255,0.06);border-radius:100px;overflow:hidden}
+.wx-fill{height:100%;border-radius:100px;transition:width 1.4s cubic-bezier(.34,1.56,.64,1);width:0}
+.wx-val{font-size:12px;color:var(--muted2);text-align:right}
 
-  /* 进度条 */
-  .bar-wrap {
-    height: 6px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 100px;
-    overflow: hidden;
-    margin-bottom: 10px;
-  }
-  .bar-fill {
-    height: 100%;
-    border-radius: 100px;
-    transition: width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    width: 0;
-  }
-  .bar-fill.love    { background: linear-gradient(90deg, #ff6ab0, #ff9de2); }
-  .bar-fill.career  { background: linear-gradient(90deg, #7c6aff, #a89bff); }
-  .bar-fill.wealth  { background: linear-gradient(90deg, #f6c90e, #ffe066); }
-  .bar-fill.health  { background: linear-gradient(90deg, #00e096, #6effcb); }
+/* 六维雷达 */
+.radar-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:16px}
+.radar-wrap{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.radar-canvas-wrap{flex:0 0 180px}
+.radar-legend{flex:1;display:flex;flex-direction:column;gap:10px;min-width:140px}
+.radar-item{display:flex;align-items:center;gap:10px}
+.radar-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.radar-info{flex:1}
+.radar-label{font-size:12px;color:var(--text);margin-bottom:3px}
+.radar-bar-wrap{height:3px;background:rgba(255,255,255,0.06);border-radius:100px;overflow:hidden}
+.radar-bar-fill{height:100%;border-radius:100px;transition:width 1.2s cubic-bezier(.34,1.56,.64,1);width:0}
+.radar-score{font-size:11px;color:var(--muted2)}
 
-  .fortune-card-text {
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.7;
-  }
+/* 今日卦象解读 */
+.gua-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:16px}
+.gua-yao{display:flex;flex-direction:column;gap:6px;margin:16px 0}
+.yao-line{height:6px;border-radius:3px;background:rgba(157,123,255,0.4)}
+.yao-line.broken{background:none;display:flex;gap:8px}
+.yao-line.broken span{flex:1;height:6px;border-radius:3px;background:rgba(157,123,255,0.4)}
+.gua-text{font-size:14px;line-height:1.9;color:rgba(238,238,255,0.85);border-left:2px solid var(--accent);padding-left:14px;margin-top:12px}
 
-  /* 幸运信息行 */
-  .lucky-row {
-    display: flex;
-    gap: 12px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-  }
-  .lucky-item {
-    flex: 1;
-    min-width: 120px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 14px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .lucky-item .l-label {
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-  }
-  .lucky-item .l-value {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text);
-  }
+/* 时段建议 */
+.timeline-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:16px}
+.timeline{display:flex;flex-direction:column;gap:0}
+.tl-item{display:grid;grid-template-columns:80px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--border)}
+.tl-item:last-child{border-bottom:none}
+.tl-time{font-size:12px;color:var(--muted2);padding-top:2px}
+.tl-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:5px;flex-shrink:0}
+.tl-content h4{font-size:13px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.tl-content p{font-size:12px;color:var(--muted2);line-height:1.6}
+.tl-tag{font-size:10px;padding:2px 8px;border-radius:100px;font-weight:500}
+.tl-tag.good{background:rgba(0,224,150,0.15);color:#00e096}
+.tl-tag.caution{background:rgba(255,190,92,0.15);color:#ffbe5c}
+.tl-tag.rest{background:rgba(157,123,255,0.15);color:#9d7bff}
 
-  /* 加载动画 */
-  @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-  }
-  .loading-text {
-    text-align: center;
-    padding: 60px 0;
-    color: var(--muted);
-    font-size: 14px;
-  }
-  .loading-text .dots::after {
-    content: '';
-    animation: dots 1.5s infinite;
-  }
-  @keyframes dots {
-    0%   { content: '.'; }
-    33%  { content: '..'; }
-    66%  { content: '...'; }
-  }
+/* 幸运模块 */
+.lucky-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
+@media(max-width:400px){.lucky-grid{grid-template-columns:1fr}}
+.lucky-item{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px}
+.lucky-l{font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:6px}
+.lucky-v{font-size:16px;font-weight:600}
+.lucky-sub{font-size:11px;color:var(--muted2);margin-top:3px}
 
-  /* 分隔线 */
-  .divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 28px 0;
-  }
+/* 底部 */
+.result-footer{text-align:center;margin-top:40px}
+.btn-redo{background:none;border:1px solid var(--border2);border-radius:100px;padding:10px 28px;color:var(--muted2);font-size:13px;cursor:pointer;transition:all .3s}
+.btn-redo:hover{border-color:var(--accent);color:var(--accent)}
+.disclaimer{font-size:11px;color:var(--muted);margin-top:20px;opacity:.5;letter-spacing:.5px}
 
-  /* 底部 */
-  .footer {
-    text-align: center;
-    margin-top: 60px;
-    font-size: 11px;
-    color: var(--muted);
-    opacity: 0.5;
-    letter-spacing: 1px;
-  }
+/* 提示 */
+.hint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6}
 </style>
 </head>
 <body>
+<canvas id="cosmos"></canvas>
 
-<div class="starfield" id="starfield">
-  <canvas id="stars"></canvas>
-</div>
+<div class="wrap">
 
-<div class="app">
-  <header class="header">
-    <div class="eyebrow">Astrology · Daily Fortune</div>
-    <h1>今日运势</h1>
-    <p>宇宙星象，为你解读今日气场</p>
-    <div class="date-pill" id="dateDisplay"></div>
-  </header>
+  <!-- 顶部 -->
+  <div class="hero">
+    <div class="hero-badge">✦ 命理推算 · 今日天机 ✦</div>
+    <h1><span>洞见今日</span><br>命运之机</h1>
+    <p>融合生辰八字、五行生克、易经六十四卦<br>为你推演今日运势轨迹</p>
+  </div>
 
-  <section class="zodiac-section">
-    <div class="zodiac-label">选择你的星座</div>
-    <div class="zodiac-grid" id="zodiacGrid"></div>
-  </section>
+  <!-- 步骤指示器 -->
+  <div class="steps" id="stepsBar">
+    <div class="step-dot active" id="sd1">1</div>
+    <div class="step-line" id="sl1"></div>
+    <div class="step-dot" id="sd2">2</div>
+    <div class="step-line" id="sl2"></div>
+    <div class="step-dot" id="sd3">3</div>
+    <div class="step-line" id="sl3"></div>
+    <div class="step-dot" id="sd4">4</div>
+  </div>
 
-  <section class="result-section" id="resultSection">
-    <div class="main-card">
-      <div class="card-header">
-        <div class="big-emoji" id="resEmoji"></div>
-        <div class="card-title">
-          <h2 id="resName"></h2>
-          <div class="dates" id="resDates"></div>
+  <!-- ── 第一步：生辰信息 ── -->
+  <div class="form-page active" id="page1">
+    <div class="card">
+      <div class="card-title">生辰八字 · 基础信息</div>
+
+      <div class="birth-row">
+        <div class="field-group">
+          <div class="field-label">出生年份</div>
+          <select class="field-select" id="birthYear"></select>
+        </div>
+        <div class="field-group">
+          <div class="field-label">出生月份</div>
+          <select class="field-select" id="birthMonth"></select>
+        </div>
+        <div class="field-group">
+          <div class="field-label">出生日期</div>
+          <select class="field-select" id="birthDay"></select>
         </div>
       </div>
 
-      <div class="overall-score">
-        <div class="score-number" id="resScore"></div>
-        <div class="score-info">
-          <div class="score-label">今日综合运势</div>
-          <div class="score-stars" id="resStars"></div>
-          <div class="score-tagline" id="resTagline"></div>
+      <div class="field-group" style="margin-bottom:20px">
+        <div class="field-label">性别</div>
+        <div class="gender-row" style="margin-top:8px">
+          <button class="gender-btn active" id="genderM" onclick="selectGender('male')">
+            <span class="g-icon">♂</span> 男命
+          </button>
+          <button class="gender-btn" id="genderF" onclick="selectGender('female')">
+            <span class="g-icon">♀</span> 女命
+          </button>
         </div>
       </div>
 
-      <div class="daily-word" id="resDailyWord"></div>
+      <button class="btn-primary" onclick="goPage(2)">下一步 →</button>
+    </div>
+  </div>
+
+  <!-- ── 第二步：出生时辰 ── -->
+  <div class="form-page" id="page2">
+    <div class="card">
+      <div class="card-title">时辰宫位 · 紫微斗数</div>
+      <p class="hint" style="margin-bottom:16px">时辰影响命盘宫位，请尽量准确选择。不确定可选「未知」</p>
+      <div class="shichen-grid" id="shichenGrid"></div>
+      <button class="btn-primary" onclick="goPage(3)" style="margin-top:16px">下一步 →</button>
+    </div>
+    <button class="btn-back" onclick="goPage(1)">← 返回</button>
+  </div>
+
+  <!-- ── 第三步：今日关注 ── -->
+  <div class="form-page" id="page3">
+    <div class="card">
+      <div class="card-title">今日关注 · 意向场域</div>
+      <p class="hint" style="margin-bottom:16px">选择今天你最在意的方向（可多选，最多3个）</p>
+      <div class="q-list" id="focusList"></div>
+      <button class="btn-primary" onclick="goPage(4)" style="margin-top:16px" id="focusNextBtn" disabled>下一步 →</button>
+    </div>
+    <button class="btn-back" onclick="goPage(2)">← 返回</button>
+  </div>
+
+  <!-- ── 第四步：当下状态 ── -->
+  <div class="form-page" id="page4">
+    <div class="card">
+      <div class="card-title">当下气场 · 能量感知</div>
+
+      <p class="hint" style="margin-bottom:16px">你现在的整体状态如何？</p>
+      <div class="mood-emoji" id="moodEmoji">😐</div>
+      <div class="mood-track">
+        <input type="range" class="mood-slider" id="moodSlider" min="1" max="10" value="5" oninput="updateMood(this.value)">
+      </div>
+      <div class="mood-labels"><span>低迷</span><span>平稳</span><span>亢奋</span></div>
+
+      <div style="margin-top:28px">
+        <p class="hint" style="margin-bottom:12px">今日直觉感知（选一个）</p>
+        <div class="q-list" id="intuitionList"></div>
+      </div>
+
+      <button class="btn-primary" onclick="startCalc()" style="margin-top:20px" id="calcBtn">✦ 开始推算命局</button>
+    </div>
+    <button class="btn-back" onclick="goPage(3)">← 返回</button>
+  </div>
+
+  <!-- ── 加载页 ── -->
+  <div id="loadingPage">
+    <div class="loader-ring"></div>
+    <div class="loader-text">正在推演命局<br><span style="font-size:12px;color:var(--muted)">融合八字 · 五行 · 易经</span></div>
+    <div class="loader-steps" id="loaderSteps">
+      <div class="loader-step">⊙ 排列生辰八字柱...</div>
+      <div class="loader-step">⊙ 推算五行生克...</div>
+      <div class="loader-step">⊙ 起卦六十四卦...</div>
+      <div class="loader-step">⊙ 布置紫微命盘...</div>
+      <div class="loader-step">⊙ 推演今日流年...</div>
+      <div class="loader-step" style="color:var(--accent)">✦ 天机已明，即将呈现...</div>
+    </div>
+  </div>
+
+  <!-- ── 结果页 ── -->
+  <div id="resultPage">
+
+    <div class="result-hero">
+      <div class="result-gua" id="resGua"></div>
+      <div class="result-gua-name" id="resGuaName"></div>
+      <div class="result-gua-sub" id="resGuaSub"></div>
+      <div class="result-score-row">
+        <div class="result-big-score" id="resBigScore"></div>
+        <div class="result-score-unit">分</div>
+      </div>
+      <div class="result-tagline" id="resTagline"></div>
     </div>
 
-    <div class="fortune-grid">
-      <div class="fortune-card">
-        <div class="fortune-card-header">
-          <div class="fortune-type">
-            <div class="fortune-icon love">💕</div>
-            爱情运势
-          </div>
-          <span style="font-size:12px;color:var(--muted)" id="loveScore"></span>
-        </div>
-        <div class="bar-wrap"><div class="bar-fill love" id="loveBar"></div></div>
-        <div class="fortune-card-text" id="loveText"></div>
-      </div>
+    <!-- 五行能量 -->
+    <div class="wuxing-card">
+      <div class="wuxing-title">五行能量 · 今日格局</div>
+      <div class="wuxing-bars" id="wuxingBars"></div>
+    </div>
 
-      <div class="fortune-card">
-        <div class="fortune-card-header">
-          <div class="fortune-type">
-            <div class="fortune-icon career">⚡</div>
-            事业运势
-          </div>
-          <span style="font-size:12px;color:var(--muted)" id="careerScore"></span>
+    <!-- 六维雷达 -->
+    <div class="radar-card">
+      <div class="card-title">六维运势</div>
+      <div class="radar-wrap">
+        <div class="radar-canvas-wrap">
+          <canvas id="radarCanvas" width="180" height="180"></canvas>
         </div>
-        <div class="bar-wrap"><div class="bar-fill career" id="careerBar"></div></div>
-        <div class="fortune-card-text" id="careerText"></div>
-      </div>
-
-      <div class="fortune-card">
-        <div class="fortune-card-header">
-          <div class="fortune-type">
-            <div class="fortune-icon wealth">💰</div>
-            财运
-          </div>
-          <span style="font-size:12px;color:var(--muted)" id="wealthScore"></span>
-        </div>
-        <div class="bar-wrap"><div class="bar-fill wealth" id="wealthBar"></div></div>
-        <div class="fortune-card-text" id="wealthText"></div>
-      </div>
-
-      <div class="fortune-card">
-        <div class="fortune-card-header">
-          <div class="fortune-type">
-            <div class="fortune-icon health">🌿</div>
-            健康运势
-          </div>
-          <span style="font-size:12px;color:var(--muted)" id="healthScore"></span>
-        </div>
-        <div class="bar-wrap"><div class="bar-fill health" id="healthBar"></div></div>
-        <div class="fortune-card-text" id="healthText"></div>
+        <div class="radar-legend" id="radarLegend"></div>
       </div>
     </div>
 
-    <div class="lucky-row">
-      <div class="lucky-item">
-        <span class="l-label">🎨 幸运色</span>
-        <span class="l-value" id="luckyColor"></span>
-      </div>
-      <div class="lucky-item">
-        <span class="l-label">🔢 幸运数字</span>
-        <span class="l-value" id="luckyNum"></span>
-      </div>
-      <div class="lucky-item">
-        <span class="l-label">💎 幸运石</span>
-        <span class="l-value" id="luckyStone"></span>
-      </div>
-      <div class="lucky-item">
-        <span class="l-label">🤝 贵人星座</span>
-        <span class="l-value" id="luckySign"></span>
-      </div>
+    <!-- 卦象解读 -->
+    <div class="gua-card">
+      <div class="card-title">卦象解读</div>
+      <div class="gua-yao" id="guaYao"></div>
+      <div class="gua-text" id="guaText"></div>
     </div>
-  </section>
 
-  <footer class="footer">✦ 星象仅供娱乐参考 ✦</footer>
+    <!-- 时段建议 -->
+    <div class="timeline-card">
+      <div class="card-title">今日时段建议</div>
+      <div class="timeline" id="timeline"></div>
+    </div>
+
+    <!-- 幸运模块 -->
+    <div class="lucky-grid" id="luckyGrid"></div>
+
+    <div class="result-footer">
+      <button class="btn-redo" onclick="resetAll()">↺ 重新推算</button>
+      <div class="disclaimer">✦ 命理推算仅供娱乐参考，不构成任何决策建议 ✦</div>
+    </div>
+  </div>
+
 </div>
 
 <script>
-// ── 星空背景 ──
-const canvas = document.getElementById('stars');
-const ctx = canvas.getContext('2d');
-let stars = [];
+// ──────────── 星空粒子 ────────────
+(function(){
+  const c=document.getElementById('cosmos'),ctx=c.getContext('2d');
+  let W,H,pts=[];
+  function init(){
+    W=c.width=window.innerWidth;H=c.height=window.innerHeight;
+    pts=Array.from({length:200},()=>({
+      x:Math.random()*W,y:Math.random()*H,
+      vx:(Math.random()-.5)*.15,vy:(Math.random()-.5)*.15,
+      r:Math.random()*1.2+.2,a:Math.random(),as:Math.random()*.006+.002
+    }));
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.a+=p.as;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      const al=(Math.sin(p.a)+1)/2*.55+.05;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(190,180,255,${al})`;ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',init);init();draw();
+})();
 
-function initStars() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  stars = Array.from({length: 160}, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    r: Math.random() * 1.4 + 0.2,
-    a: Math.random(),
-    speed: Math.random() * 0.008 + 0.002
-  }));
-}
-
-function drawStars() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  stars.forEach(s => {
-    s.a += s.speed;
-    const alpha = (Math.sin(s.a) + 1) / 2 * 0.6 + 0.1;
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(200,195,255,${alpha})`;
-    ctx.fill();
-  });
-  requestAnimationFrame(drawStars);
-}
-
-window.addEventListener('resize', initStars);
-initStars();
-drawStars();
-
-// ── 星座数据 ──
-const ZODIACS = [
-  { name:'白羊座', emoji:'♈', dates:'3.21–4.19', element:'火', ruling:'火星' },
-  { name:'金牛座', emoji:'♉', dates:'4.20–5.20', element:'土', ruling:'金星' },
-  { name:'双子座', emoji:'♊', dates:'5.21–6.21', element:'风', ruling:'水星' },
-  { name:'巨蟹座', emoji:'♋', dates:'6.22–7.22', element:'水', ruling:'月亮' },
-  { name:'狮子座', emoji:'♌', dates:'7.23–8.22', element:'火', ruling:'太阳' },
-  { name:'处女座', emoji:'♍', dates:'8.23–9.22', element:'土', ruling:'水星' },
-  { name:'天秤座', emoji:'♎', dates:'9.23–10.23', element:'风', ruling:'金星' },
-  { name:'天蝎座', emoji:'♏', dates:'10.24–11.22', element:'水', ruling:'冥王星' },
-  { name:'射手座', emoji:'♐', dates:'11.23–12.21', element:'火', ruling:'木星' },
-  { name:'摩羯座', emoji:'♑', dates:'12.22–1.19', element:'土', ruling:'土星' },
-  { name:'水瓶座', emoji:'♒', dates:'1.20–2.18', element:'风', ruling:'天王星' },
-  { name:'双鱼座', emoji:'♓', dates:'2.19–3.20', element:'水', ruling:'海王星' },
+// ──────────── 数据定义 ────────────
+const SHICHEN=[
+  {name:'子时',time:'23-01',tz:'壬子'},{name:'丑时',time:'01-03',tz:'癸丑'},
+  {name:'寅时',time:'03-05',tz:'甲寅'},{name:'卯时',time:'05-07',tz:'乙卯'},
+  {name:'辰时',time:'07-09',tz:'丙辰'},{name:'巳时',time:'09-11',tz:'丁巳'},
+  {name:'午时',time:'11-13',tz:'戊午'},{name:'未时',time:'13-15',tz:'己未'},
+  {name:'申时',time:'15-17',tz:'庚申'},{name:'酉时',time:'17-19',tz:'辛酉'},
+  {name:'戌时',time:'19-21',tz:'壬戌'},{name:'亥时',time:'21-23',tz:'癸亥'},
+  {name:'未知',time:'不确定',tz:''}
 ];
 
-// ── 运势内容库（根据日期 + 星座生成伪随机内容）──
-const DAILY_WORDS = {
-  '白羊座': [
-    '今日的你充满行动力，内心有股难以压制的冲劲。与其反复权衡，不如先迈出那一步——机会向来只青睐动起来的人。',
-    '火星给你带来充沛的能量，但记得在冲刺前确认方向。今天适合攻克一个长期搁置的难题。',
-    '热情是你今日最大的武器。别让犹豫把它消耗殆尽，把专注放在真正重要的事上。',
-  ],
-  '金牛座': [
-    '今日的稳定感让你如鱼得水。你总有一种能力，把混乱变成秩序——今天这种能力会被身边的人看见。',
-    '金星的眷顾让你的感知更加细腻，一件小事可能带来意外的满足感。放慢步调，感受当下。',
-    '今天适合深耕而非开拓。你手边那件几乎完成的事，值得你再投入一点点耐心。',
-  ],
-  '双子座': [
-    '思维在今天高速运转，想法一个接一个。关键是找到那个值得深入的点，而不是在所有方向上浅尝辄止。',
-    '沟通是今日的主旋律。一句说对时机的话，可以打开一扇之前紧闭的门。',
-    '你的好奇心今天会引你走向一个意想不到的收获。保持开放，不要太快否定那些初看奇怪的想法。',
-  ],
-  '巨蟹座': [
-    '月亮的力量今天格外清晰地流动在你身上。照顾好自己的感受，才能更好地照顾身边的人。',
-    '今天适合与亲密的人深谈，一次真诚的交流胜过很多次点到为止的寒暄。',
-    '某种直觉正在向你发出信号，不要急着用理性把它压下去——先听一听它在说什么。',
-  ],
-  '狮子座': [
-    '今天的你自带光芒，不需要刻意发光，人们自然会注意到你。把这份关注转化为推动事情的能量。',
-    '太阳照耀你的自信区域，是展示自己实力的好时机。大方一点，你比自己想的更值得被看见。',
-    '领导力在今天会自然流露。有人需要一个清晰的声音来打破僵局，而那个人可以是你。',
-  ],
-  '处女座': [
-    '细节是你今天的战场。你发现了别人都忽略的那处关键，这件事可能悄悄改变今天的走向。',
-    '分析力在今天达到峰值，适合处理那些需要耐心梳理的复杂问题。把思路理清，一步一步来。',
-    '今天的你可能对自己要求有些严苛。记得，做到80分并准时完成，有时比追求100分却迟迟不动更有价值。',
-  ],
-  '天秤座': [
-    '平衡感是你今天的核心。两种选择之间，你的答案不一定非此即彼——也许第三条路才是真正属于你的。',
-    '金星让你今天的人际关系格外顺滑。一个真心的赞美，或者主动关心一下对方，效果会超出预期。',
-    '美感在今日高度敏锐，无论是一个设计决策还是生活里的一个小选择，都值得多一点用心。',
-  ],
-  '天蝎座': [
-    '今天你的洞察力像一束聚焦的光，能穿透表象看到本质。利用好这个能力，但不必把所有想法都说出口。',
-    '某件事的真相正在逐渐浮出水面。保持耐心，不要急着摊牌——时机还不完全成熟。',
-    '深层的情绪今天比较活跃。与其压制它，不如找一个私密的出口，把它转化为创造的能量。',
-  ],
-  '射手座': [
-    '今天的你渴望突破边界，这种冲动是有价值的。找一件能给你带来新视野的事做，哪怕只是读一篇之前不会碰的文章。',
-    '木星的祝福让你今天的运气比平时高出一档。一件看似普通的事，可能带来意外的惊喜。',
-    '乐观是你今日的底色，但记得把它和一点点现实感结合起来——最好的冒险是有备而来的。',
-  ],
-  '摩羯座': [
-    '土星给你今天的努力背书，你所做的每一步都在精确地累积。不要因为暂时看不见结果就动摇。',
-    '今天适合处理那些需要长期坚持的事情——你的持久力在今天比任何人都强。',
-    '有人今天会因为你的靠谱而对你另眼相看。平时看似普通的扎实，往往就是最强的亮点。',
-  ],
-  '水瓶座': [
-    '今天的你思维跳脱，能看见别人还没想到的可能性。把那个"疯狂"的想法先记下来，别急着否定它。',
-    '某个集体中的问题，今天可能因为你的一个独特视角而找到解法。不必太担心自己"不一样"。',
-    '天王星的频率今天格外清晰，有一种想要打破常规的冲动——找一个相对安全的领域去试试它。',
-  ],
-  '双鱼座': [
-    '直觉和现实今天同时对你说话，学会分辨哪个声音更真实，不要让感性完全盖过判断。',
-    '今天的你对他人的情绪极为敏感，是倾听和陪伴的好时机。但记得给自己保留一点能量空间。',
-    '海王星在今天为你的创造力注入了一股神秘的流动感，适合做任何需要想象力和感受力的事。',
-  ],
+const FOCUSES=[
+  {icon:'💼',text:'事业与工作'},{icon:'💕',text:'感情与姻缘'},
+  {icon:'💰',text:'财运与投资'},{icon:'🎓',text:'学业与考试'},
+  {icon:'🏥',text:'健康与身体'},{icon:'👨‍👩‍👧',text:'家庭与亲情'},
+  {icon:'🤝',text:'人际与贵人'},{icon:'🌱',text:'个人成长'},
+];
+
+const INTUITIONS=[
+  {icon:'🌅',text:'感觉今天会有好事发生'},
+  {icon:'🌧',text:'隐约觉得需要谨慎行事'},
+  {icon:'🌀',text:'心绪不定，难以判断'},
+  {icon:'⚡',text:'精力充沛，想大干一场'},
+  {icon:'🍃',text:'平静如水，顺其自然'},
+];
+
+const WUXING_COLORS={木:'#4ade80',火:'#f87171',土:'#fbbf24',金:'#e2e8f0',水:'#60a5fa'};
+
+const RADAR_DIMS=[
+  {label:'事业',color:'#9d7bff'},{label:'财运',color:'#ffbe5c'},
+  {label:'感情',color:'#ff7eb3'},{label:'健康',color:'#4ade80'},
+  {label:'人缘',color:'#60a5fa'},{label:'智慧',color:'#f87171'},
+];
+
+const GUA_LIST=[
+  {sym:'☰',name:'乾卦',sub:'天行健，君子以自强不息',text:'今日乾卦当令，阳气充沛，主动进取之象。宜大胆推进计划，与上级或权威人士沟通，事半功倍。忌过于刚猛，留三分余地。'},
+  {sym:'☷',name:'坤卦',sub:'地势坤，君子以厚德载物',text:'坤卦主稳，今日不宜冒进，以守为攻。默默耕耘之事今日最有成效，踏实做好手边事，积累胜于突破。'},
+  {sym:'☳',name:'震卦',sub:'洊雷震，君子以恐惧修省',text:'震卦主动，有突然变动之象。今日可能遇到意外信息或转折，保持灵活应变，不要固执于原来的计划。'},
+  {sym:'☴',name:'巽卦',sub:'随风巽，君子以申命行事',text:'巽卦如风，今日信息流通顺畅，适合沟通谈判、签订合约、处理文件事务。言辞需柔中带刚。'},
+  {sym:'☵',name:'坎卦',sub:'水洊至，君子以常德行',text:'坎卦主险，今日需多一份谨慎。暗流涌动，不宜冲动决策，以冷静观察为主。但水善利万物，逢险有渡。'},
+  {sym:'☲',name:'离卦',sub:'明两作，大人以继明照四方',text:'离卦主明，今日思维敏锐，创意迸发。适合需要表达、创作、公开展示的事务。人际关系中光芒毕露，获得认可。'},
+  {sym:'☶',name:'艮卦',sub:'兼山艮，君子以思不出其位',text:'艮卦主止，今日宜静不宜动。该停下来的事不要硬撑，反思比行动更有价值。休息即是积蓄，等待即是智慧。'},
+  {sym:'☱',name:'兑卦',sub:'丽泽兑，君子以朋友讲习',text:'兑卦主悦，今日人缘极旺，适合社交、合作、谈判。喜悦之气感染四方，贵人易现。但防口舌，言多必失。'},
+];
+
+const TIMELINE_POOL=[
+  {time:'06–09时',tag:'good',title:'✦ 黄金启动时段',desc:'阳气初升，精力最充沛。适合处理最重要的工作，做需要专注的决策。'},
+  {time:'09–11时',tag:'good',title:'✦ 最佳沟通时窗',desc:'思维活跃，表达流畅。重要的会议、谈判、沟通安排在这个时段效果最好。'},
+  {time:'11–13时',tag:'caution',title:'⚠ 能量转换节点',desc:'午时阴阳交替，容易出现判断偏差。避免签署重要文件，以轻松活动为主。'},
+  {time:'13–15时',tag:'rest',title:'◎ 蓄力休整时段',desc:'气血流注心经，适当休息充电。冥想、小憩片刻，为下午储备能量。'},
+  {time:'15–17时',tag:'good',title:'✦ 下午第二波峰',desc:'精力回升，创意涌现。适合需要创造力的工作，或处理下午的重要事项。'},
+  {time:'17–19时',tag:'good',title:'✦ 社交收获时段',desc:'人缘场能量高，适合约见朋友、维系关系、享受美食。今日贵人可能在此时出现。'},
+  {time:'19–21时',tag:'caution',title:'⚠ 情绪敏感时窗',desc:'感情方面容易波动，避免在此时做重要的情感决定。可以阅读、整理思绪。'},
+  {time:'21–23时',tag:'rest',title:'◎ 沉淀复盘时段',desc:'适合回顾今日，记录感悟。为明日蓄能，早睡比熬夜更符合今日命局。'},
+];
+
+const LUCKY_THINGS=[
+  {l:'幸运色',pool:['深紫','暗金','翡翠绿','玫瑰红','天青蓝','烟灰','珊瑚橙','月光白']},
+  {l:'幸运数',pool:['3','7','8','9','12','18','21','27','36','42']},
+  {l:'幸运方位',pool:['东南方','正北方','西南方','正东方','东北方','西北方']},
+  {l:'幸运时辰',pool:['卯时 05-07','午时 11-13','申时 15-17','亥时 21-23']},
+  {l:'宜',pool:['出行','签约','求职','见贵人','开业','求财','祭祀','嫁娶']},
+  {l:'忌',pool:['动土','争讼','远行','大额消费','冲动决策','熬夜','轻信他人']},
+];
+
+// ──────────── 状态 ────────────
+let state={
+  year:1990,month:1,day:1,gender:'male',
+  shichen:-1,focuses:[],intuition:-1,mood:5
 };
 
-const LOVE_TEXTS = [
-  '感情上有微妙的化学反应，主动一点会有惊喜。单身者今日容易遇到让心跳加速的人。',
-  '与伴侣之间某个悬而未决的话题，今天是开口的好时机。坦诚胜过绕弯子。',
-  '今天的缘分场能量较强，把握偶然相遇的机会。心动了就行动，别等太久。',
-  '感情需要一点呼吸空间，给彼此留一些独立的时间，关系会更有质感。',
-  '一段旧缘分可能在今天以某种方式重新出现，以平和的心态面对是最好的选择。',
-];
+// ──────────── 初始化表单 ────────────
+function initForm(){
+  const yEl=document.getElementById('birthYear');
+  for(let y=1940;y<=2005;y++){
+    const o=document.createElement('option');o.value=y;o.textContent=y+'年';
+    if(y===1990)o.selected=true;yEl.appendChild(o);
+  }
+  const mEl=document.getElementById('birthMonth');
+  ['一','二','三','四','五','六','七','八','九','十','十一','十二'].forEach((m,i)=>{
+    const o=document.createElement('option');o.value=i+1;o.textContent=(i+1)+'月（'+m+'月）';
+    mEl.appendChild(o);
+  });
+  updateDays();
+  document.getElementById('birthYear').addEventListener('change',updateDays);
+  document.getElementById('birthMonth').addEventListener('change',updateDays);
 
-const CAREER_TEXTS = [
-  '思维清晰，执行力在线，是推进重要项目的好时机。可以约一个长期推迟的关键会议。',
-  '今天容易遇到瓶颈，但换一个角度往往就能找到突破口。不妨听听旁观者的意见。',
-  '一个合作机会正在悄悄靠近，留意今天与你接触的那个"不太熟悉"的人。',
-  '专注力在今天处于峰值，适合处理那些需要深度思考的任务，减少打断。',
-  '今天适合整合和收尾，而不是开启新项目。把手里的事做扎实，更有成就感。',
-];
-
-const WEALTH_TEXTS = [
-  '财运稳健，小有进账的概率较高。可以关注一个之前研究过但还未行动的投资机会。',
-  '消费欲望比较旺盛，大额支出建议再等等——冲动消费今天容易后悔。',
-  '有意外之财的可能，但来得快去得也快。保住已有的，比追求新的更重要。',
-  '今天的财运需要靠行动触发，主动创造收益的机会比等待来得更可靠。',
-  '理财上适合规划而非操作，今天把财务目标梳理清楚，比盲目行动更有价值。',
-];
-
-const HEALTH_TEXTS = [
-  '精力充沛，但过度消耗后容易崩溃。合理安排休息，别把今天的能量用完。',
-  '消化系统今天需要多关注，饮食上以清淡为主，少喝冷饮。',
-  '情绪和身体联动较强，心情好时身体也会感到轻盈。找点让自己开心的小事做。',
-  '今天适合户外活动，哪怕只是走出去走一走，对整体状态都会有明显改善。',
-  '睡眠质量今天可能受影响，入睡前少看屏幕，给大脑一点安静的时间。',
-];
-
-const LUCKY_COLORS = ['星空蓝','紫水晶','暗金','深玫红','墨绿','珊瑚橙','月光白','琥珀黄'];
-const LUCKY_STONES = ['紫水晶','月光石','黑曜石','青金石','玫瑰石英','虎眼石','绿松石','拉长石'];
-const LUCKY_NUMS = [3,7,8,9,12,18,21,27];
-
-// ── 根据星座+日期生成"今日"数据 ──
-function seedRandom(seed) {
-  let x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
-}
-
-function getFortuneData(zodiacIndex) {
-  const now = new Date();
-  const seed = now.getFullYear() * 10000 + (now.getMonth()+1) * 100 + now.getDate() + zodiacIndex * 37;
-  const r = (offset) => seedRandom(seed + offset);
-
-  const scores = {
-    overall: Math.floor(r(1) * 30 + 65),
-    love:    Math.floor(r(2) * 40 + 55),
-    career:  Math.floor(r(3) * 40 + 55),
-    wealth:  Math.floor(r(4) * 40 + 55),
-    health:  Math.floor(r(5) * 40 + 55),
-  };
-
-  const z = ZODIACS[zodiacIndex];
-  const words = DAILY_WORDS[z.name];
-  const wordIdx = Math.floor(r(6) * words.length);
-
-  const taglines = ['运势平稳，稳中求进', '今日气场强劲', '内外和谐，万事顺遂', '厚积薄发的好时机', '小惊喜在等你', '沉淀自己，蓄势待发'];
-
-  return {
-    score: scores.overall,
-    tagline: taglines[Math.floor(r(7) * taglines.length)],
-    dailyWord: words[wordIdx],
-    love: { score: scores.love, text: LOVE_TEXTS[Math.floor(r(8)*LOVE_TEXTS.length)] },
-    career: { score: scores.career, text: CAREER_TEXTS[Math.floor(r(9)*CAREER_TEXTS.length)] },
-    wealth: { score: scores.wealth, text: WEALTH_TEXTS[Math.floor(r(10)*WEALTH_TEXTS.length)] },
-    health: { score: scores.health, text: HEALTH_TEXTS[Math.floor(r(11)*HEALTH_TEXTS.length)] },
-    color: LUCKY_COLORS[Math.floor(r(12)*LUCKY_COLORS.length)],
-    num:   LUCKY_NUMS[Math.floor(r(13)*LUCKY_NUMS.length)],
-    stone: LUCKY_STONES[Math.floor(r(14)*LUCKY_STONES.length)],
-    luckySign: ZODIACS[Math.floor(r(15)*ZODIACS.length)].name,
-  };
-}
-
-function starsFromScore(score) {
-  const full = Math.round(score / 20);
-  return '★'.repeat(Math.min(full, 5)) + '☆'.repeat(Math.max(0, 5 - full));
-}
-
-// ── 渲染 ──
-function showFortune(index) {
-  const z = ZODIACS[index];
-  const d = getFortuneData(index);
-
-  document.getElementById('resEmoji').textContent = z.emoji;
-  document.getElementById('resName').textContent = z.name;
-  document.getElementById('resDates').textContent = z.dates + ' · ' + z.element + '象星座 · 守护星 ' + z.ruling;
-  document.getElementById('resScore').textContent = d.score;
-  document.getElementById('resStars').textContent = starsFromScore(d.score);
-  document.getElementById('resTagline').textContent = d.tagline;
-  document.getElementById('resDailyWord').textContent = d.dailyWord;
-
-  // 四格
-  const fields = [
-    { key:'love',   barId:'loveBar',   scoreId:'loveScore',   textId:'loveText'   },
-    { key:'career', barId:'careerBar', scoreId:'careerScore', textId:'careerText' },
-    { key:'wealth', barId:'wealthBar', scoreId:'wealthScore', textId:'wealthText' },
-    { key:'health', barId:'healthBar', scoreId:'healthScore', textId:'healthText' },
-  ];
-  fields.forEach(f => {
-    document.getElementById(f.scoreId).textContent = d[f.key].score + '分';
-    document.getElementById(f.textId).textContent  = d[f.key].text;
-    // 先重置
-    const bar = document.getElementById(f.barId);
-    bar.style.width = '0';
-    setTimeout(() => { bar.style.width = d[f.key].score + '%'; }, 100);
+  // 时辰
+  const sg=document.getElementById('shichenGrid');
+  SHICHEN.forEach((s,i)=>{
+    const btn=document.createElement('button');
+    btn.className='shichen-btn';
+    btn.innerHTML=`<span class="sc-name">${s.name}</span><span class="sc-time">${s.time}</span>`;
+    btn.onclick=()=>{
+      document.querySelectorAll('.shichen-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');state.shichen=i;
+    };
+    sg.appendChild(btn);
   });
 
-  document.getElementById('luckyColor').textContent = d.color;
-  document.getElementById('luckyNum').textContent   = d.num;
-  document.getElementById('luckyStone').textContent = d.stone;
-  document.getElementById('luckySign').textContent  = d.luckySign;
+  // 关注
+  const fl=document.getElementById('focusList');
+  FOCUSES.forEach((f,i)=>{
+    const item=document.createElement('div');item.className='q-item';
+    item.innerHTML=`<span class="q-icon">${f.icon}</span>${f.text}<span class="q-check">✓</span>`;
+    item.onclick=()=>{
+      const idx=state.focuses.indexOf(i);
+      if(idx>-1){item.classList.remove('active');state.focuses.splice(idx,1);}
+      else if(state.focuses.length<3){item.classList.add('active');state.focuses.push(i);}
+      document.getElementById('focusNextBtn').disabled=state.focuses.length===0;
+    };
+    fl.appendChild(item);
+  });
 
-  const section = document.getElementById('resultSection');
-  section.classList.add('visible');
-  setTimeout(() => {
-    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 100);
-}
-
-// ── 初始化 ──
-function init() {
-  // 日期
-  const now = new Date();
-  const days = ['日','一','二','三','四','五','六'];
-  document.getElementById('dateDisplay').textContent =
-    now.getFullYear() + '年' + (now.getMonth()+1) + '月' + now.getDate() + '日  星期' + days[now.getDay()];
-
-  // 星座按钮
-  const grid = document.getElementById('zodiacGrid');
-  ZODIACS.forEach((z, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'zodiac-btn';
-    btn.innerHTML = `<span class="emoji">${z.emoji}</span><span class="name">${z.name}</span>`;
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.zodiac-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      showFortune(i);
-    });
-    grid.appendChild(btn);
+  // 直觉
+  const il=document.getElementById('intuitionList');
+  INTUITIONS.forEach((it,i)=>{
+    const item=document.createElement('div');item.className='q-item';
+    item.innerHTML=`<span class="q-icon">${it.icon}</span>${it.text}<span class="q-check">✓</span>`;
+    item.onclick=()=>{
+      document.querySelectorAll('#intuitionList .q-item').forEach(b=>b.classList.remove('active'));
+      item.classList.add('active');state.intuition=i;
+    };
+    il.appendChild(item);
   });
 }
 
-init();
+function updateDays(){
+  const y=parseInt(document.getElementById('birthYear').value);
+  const m=parseInt(document.getElementById('birthMonth').value);
+  const days=new Date(y,m,0).getDate();
+  const dEl=document.getElementById('birthDay');
+  const cur=parseInt(dEl.value)||1;
+  dEl.innerHTML='';
+  for(let d=1;d<=days;d++){
+    const o=document.createElement('option');o.value=d;o.textContent=d+'日';
+    if(d===Math.min(cur,days))o.selected=true;dEl.appendChild(o);
+  }
+}
+
+function selectGender(g){
+  state.gender=g;
+  document.getElementById('genderM').classList.toggle('active',g==='male');
+  document.getElementById('genderF').classList.toggle('active',g==='female');
+}
+
+const MOOD_EMOJIS=['😔','😞','😕','😐','🙂','😊','😄','😁','🤩','🌟'];
+function updateMood(v){
+  state.mood=parseInt(v);
+  document.getElementById('moodEmoji').textContent=MOOD_EMOJIS[Math.min(parseInt(v)-1,9)];
+}
+
+// ──────────── 步骤切换 ────────────
+let curPage=1;
+function goPage(n){
+  document.getElementById('page'+curPage).classList.remove('active');
+  document.getElementById('page'+n).classList.add('active');
+  curPage=n;
+  updateSteps(n);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function updateSteps(n){
+  for(let i=1;i<=4;i++){
+    const d=document.getElementById('sd'+i);
+    d.classList.remove('active','done');
+    if(i<n)d.classList.add('done');
+    else if(i===n)d.classList.add('active');
+  }
+  for(let i=1;i<=3;i++){
+    const l=document.getElementById('sl'+i);
+    l.classList.toggle('done',i<n);
+  }
+}
+
+// ──────────── 推算 ────────────
+function startCalc(){
+  state.year=parseInt(document.getElementById('birthYear').value);
+  state.month=parseInt(document.getElementById('birthMonth').value);
+  state.day=parseInt(document.getElementById('birthDay').value);
+
+  document.getElementById('page4').classList.remove('active');
+  document.getElementById('stepsBar').style.display='none';
+  document.getElementById('loadingPage').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  const steps=document.querySelectorAll('.loader-step');
+  steps.forEach((s,i)=>setTimeout(()=>s.classList.add('show'),(i+1)*600));
+  setTimeout(()=>{renderResult();},4200);
+}
+
+// ──────────── 伪随机 ────────────
+function sr(seed){let x=Math.sin(seed)*10000;return x-Math.floor(x);}
+function pick(arr,s){return arr[Math.floor(sr(s)*arr.length)];}
+function rng(min,max,s){return Math.floor(sr(s)*(max-min+1))+min;}
+
+function getSeed(){
+  const now=new Date();
+  return state.year*1000000+state.month*10000+state.day*100+
+    now.getFullYear()*17+now.getMonth()*31+now.getDate()*7+
+    state.focuses.reduce((a,b)=>a+b,0)*13+state.mood*3;
+}
+
+// ──────────── 渲染结果 ────────────
+function renderResult(){
+  document.getElementById('loadingPage').style.display='none';
+  document.getElementById('resultPage').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  const seed=getSeed();
+
+  // 卦象
+  const gua=GUA_LIST[rng(0,GUA_LIST.length-1,seed+1)];
+  document.getElementById('resGua').textContent=gua.sym;
+  document.getElementById('resGuaName').textContent=gua.name;
+  document.getElementById('resGuaSub').textContent=gua.sub;
+
+  // 总分（根据用户输入浮动）
+  const baseScore=rng(62,95,seed+2);
+  const moodBonus=Math.floor((state.mood-5)*1.5);
+  const finalScore=Math.max(50,Math.min(99,baseScore+moodBonus));
+  document.getElementById('resBigScore').textContent=finalScore;
+
+  const taglines=['✦ 紫气东来，诸事顺遂','✦ 厚积薄发，时机已至','✦ 守正待时，运势渐开','✦ 贵人扶持，事半功倍','✦ 内外和谐，进退有据'];
+  document.getElementById('resTagline').textContent=pick(taglines,seed+3);
+
+  // 爻辞
+  const yaoEl=document.getElementById('guaYao');
+  yaoEl.innerHTML='';
+  for(let i=0;i<6;i++){
+    const broken=sr(seed+i+10)<0.45;
+    const div=document.createElement('div');
+    div.className='yao-line'+(broken?' broken':'');
+    if(broken)div.innerHTML='<span></span><span></span>';
+    yaoEl.appendChild(div);
+  }
+  document.getElementById('guaText').textContent=gua.text;
+
+  // 五行
+  const wuKeys=['木','火','土','金','水'];
+  const wuVals=wuKeys.map((k,i)=>rng(30,95,seed+i+20));
+  const wuTotal=wuVals.reduce((a,b)=>a+b,0);
+  const wuBarsEl=document.getElementById('wuxingBars');
+  wuBarsEl.innerHTML='';
+  wuKeys.forEach((k,i)=>{
+    const pct=Math.round(wuVals[i]/wuTotal*100);
+    const div=document.createElement('div');div.className='wx-row';
+    div.innerHTML=`
+      <div class="wx-name"><div class="wx-dot" style="background:${WUXING_COLORS[k]}"></div>${k}</div>
+      <div class="wx-track"><div class="wx-fill" id="wx${i}" style="background:${WUXING_COLORS[k]}"></div></div>
+      <div class="wx-val">${pct}%</div>`;
+    wuBarsEl.appendChild(div);
+    setTimeout(()=>{document.getElementById('wx'+i).style.width=pct+'%';},200+i*100);
+  });
+
+  // 六维雷达
+  const radarScores=RADAR_DIMS.map((_,i)=>rng(45,98,seed+i+30));
+  // 把用户关注的维度略微提升
+  state.focuses.forEach(fi=>{
+    if(fi<radarScores.length)radarScores[fi]=Math.min(99,radarScores[fi]+8);
+  });
+
+  const legEl=document.getElementById('radarLegend');legEl.innerHTML='';
+  RADAR_DIMS.forEach((d,i)=>{
+    const div=document.createElement('div');div.className='radar-item';
+    div.innerHTML=`
+      <div class="radar-dot" style="background:${d.color}"></div>
+      <div class="radar-info">
+        <div class="radar-label">${d.label} <span class="radar-score">${radarScores[i]}分</span></div>
+        <div class="radar-bar-wrap"><div class="radar-bar-fill" id="rb${i}" style="background:${d.color}"></div></div>
+      </div>`;
+    legEl.appendChild(div);
+    setTimeout(()=>{document.getElementById('rb'+i).style.width=radarScores[i]+'%';},300+i*80);
+  });
+  setTimeout(()=>drawRadar(radarScores),400);
+
+  // 时段建议（随机选4条，排序）
+  const shuffled=[...TIMELINE_POOL].sort(()=>sr(seed+99)-.5).slice(0,4)
+    .sort((a,b)=>parseInt(a.time)-parseInt(b.time));
+  const tlEl=document.getElementById('timeline');tlEl.innerHTML='';
+  shuffled.forEach(t=>{
+    const div=document.createElement('div');div.className='tl-item';
+    div.innerHTML=`
+      <div class="tl-time">${t.time}</div>
+      <div class="tl-content">
+        <h4>${t.title} <span class="tl-tag ${t.tag}">${t.tag==='good'?'吉':t.tag==='caution'?'慎':'宜静'}</span></h4>
+        <p>${t.desc}</p>
+      </div>`;
+    tlEl.appendChild(div);
+  });
+
+  // 幸运模块
+  const lgEl=document.getElementById('luckyGrid');lgEl.innerHTML='';
+  LUCKY_THINGS.forEach((lt,i)=>{
+    const v=pick(lt.pool,seed+i+50);
+    const div=document.createElement('div');div.className='lucky-item';
+    div.innerHTML=`<div class="lucky-l">${lt.l}</div><div class="lucky-v">${v}</div>`;
+    lgEl.appendChild(div);
+  });
+}
+
+// ──────────── 雷达图 ────────────
+function drawRadar(scores){
+  const c=document.getElementById('radarCanvas');
+  const ctx=c.getContext('2d');
+  const W=180,H=180,cx=90,cy=90,R=65,n=6;
+  ctx.clearRect(0,0,W,H);
+
+  // 网格
+  for(let r=1;r<=4;r++){
+    ctx.beginPath();
+    for(let i=0;i<n;i++){
+      const a=Math.PI*2/n*i-Math.PI/2;
+      const x=cx+Math.cos(a)*R*(r/4),y=cy+Math.sin(a)*R*(r/4);
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.closePath();ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.stroke();
+  }
+
+  // 轴线
+  for(let i=0;i<n;i++){
+    const a=Math.PI*2/n*i-Math.PI/2;
+    ctx.beginPath();ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R);
+    ctx.strokeStyle='rgba(255,255,255,0.1)';ctx.stroke();
+  }
+
+  // 填充多边形
+  ctx.beginPath();
+  scores.forEach((s,i)=>{
+    const a=Math.PI*2/n*i-Math.PI/2;
+    const r=R*(s/100);
+    const x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.closePath();
+  const grad=ctx.createRadialGradient(cx,cy,0,cx,cy,R);
+  grad.addColorStop(0,'rgba(157,123,255,0.5)');
+  grad.addColorStop(1,'rgba(255,126,179,0.2)');
+  ctx.fillStyle=grad;ctx.fill();
+  ctx.strokeStyle='rgba(157,123,255,0.7)';ctx.lineWidth=1.5;ctx.stroke();
+
+  // 点
+  scores.forEach((s,i)=>{
+    const a=Math.PI*2/n*i-Math.PI/2;
+    const r=R*(s/100);
+    ctx.beginPath();ctx.arc(cx+Math.cos(a)*r,cy+Math.sin(a)*r,3,0,Math.PI*2);
+    ctx.fillStyle=RADAR_DIMS[i].color;ctx.fill();
+  });
+}
+
+// ──────────── 重置 ────────────
+function resetAll(){
+  state={year:1990,month:1,day:1,gender:'male',shichen:-1,focuses:[],intuition:-1,mood:5};
+  document.getElementById('resultPage').style.display='none';
+  document.getElementById('stepsBar').style.display='flex';
+  document.querySelectorAll('.shichen-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#focusList .q-item').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#intuitionList .q-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('moodSlider').value=5;
+  document.getElementById('moodEmoji').textContent='😐';
+  document.getElementById('focusNextBtn').disabled=true;
+  document.getElementById('loaderSteps').querySelectorAll('.loader-step').forEach(s=>s.classList.remove('show'));
+  goPage(1);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+initForm();
 </script>
 </body>
 </html>
