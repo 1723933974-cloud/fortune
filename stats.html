@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>运势数据后台</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#07070f;color:#eeeeff;font-family:'PingFang SC','Microsoft YaHei',sans-serif;padding:28px 16px;max-width:960px;margin:0 auto}
+h1{font-size:20px;margin-bottom:6px;background:linear-gradient(135deg,#fff,#9d7bff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sub{font-size:12px;color:#6b6b90;margin-bottom:24px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:28px}
+.card{background:#13131f;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:16px}
+.card .n{font-size:32px;font-weight:800;color:#9d7bff}.card .l{font-size:11px;color:#6b6b90;margin-top:4px}
+h2{font-size:11px;letter-spacing:2px;color:#6b6b90;margin-bottom:10px;text-transform:uppercase}
+.badge{display:inline-block;padding:3px 10px;border-radius:100px;font-size:11px;background:rgba(157,123,255,0.12);color:#9d7bff;margin:2px 2px 14px}
+.scroll{overflow-x:auto;border-radius:12px;border:1px solid rgba(255,255,255,0.06)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:10px 12px;background:#13131f;color:#6b6b90;font-weight:500;border-bottom:1px solid rgba(255,255,255,0.06);white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,0.04);color:#9494b8;white-space:nowrap;vertical-align:top}
+td:first-child{color:#eeeeff}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(157,123,255,0.04)}
+.loading{text-align:center;padding:40px;color:#6b6b90;font-size:13px}
+.err{text-align:center;padding:40px;color:#ff7eb3;font-size:13px}
+.refresh-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(157,123,255,0.12);border:1px solid rgba(157,123,255,0.25);color:#9d7bff;border-radius:8px;padding:6px 14px;font-size:12px;cursor:pointer;margin-bottom:20px;transition:background .2s}
+.refresh-btn:hover{background:rgba(157,123,255,0.22)}
+.focus-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.section{margin-bottom:28px}
+</style>
+</head>
+<body>
+
+<h1>✦ 今日运势 · 数据后台</h1>
+<div class="sub" id="lastUpdate">加载中…</div>
+
+<button class="refresh-btn" onclick="loadData()">↻ 刷新数据</button>
+
+<div class="cards" id="cards">
+  <div class="card"><div class="n" id="cTotal">…</div><div class="l">总推算次数</div></div>
+  <div class="card"><div class="n" id="cMale">…</div><div class="l">♂ 男性</div></div>
+  <div class="card"><div class="n" id="cFemale">…</div><div class="l">♀ 女性</div></div>
+  <div class="card"><div class="n" id="cMood">…</div><div class="l">平均心情分</div></div>
+</div>
+
+<div class="section">
+  <h2>热门关注方向</h2>
+  <div class="focus-bar" id="focusBar"><span style="color:#6b6b90;font-size:12px">加载中…</span></div>
+</div>
+
+<div class="section">
+  <h2>推算记录明细</h2>
+  <div class="scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>推算时间</th>
+          <th>出生年月日</th>
+          <th>性别</th>
+          <th>时辰</th>
+          <th>关注方向</th>
+          <th>心情</th>
+          <th>直觉感知</th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <tr><td colspan="7" class="loading">数据加载中…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const WORKER = "https://fortune-collector.fortune1723.workers.dev";
+
+async function loadData() {
+  document.getElementById('lastUpdate').textContent = '加载中…';
+  try {
+    // 先拉 /count 测连通性，再拉 /stats-json
+    const [countRes, dataRes] = await Promise.all([
+      fetch(WORKER + "/count"),
+      fetch(WORKER + "/data")
+    ]);
+
+    const countJson = await countRes.json();
+    const data = await dataRes.json();
+    const recs = data.records || [];
+
+    // 统计
+    let male = 0, female = 0, moodSum = 0;
+    const fCount = {};
+    recs.forEach(r => {
+      if (r.gender === 'male') male++;
+      else if (r.gender === 'female') female++;
+      moodSum += (r.mood || 5);
+      (r.focuses || []).forEach(f => { fCount[f] = (fCount[f] || 0) + 1; });
+    });
+
+    document.getElementById('cTotal').textContent = countJson.count || recs.length;
+    document.getElementById('cMale').textContent = male;
+    document.getElementById('cFemale').textContent = female;
+    document.getElementById('cMood').textContent = recs.length > 0 ? (moodSum / recs.length).toFixed(1) : '-';
+
+    // 热门关注
+    const focusEl = document.getElementById('focusBar');
+    const sorted = Object.entries(fCount).sort((a,b) => b[1]-a[1]);
+    if (sorted.length > 0) {
+      focusEl.innerHTML = sorted.map(([k,v]) =>
+        `<span class="badge">${k} <strong>${v}</strong></span>`
+      ).join('');
+    } else {
+      focusEl.innerHTML = '<span style="color:#6b6b90;font-size:12px">暂无数据</span>';
+    }
+
+    // 表格
+    const tbody = document.getElementById('tbody');
+    if (recs.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" class="loading">暂无推算记录</td></tr>';
+    } else {
+      tbody.innerHTML = recs.slice().reverse().slice(0, 100).map(r => {
+        const birth = `${r.year||'-'}年${r.month ? r.month+'月' : ''}${r.day ? r.day+'日' : ''}`;
+        const time = new Date(r.time).toLocaleString('zh-CN', {timeZone:'Asia/Shanghai'});
+        return `<tr>
+          <td>${time}</td>
+          <td>${birth}</td>
+          <td>${r.gender === 'male' ? '♂ 男' : '♀ 女'}</td>
+          <td>${r.shichenName || '-'}</td>
+          <td style="max-width:180px;white-space:normal;line-height:1.6">${(r.focuses||[]).join(' / ') || '-'}</td>
+          <td>${r.mood || '-'}/10</td>
+          <td style="max-width:140px;white-space:normal;color:#6b6b90">${r.intuition || '-'}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    document.getElementById('lastUpdate').textContent =
+      `最后更新：${new Date().toLocaleString('zh-CN', {timeZone:'Asia/Shanghai'})} · 共 ${recs.length} 条`;
+
+  } catch(e) {
+    document.getElementById('lastUpdate').textContent = '⚠️ 加载失败，请检查网络';
+    document.getElementById('tbody').innerHTML =
+      `<tr><td colspan="7" class="err">连接失败：${e.message}<br><br>
+      请确保能访问 <a href="${WORKER}/count" target="_blank" style="color:#9d7bff">${WORKER}/count</a></td></tr>`;
+  }
+}
+
+loadData();
+</script>
+</body>
+</html>
