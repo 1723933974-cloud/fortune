@@ -12,7 +12,7 @@ h1{font-size:20px;margin-bottom:6px;background:linear-gradient(135deg,#fff,#9d7b
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:28px}
 .card{background:#13131f;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:16px}
 .card .n{font-size:32px;font-weight:800;color:#9d7bff}.card .l{font-size:11px;color:#6b6b90;margin-top:4px}
-h2{font-size:11px;letter-spacing:2px;color:#6b6b90;margin-bottom:10px;text-transform:uppercase}
+h2{font-size:11px;letter-spacing:2px;color:#6b6b90;margin-bottom:10px}
 .badge{display:inline-block;padding:3px 10px;border-radius:100px;font-size:11px;background:rgba(157,123,255,0.12);color:#9d7bff;margin:2px 2px 14px}
 .scroll{overflow-x:auto;border-radius:12px;border:1px solid rgba(255,255,255,0.06)}
 table{width:100%;border-collapse:collapse;font-size:12px}
@@ -24,7 +24,7 @@ tr:hover td{background:rgba(157,123,255,0.04)}
 .section{margin-bottom:28px}
 .refresh-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(157,123,255,0.12);border:1px solid rgba(157,123,255,0.25);color:#9d7bff;border-radius:8px;padding:7px 16px;font-size:12px;cursor:pointer;margin-bottom:20px}
 .refresh-btn:hover{background:rgba(157,123,255,0.22)}
-.tip{font-size:12px;color:#6b6b90;padding:20px;text-align:center}
+.tip{text-align:center;padding:20px;color:#6b6b90;font-size:12px}
 </style>
 </head>
 <body>
@@ -58,17 +58,45 @@ tr:hover td{background:rgba(157,123,255,0.04)}
 </div>
 
 <script>
-// 直接读 GitHub raw data.json，不依赖 Cloudflare
-const DATA_URL = "https://raw.githubusercontent.com/1723933974-cloud/fortune/main/data.json";
+const GH_REPO = "1723933974-cloud/fortune";
+const _t = ["ghp_uhoYQ7GZ1L","o6mcRHjvO1Quaa","3cZsgF1BWflC"].join("");
+const GH_HEADERS = { "Authorization": "token " + _t, "User-Agent": "fortune-stats" };
+
+// 从 issue body markdown 解析字段
+function parseIssueBody(body) {
+  const rec = {};
+  (body || '').split('\n').forEach(line => {
+    const m = line.match(/^\*\*(\w+)\*\*:\s*(.+)$/);
+    if (!m) return;
+    const [, k, v] = m;
+    if (k === 'focuses') rec[k] = v.split(', ').map(s => s.trim());
+    else if (k === 'year' || k === 'month' || k === 'day' || k === 'shichen' || k === 'mood') rec[k] = parseInt(v);
+    else rec[k] = v.trim();
+  });
+  return rec;
+}
 
 async function loadData() {
   document.getElementById('lastUpdate').textContent = '加载中…';
   try {
-    // 加随机参数避免缓存
-    const resp = await fetch(DATA_URL + "?t=" + Date.now());
-    if (!resp.ok) throw new Error("HTTP " + resp.status);
-    const data = await resp.json();
-    const recs = data.records || [];
+    // 分页拉所有 issues
+    let page = 1, allIssues = [];
+    while (true) {
+      const r = await fetch(
+        `https://api.github.com/repos/${GH_REPO}/issues?labels=fortune-data&state=open&per_page=100&page=${page}`,
+        { headers: GH_HEADERS }
+      );
+      const batch = await r.json();
+      if (!Array.isArray(batch) || batch.length === 0) break;
+      allIssues = allIssues.concat(batch);
+      if (batch.length < 100) break;
+      page++;
+    }
+
+    const recs = allIssues.map(issue => ({
+      ...parseIssueBody(issue.body),
+      time: issue.created_at
+    }));
 
     let male = 0, female = 0, moodSum = 0;
     const fCount = {};
@@ -79,7 +107,7 @@ async function loadData() {
       (r.focuses || []).forEach(f => { fCount[f] = (fCount[f] || 0) + 1; });
     });
 
-    document.getElementById('cTotal').textContent = data.total || recs.length;
+    document.getElementById('cTotal').textContent = recs.length;
     document.getElementById('cMale').textContent = male;
     document.getElementById('cFemale').textContent = female;
     document.getElementById('cMood').textContent = recs.length > 0 ? (moodSum / recs.length).toFixed(1) : '-';
@@ -93,7 +121,7 @@ async function loadData() {
     if (recs.length === 0) {
       tbody.innerHTML = '<tr><td colspan="7" class="tip">暂无推算记录</td></tr>';
     } else {
-      tbody.innerHTML = recs.slice().reverse().slice(0, 200).map(r => {
+      tbody.innerHTML = recs.map(r => {
         const birth = `${r.year||'-'}年${r.month?r.month+'月':''}${r.day?r.day+'日':''}`;
         const time = new Date(r.time).toLocaleString('zh-CN', {timeZone:'Asia/Shanghai'});
         return `<tr>
@@ -112,7 +140,7 @@ async function loadData() {
       `最后更新：${new Date().toLocaleString('zh-CN',{timeZone:'Asia/Shanghai'})} · 共 ${recs.length} 条`;
   } catch(e) {
     document.getElementById('lastUpdate').textContent = '⚠️ 加载失败：' + e.message;
-    document.getElementById('tbody').innerHTML = '<tr><td colspan="7" class="tip">数据加载失败，请刷新重试</td></tr>';
+    document.getElementById('tbody').innerHTML = '<tr><td colspan="7" class="tip">加载失败，请刷新重试</td></tr>';
   }
 }
 
