@@ -30,6 +30,33 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 /* ── 布局 ── */
 .wrap{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:64px 20px 100px}
 
+/* ── 桌面端宽屏布局 ── */
+@media(min-width:1100px){
+  .page-layout{display:grid;grid-template-columns:220px 1fr 220px;gap:32px;max-width:1140px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+  .sidebar-left,.sidebar-right{padding-top:80px;position:sticky;top:80px;align-self:start}
+  .wrap{max-width:680px;margin:0;padding:64px 0 100px}
+}
+@media(max-width:1099px){
+  .page-layout{display:block}
+  .sidebar-left,.sidebar-right{display:none}
+}
+
+/* ── 侧边栏通用 ── */
+.sidebar-card{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);border-radius:18px;padding:18px;margin-bottom:16px}
+.sidebar-card-title{font-size:10px;letter-spacing:2.5px;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.sidebar-card-title::before{content:'';display:block;width:2px;height:10px;border-radius:2px;background:var(--accent);flex-shrink:0}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:12px;color:var(--muted2)}
+.sidebar-item:last-child{border-bottom:none}
+.sidebar-item .si-icon{font-size:16px;min-width:20px;text-align:center}
+.sidebar-item .si-label{color:var(--muted);font-size:10px;margin-bottom:2px}
+.sidebar-item .si-val{color:var(--text);font-weight:500}
+.sidebar-tag{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:500;margin:3px 4px 3px 0}
+.sidebar-tag.good{background:rgba(0,224,150,0.12);color:#00e096;border:1px solid rgba(0,224,150,0.2)}
+.sidebar-tag.bad{background:rgba(255,100,100,0.1);color:#ff8080;border:1px solid rgba(255,100,100,0.18)}
+.sidebar-qr-wrap{text-align:center;padding:8px 0}
+.sidebar-qr-wrap img{width:120px;height:120px;border-radius:8px;border:1px solid rgba(255,255,255,0.08)}
+.sidebar-qr-wrap p{font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5}
+
 /* ── 顶部 ── */
 .hero{text-align:center;margin-bottom:64px}
 .hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(157,123,255,0.1);border:1px solid rgba(157,123,255,0.25);border-radius:100px;padding:5px 14px;font-size:11px;color:var(--accent);letter-spacing:3px;margin-bottom:24px}
@@ -205,6 +232,21 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 </head>
 <body>
 <canvas id="cosmos"></canvas>
+
+<div class="page-layout">
+
+<!-- ── 左侧边栏 ── -->
+<aside class="sidebar-left">
+  <div class="sidebar-card">
+    <div class="sidebar-card-title">今日概览</div>
+    <div id="sbDateInfo" style="font-size:12px;color:var(--muted2);line-height:2"></div>
+  </div>
+  <div class="sidebar-card" id="sbYiJiCard" style="display:none">
+    <div class="sidebar-card-title">今日宜忌</div>
+    <div id="sbYiList" style="margin-bottom:10px"></div>
+    <div id="sbJiList"></div>
+  </div>
+</aside>
 
 <div class="wrap">
 
@@ -417,7 +459,34 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
     </div>
   </div>
 
-</div>
+</div><!-- /.wrap -->
+
+<!-- ── 右侧边栏 ── -->
+<aside class="sidebar-right">
+  <div class="sidebar-card">
+    <div class="sidebar-card-title">扫码测算</div>
+    <div class="sidebar-qr-wrap">
+      <img id="sidebarQR" src="" alt="二维码" onerror="this.parentElement.style.display='none'">
+      <p>手机扫码<br>开启今日运势</p>
+    </div>
+  </div>
+  <div class="sidebar-card" id="sbScoreCard" style="display:none">
+    <div class="sidebar-card-title">今日运势</div>
+    <div id="sbScoreInfo" style="text-align:center;padding:8px 0"></div>
+  </div>
+  <div class="sidebar-card">
+    <div class="sidebar-card-title">使用说明</div>
+    <div style="font-size:11px;color:var(--muted2);line-height:1.9">
+      · 基于你的生辰八字<br>
+      · 结合今日干支流年<br>
+      · 每天结果不同<br>
+      · 同一天结果稳定<br>
+      <span style="color:rgba(255,255,255,0.1);font-size:10px;display:block;margin-top:8px">✦ 娱乐参考，非决策依据</span>
+    </div>
+  </div>
+</aside>
+
+</div><!-- /.page-layout -->
 
 <script>
 // ──────────── 数据收集 ────────────
@@ -575,16 +644,28 @@ function getTodayGanzhi(){
 function renderTodayCard(){
   const g=getTodayGanzhi();
   const el=document.getElementById('todayCard');
-  if(!el)return;
-  el.innerHTML=`
-    <span>📅 ${g.y}年${g.m}月${g.d}日</span>
-    <span style="color:rgba(255,255,255,0.15)">|</span>
-    <span>周${WEEKS_CN[g.week]}</span>
-    <span style="color:rgba(255,255,255,0.15)">|</span>
-    <span style="color:var(--accent)">${g.yearTG}${g.yearDZ}年 · ${g.sx}年</span>
-    <span style="color:rgba(255,255,255,0.15)">|</span>
-    <span>今日 <strong style="color:var(--accent2)">${g.dayTG}${g.dayDZ}</strong></span>
+  if(el){
+    el.innerHTML=`
+      <span>📅 ${g.y}年${g.m}月${g.d}日</span>
+      <span style="color:rgba(255,255,255,0.15)">|</span>
+      <span>周${WEEKS_CN[g.week]}</span>
+      <span style="color:rgba(255,255,255,0.15)">|</span>
+      <span style="color:var(--accent)">${g.yearTG}${g.yearDZ}年 · ${g.sx}年</span>
+      <span style="color:rgba(255,255,255,0.15)">|</span>
+      <span>今日 <strong style="color:var(--accent2)">${g.dayTG}${g.dayDZ}</strong></span>
+    `;
+  }
+  // 左侧边栏
+  const sb=document.getElementById('sbDateInfo');
+  if(sb) sb.innerHTML=`
+    <div style="margin-bottom:4px"><span style="color:var(--muted)">公历：</span>${g.y}/${String(g.m).padStart(2,'0')}/${String(g.d).padStart(2,'0')}</div>
+    <div style="margin-bottom:4px"><span style="color:var(--muted)">星期：</span>周${WEEKS_CN[g.week]}</div>
+    <div style="margin-bottom:4px"><span style="color:var(--muted)">年柱：</span>${g.yearTG}${g.yearDZ} <span style="color:var(--muted)">(${g.sx}年)</span></div>
+    <div><span style="color:var(--muted)">日柱：</span><strong style="color:var(--accent2)">${g.dayTG}${g.dayDZ}</strong></div>
   `;
+  // 右侧二维码（固定 URL，可直接加载）
+  const qrEl=document.getElementById('sidebarQR');
+  if(qrEl) qrEl.src=`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent('https://1723933974-cloud.github.io/fortune/')}&bgcolor=0e0820&color=c4b5ff&format=png&margin=2`;
 }
 
 // ──────────── localStorage 记住我 ────────────
@@ -613,7 +694,7 @@ function applyAndSkip(s){
   state.year=s.year;state.month=s.month;state.day=s.day;
   state.gender=s.gender;state.shichen=s.shichen;
   state.focuses=s.focuses;state.intuition=s.intuition;state.mood=s.mood||5;
-  // 更新表单 DOM
+  // 更新表单 DOM（供 startCalc 读取）
   document.getElementById('birthYear').value=s.year;
   document.getElementById('birthMonth').value=s.month;
   updateDays(); document.getElementById('birthDay').value=s.day;
@@ -621,6 +702,10 @@ function applyAndSkip(s){
   if(s.shichen>=0){
     document.querySelectorAll('.shichen-btn')[s.shichen]?.classList.add('active');
   }
+  // 隐藏 hero 区域和步骤条，整洁地跳推算
+  document.querySelector('.hero').style.display='none';
+  document.getElementById('stepsBar').style.display='none';
+  document.getElementById('page1').style.display='none';
   // 直接跳推算
   startCalc();
 }
@@ -815,7 +900,22 @@ function renderResult(){
   document.getElementById('resBigScore').textContent=finalScore;
 
   const taglines=['✦ 紫气东来，诸事顺遂','✦ 厚积薄发，时机已至','✦ 守正待时，运势渐开','✦ 贵人扶持，事半功倍','✦ 内外和谐，进退有据'];
-  document.getElementById('resTagline').textContent=pick(taglines,seed+3);
+  const tagline=pick(taglines,seed+3);
+  document.getElementById('resTagline').textContent=tagline;
+
+  // ── 更新右侧侧边栏运势卡 ──
+  const sbCard=document.getElementById('sbScoreCard');
+  const sbInfo=document.getElementById('sbScoreInfo');
+  if(sbCard&&sbInfo){
+    const scoreColor=finalScore>=80?'#00e096':finalScore>=60?'#9d7bff':'#ff8080';
+    sbInfo.innerHTML=`
+      <div style="font-size:44px;font-weight:800;background:linear-gradient(135deg,#fff,${scoreColor});-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1">${finalScore}</div>
+      <div style="font-size:10px;color:var(--muted);margin:4px 0 10px">分</div>
+      <div style="font-size:11px;color:${scoreColor};letter-spacing:.5px">${gua.sym} ${gua.name}</div>
+      <div style="font-size:10px;color:var(--muted2);margin-top:6px;line-height:1.6">${tagline.replace('✦ ','')}</div>
+    `;
+    sbCard.style.display='block';
+  }
 
   // ── 结论文字 ──
   renderConclusion(seed, finalScore, gua);
@@ -887,12 +987,26 @@ function renderResult(){
 
   // 幸运模块
   const lgEl=document.getElementById('luckyGrid');lgEl.innerHTML='';
+  const luckyData=[];
   LUCKY_THINGS.forEach((lt,i)=>{
     const v=pick(lt.pool,seed+i+50);
+    luckyData.push({l:lt.l,v});
     const div=document.createElement('div');div.className='lucky-item';
     div.innerHTML=`<div class="lucky-l">${lt.l}</div><div class="lucky-v">${v}</div>`;
     lgEl.appendChild(div);
   });
+
+  // ── 左侧宜忌侧边栏 ──
+  const YI_POOL=[['出行','宜出行，道路顺畅'],['社交','宜结交新友'],['签约','宜签订合同'],['创作','宜创作构思'],['学习','宜深度学习'],['理财','宜审视财务'],['运动','宜户外运动'],['会友','宜拜访贵人']];
+  const JI_POOL=[['争吵','忌口角冲突'],['冒险','忌鲁莽行事'],['熬夜','忌耗散精力'],['大额支出','忌冲动消费'],['独自决策','忌独断专行'],['高处作业','忌粗心大意']];
+  const yiList=YI_POOL.filter((_,i)=>sr(seed+i+70)>0.55).slice(0,3);
+  const jiList=JI_POOL.filter((_,i)=>sr(seed+i+80)>0.6).slice(0,2);
+  const sbYJ=document.getElementById('sbYiJiCard');
+  if(sbYJ){
+    document.getElementById('sbYiList').innerHTML=yiList.map(([k])=>`<span class="sidebar-tag good">✓ 宜${k}</span>`).join('');
+    document.getElementById('sbJiList').innerHTML=jiList.map(([k])=>`<span class="sidebar-tag bad">✗ 忌${k}</span>`).join('');
+    sbYJ.style.display='block';
+  }
 }
 
 // ──────────── 雷达图 ────────────
@@ -1050,7 +1164,21 @@ function renderConclusion(seed, score, gua) {
 function resetAll(){
   state={year:1990,month:1,day:1,gender:'male',shichen:-1,focuses:[],intuition:-1,mood:5};
   document.getElementById('resultPage').style.display='none';
+  document.getElementById('loadingPage').style.display='none';
+  // 恢复 hero + 步骤条 + page1（applyAndSkip 可能隐藏了它们）
+  document.querySelector('.hero').style.display='';
   document.getElementById('stepsBar').style.display='flex';
+  document.getElementById('page1').style.display='';
+  // 隐藏分享图
+  document.getElementById('shareImg').style.display='none';
+  document.getElementById('shareImg').src='';
+  document.getElementById('shareHint').style.display='none';
+  const shareBtn=document.querySelector('#shareSection button');
+  if(shareBtn){shareBtn.textContent='✦ 生成今日运势卡片（可保存分享）';shareBtn.disabled=false;}
+  // 右侧侧边栏：重置运势分数卡
+  document.getElementById('sbScoreCard').style.display='none';
+  // 清除宜忌
+  document.getElementById('sbYiJiCard').style.display='none';
   document.querySelectorAll('.shichen-btn').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('#focusList .q-item').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('#intuitionList .q-item').forEach(b=>b.classList.remove('active'));
@@ -1058,7 +1186,10 @@ function resetAll(){
   document.getElementById('moodEmoji').textContent='😐';
   document.getElementById('focusNextBtn').disabled=true;
   document.getElementById('loaderSteps').querySelectorAll('.loader-step').forEach(s=>s.classList.remove('show'));
-  goPage(1);
+  curPage=1;
+  document.querySelectorAll('.form-page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page1').classList.add('active');
+  updateSteps(1);
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -1192,14 +1323,16 @@ async function generateShareCard(){
   ctx.textAlign='left';
   wxRows.forEach(row=>{
     const nameEl=row.querySelector('.wx-name');
-    const name=nameEl?nameEl.textContent.trim().slice(-1):'';
+    // wx-name 里有 wx-dot + 文字，取 textContent 会含空白，直接取最后文字节点
+    const nameText=nameEl?nameEl.textContent.trim().replace(/\s/g,'').slice(-1):'';
     const fill=row.querySelector('.wx-fill');
-    const val=row.querySelector('.wx-val').textContent;
-    const pct=parseFloat(fill.style.width)||0;
+    const val=row.querySelector('.wx-val')?.textContent||'';
+    const pct=parseFloat(fill?.style?.width)||0;
     const dotEl=row.querySelector('.wx-dot');
-    const color=dotEl?getComputedStyle(dotEl).background||dotEl.style.background||'#9d7bff':'#9d7bff';
+    // 直接读内联 style.background，不用 getComputedStyle
+    const color=(dotEl?.style?.background)||'#9d7bff';
     ctx.fillStyle='rgba(255,255,255,0.55)';ctx.font='600 14px PingFang SC,sans-serif';
-    ctx.fillText(name,62,wy+4);
+    ctx.fillText(nameText,62,wy+4);
     ctx.fillStyle='rgba(255,255,255,0.07)';
     roundRect(ctx,100,wy-11,490,8,4);ctx.fill();
     ctx.fillStyle=color;
@@ -1209,14 +1342,14 @@ async function generateShareCard(){
     wy+=34;
   });
 
-  // 幸运信息格
+  // 幸运信息格（类名是 lucky-l / lucky-v）
   const luckyItems=document.querySelectorAll('.lucky-item');
   const lSlice=Array.from(luckyItems).slice(0,3);
   let ly=wy+20;
-  const bw=(W-120-16*(lSlice.length-1))/lSlice.length;
+  const bw=(W-120-16*(lSlice.length-1))/Math.max(lSlice.length,1);
   lSlice.forEach((item,i)=>{
-    const label=item.querySelector('.lucky-label')?.textContent||'';
-    const val=item.querySelector('.lucky-val')?.textContent||'';
+    const label=item.querySelector('.lucky-l')?.textContent||'';
+    const val=item.querySelector('.lucky-v')?.textContent||'';
     const bx=60+i*(bw+16);
     ctx.fillStyle='rgba(255,255,255,0.04)';
     ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.lineWidth=1;
@@ -1251,15 +1384,30 @@ async function generateShareCard(){
   ctx.fillStyle='rgba(255,255,255,0.15)';ctx.font='500 11px PingFang SC,sans-serif';
   ctx.fillText('1723933974-cloud.github.io/fortune',60,bottomY+74);
 
-  // canvas → img（微信可长按保存）
-  const dataURL=canvas.toDataURL('image/png');
+  // canvas → img
+  // 用 toBlob + createObjectURL（比 dataURL 更大，但微信能长按保存）
+  // 同时保留 dataURL 作为 fallback（Safari/旧版）
   const img=document.getElementById('shareImg');
-  img.src=dataURL;
-  img.style.display='block';
-  document.getElementById('shareHint').style.display='block';
-
-  if(btn){ btn.textContent='✦ 重新生成卡片'; btn.disabled=false; }
-  showToast('卡片已生成，长按图片保存 🎉','success');
+  canvas.toBlob(blob=>{
+    // 释放上一个 blob URL
+    if(img._blobURL) URL.revokeObjectURL(img._blobURL);
+    const blobURL=URL.createObjectURL(blob);
+    img._blobURL=blobURL;
+    img.src=blobURL;
+    img.style.display='block';
+    document.getElementById('shareHint').style.display='block';
+    if(btn){ btn.textContent='✦ 重新生成卡片'; btn.disabled=false; }
+    showToast('卡片已生成，长按图片保存 🎉','success');
+  }, 'image/png');
+  // fallback：如果 toBlob 不触发（极少数浏览器）
+  setTimeout(()=>{
+    if(!img.src||img.src==='about:blank'||img.style.display==='none'){
+      img.src=canvas.toDataURL('image/png');
+      img.style.display='block';
+      document.getElementById('shareHint').style.display='block';
+      if(btn){ btn.textContent='✦ 重新生成卡片'; btn.disabled=false; }
+    }
+  }, 2000);
 }
 
 </script>
