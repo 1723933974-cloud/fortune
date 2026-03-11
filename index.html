@@ -116,13 +116,15 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 .q-check{margin-left:auto;width:18px;height:18px;border-radius:50%;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .25s}
 .q-item.active .q-check{background:var(--accent);border-color:var(--accent);color:#fff}
 
-/* ── 状态卡片（替换心情滑块） ── */
-.state-card{background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:18px;padding:20px 16px;cursor:pointer;transition:all .25s cubic-bezier(.34,1.56,.64,1);text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px}
-.state-card:hover{border-color:rgba(157,123,255,0.4);transform:translateY(-2px)}
-.state-card.active{border-color:var(--accent);background:rgba(157,123,255,0.12);box-shadow:0 4px 24px rgba(157,123,255,0.2)}
-.state-card .sc-emoji{font-size:32px;line-height:1}
-.state-card .sc-name{font-size:14px;font-weight:600;color:var(--text)}
-.state-card .sc-desc{font-size:11px;color:var(--muted2);line-height:1.5}
+/* ── 心情滑块 ── */
+.mood-block{text-align:center;padding:8px 0 16px}
+.mood-emoji-big{font-size:72px;line-height:1;margin-bottom:20px;transition:all .35s cubic-bezier(.34,1.56,.64,1);display:block}
+.mood-track{position:relative;margin:0 0 12px}
+.mood-slider{width:100%;-webkit-appearance:none;height:6px;border-radius:100px;background:linear-gradient(90deg,#7c6aff,#ff6ab0);outline:none;cursor:pointer}
+.mood-slider::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:#fff;box-shadow:0 0 16px rgba(157,123,255,0.6);cursor:grab;transition:box-shadow .2s}
+.mood-slider::-webkit-slider-thumb:active{cursor:grabbing;box-shadow:0 0 24px rgba(157,123,255,0.9)}
+.mood-labels{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:4px}
+.mood-hint{font-size:13px;color:var(--accent);margin-top:12px;min-height:20px;transition:all .3s}
 
 /* ── 按钮 ── */
 .btn-primary{width:100%;padding:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;transition:all .3s;letter-spacing:0.5px;margin-top:8px}
@@ -270,6 +272,8 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
     <div class="step-dot" id="sd3">3</div>
     <div class="step-line" id="sl3"></div>
     <div class="step-dot" id="sd4">4</div>
+    <div class="step-line" id="sl4"></div>
+    <div class="step-dot" id="sd5">5</div>
   </div>
 
   <!-- ── 第一步：生辰信息 ── -->
@@ -335,22 +339,35 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
     <button class="btn-back" onclick="goPage(2)">← 返回</button>
   </div>
 
-  <!-- ── 第四步：当下状态 ── -->
+  <!-- ── 第四步：心情 ── -->
   <div class="form-page" id="page4">
     <div class="card">
-      <div class="card-title">当下气场 · 今日状态</div>
-      <p class="hint" style="margin-bottom:20px">此刻你的整体感觉最接近哪个？</p>
+      <div class="card-title">当下气场 · 能量感知</div>
+      <p class="hint" style="margin-bottom:24px">此刻你的状态如何？拖动滑块感受一下</p>
 
-      <div id="stateGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px"></div>
-
-      <div style="margin-top:8px">
-        <p class="hint" style="margin-bottom:12px">今日直觉感知（选一个）</p>
-        <div class="q-list" id="intuitionList"></div>
+      <div class="mood-block">
+        <span class="mood-emoji-big" id="moodEmoji">😐</span>
+        <div class="mood-track">
+          <input type="range" class="mood-slider" id="moodSlider" min="1" max="10" value="5" oninput="updateMood(this.value)">
+        </div>
+        <div class="mood-labels"><span>😔 低迷</span><span>😐 平稳</span><span>🌟 亢奋</span></div>
+        <div class="mood-hint" id="moodHint">还不错，气场稳定</div>
       </div>
 
-      <button class="btn-primary" onclick="startCalc()" style="margin-top:20px" id="calcBtn">✦ 开始推算命局</button>
+      <button class="btn-primary" onclick="goPage(5)" style="margin-top:8px">下一步 →</button>
     </div>
     <button class="btn-back" onclick="goPage(3)">← 返回</button>
+  </div>
+
+  <!-- ── 第五步：直觉感知 ── -->
+  <div class="form-page" id="page5">
+    <div class="card">
+      <div class="card-title">直觉感知 · 今日预感</div>
+      <p class="hint" style="margin-bottom:16px">不用想太多，凭第一直觉选一个</p>
+      <div class="q-list" id="intuitionList"></div>
+      <button class="btn-primary" onclick="startCalc()" style="margin-top:20px" id="calcBtn" disabled>✦ 开始推算命局</button>
+    </div>
+    <button class="btn-back" onclick="goPage(4)">← 返回</button>
   </div>
 
   <!-- ── 加载页 ── -->
@@ -687,8 +704,9 @@ function applyAndSkip(s){
   // 填入 state
   state.year=s.year;state.month=s.month;state.day=s.day;
   state.gender=s.gender;state.shichen=s.shichen;
-  state.focuses=s.focuses;state.intuition=s.intuition;state.mood=s.mood||5;
-  // 更新表单 DOM（供 startCalc 读取）
+  state.focuses=s.focuses;state.mood=s.mood||5;
+  state.intuition=-1; // 直觉每次重选
+  // 更新表单 DOM
   document.getElementById('birthYear').value=s.year;
   document.getElementById('birthMonth').value=s.month;
   updateDays(); document.getElementById('birthDay').value=s.day;
@@ -696,12 +714,18 @@ function applyAndSkip(s){
   if(s.shichen>=0){
     document.querySelectorAll('.shichen-btn')[s.shichen]?.classList.add('active');
   }
-  // 隐藏 hero 区域和步骤条，整洁地跳推算
+  // 恢复心情滑块到上次状态
+  const mSlider=document.getElementById('moodSlider');
+  if(mSlider){mSlider.value=state.mood;updateMood(state.mood);}
+  // 隐藏 hero / 步骤条 / 前4步，直接跳到第5步（直觉感知）
   document.querySelector('.hero').style.display='none';
   document.getElementById('stepsBar').style.display='none';
   document.getElementById('page1').style.display='none';
-  // 直接跳推算
-  startCalc();
+  // 跳到直觉感知页让用户选一下
+  document.querySelectorAll('.form-page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page5').classList.add('active');
+  curPage=5;
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function initForm(){
@@ -757,10 +781,16 @@ function initForm(){
     };
     il.appendChild(item);
   });
+  // 直觉选中后启用推算按钮
+  document.querySelectorAll('#intuitionList .q-item').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const cb=document.getElementById('calcBtn');
+      if(cb)cb.disabled=false;
+    });
+  });
 
-  // 今日日期卡片 + 状态选项格
+  // 今日日期卡片
   renderTodayCard();
-  initStateGrid();
 
   // 检查 localStorage —— 有存档则插入快速入口
   const saved=loadSavedUser();
@@ -802,30 +832,28 @@ function selectGender(g){
   document.getElementById('genderF').classList.toggle('active',g==='female');
 }
 
-// 今日状态选项（替换心情滑块）
-const STATE_OPTIONS=[
-  {emoji:'🔥',name:'精力充沛',desc:'思维活跃，跃跃欲试',mood:9},
-  {emoji:'😌',name:'平和稳定',desc:'心平气和，从容自在',mood:6},
-  {emoji:'🌫️',name:'有些迷茫',desc:'思绪纷乱，方向不清',mood:4},
-  {emoji:'😴',name:'低落疲惫',desc:'提不起劲，需要休息',mood:2},
+// ──────────── 心情滑块 ────────────
+const MOOD_EMOJIS=['😔','😞','😕','😐','🙂','😊','😄','😁','🤩','🌟'];
+const MOOD_HINTS=[
+  '今天能量有些低落，好好照顾自己',
+  '状态偏低，不必强求表现',
+  '有些疲惫，适合放慢节奏',
+  '平稳，气场稳定',
+  '还不错，气场稳定',
+  '状态良好，可以稳步推进',
+  '挺好的，今天有劲头',
+  '状态很好，可以大胆行动',
+  '能量充沛，今天是好时机',
+  '满血复活！今天气场全开',
 ];
-function initStateGrid(){
-  const grid=document.getElementById('stateGrid');
-  if(!grid)return;
-  STATE_OPTIONS.forEach((s,i)=>{
-    const card=document.createElement('div');
-    card.className='state-card';
-    card.innerHTML=`<div class="sc-emoji">${s.emoji}</div><div class="sc-name">${s.name}</div><div class="sc-desc">${s.desc}</div>`;
-    card.onclick=()=>{
-      document.querySelectorAll('.state-card').forEach(c=>c.classList.remove('active'));
-      card.classList.add('active');
-      state.mood=s.mood;
-    };
-    grid.appendChild(card);
-  });
-  // 默认选第二个（平和稳定）
-  grid.children[1]?.classList.add('active');
-  state.mood=STATE_OPTIONS[1].mood;
+function updateMood(v){
+  const val=parseInt(v);
+  state.mood=val;
+  const el=document.getElementById('moodEmoji');
+  el.textContent=MOOD_EMOJIS[val-1];
+  el.style.transform='scale(1.25)';
+  setTimeout(()=>el.style.transform='scale(1)',300);
+  document.getElementById('moodHint').textContent=MOOD_HINTS[val-1];
 }
 
 // ──────────── 步骤切换 ────────────
@@ -838,14 +866,16 @@ function goPage(n){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function updateSteps(n){
-  for(let i=1;i<=4;i++){
+  for(let i=1;i<=5;i++){
     const d=document.getElementById('sd'+i);
+    if(!d)continue;
     d.classList.remove('active','done');
     if(i<n)d.classList.add('done');
     else if(i===n)d.classList.add('active');
   }
-  for(let i=1;i<=3;i++){
+  for(let i=1;i<=4;i++){
     const l=document.getElementById('sl'+i);
+    if(!l)continue;
     l.classList.toggle('done',i<n);
   }
 }
@@ -872,7 +902,7 @@ function startCalc(){
     mood: state.mood,
   });
 
-  document.getElementById('page4').classList.remove('active');
+  document.getElementById('page5').classList.remove('active');
   document.getElementById('stepsBar').style.display='none';
   document.getElementById('loadingPage').style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
@@ -891,7 +921,8 @@ function getSeed(){
   const now=new Date();
   return state.year*1000000+state.month*10000+state.day*100+
     now.getFullYear()*17+now.getMonth()*31+now.getDate()*7+
-    state.focuses.reduce((a,b)=>a+b,0)*13+state.mood*3;
+    state.focuses.reduce((a,b)=>a+b,0)*13+state.mood*3+
+    (state.intuition>=0?state.intuition*29:0);
 }
 
 // ──────────── 渲染结果 ────────────
@@ -1000,10 +1031,24 @@ function renderResult(){
     tlEl.appendChild(div);
   });
 
-  // 幸运模块
+  // 幸运模块（幸运色受直觉感知影响）
   const lgEl=document.getElementById('luckyGrid');lgEl.innerHTML='';
+  // 直觉对应的幸运色池：让选择真正影响结果
+  const INTUITION_COLOR_POOLS=[
+    ['金色','橙红','暖黄','珊瑚橙'],   // 🌅 感觉会有好事 → 暖色系
+    ['深靛蓝','烟灰','暗青','墨绿'],   // 🌧 隐约需谨慎 → 冷静深色
+    ['薄雾紫','浅灰蓝','淡米','月光白'], // 🌀 心绪不定 → 中性淡色
+    ['深紫','宝石红','暗金','翡翠绿'], // ⚡ 想大干一场 → 高饱和深色
+    ['天青蓝','浅绿','米白','淡金'],   // 🍃 顺其自然 → 清淡自然色
+  ];
+  const luckyThings=LUCKY_THINGS.map((lt,i)=>{
+    if(lt.l==='幸运色' && state.intuition>=0){
+      return {...lt, pool: INTUITION_COLOR_POOLS[state.intuition]};
+    }
+    return lt;
+  });
   const luckyData=[];
-  LUCKY_THINGS.forEach((lt,i)=>{
+  luckyThings.forEach((lt,i)=>{
     const v=pick(lt.pool,seed+i+50);
     luckyData.push({l:lt.l,v});
     const div=document.createElement('div');div.className='lucky-item';
@@ -1199,8 +1244,19 @@ function resetAll(){
   document.querySelectorAll('#intuitionList .q-item').forEach(b=>b.classList.remove('active'));
   document.getElementById('moodSlider')?.value && (document.getElementById('moodSlider').value=5);
   // 重置状态卡选中，默认平和稳定
-  document.querySelectorAll('.state-card').forEach((c,i)=>{c.classList.toggle('active',i===1);});
-  state.mood=STATE_OPTIONS[1].mood;
+  // 重置心情滑块
+  const mSlider=document.getElementById('moodSlider');
+  if(mSlider){mSlider.value=5;}
+  const mEmoji=document.getElementById('moodEmoji');
+  if(mEmoji){mEmoji.textContent='😐';}
+  const mHint=document.getElementById('moodHint');
+  if(mHint){mHint.textContent='还不错，气场稳定';}
+  state.mood=5;
+  // 重置直觉按钮
+  document.querySelectorAll('#intuitionList .q-item').forEach(b=>b.classList.remove('active'));
+  state.intuition=-1;
+  const calcBtn=document.getElementById('calcBtn');
+  if(calcBtn)calcBtn.disabled=true;
   document.getElementById('focusNextBtn').disabled=true;
   document.getElementById('loaderSteps').querySelectorAll('.loader-step').forEach(s=>s.classList.remove('show'));
   curPage=1;
