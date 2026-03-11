@@ -1385,29 +1385,71 @@ async function generateShareCard(){
   ctx.fillText('1723933974-cloud.github.io/fortune',60,bottomY+74);
 
   // canvas → img
-  // 用 toBlob + createObjectURL（比 dataURL 更大，但微信能长按保存）
-  // 同时保留 dataURL 作为 fallback（Safari/旧版）
+  // 上传到 GitHub 图床，获取真实 HTTPS URL（微信可长按保存）
   const img=document.getElementById('shareImg');
-  canvas.toBlob(blob=>{
-    // 释放上一个 blob URL
-    if(img._blobURL) URL.revokeObjectURL(img._blobURL);
-    const blobURL=URL.createObjectURL(blob);
-    img._blobURL=blobURL;
-    img.src=blobURL;
-    img.style.display='block';
-    document.getElementById('shareHint').style.display='block';
-    if(btn){ btn.textContent='✦ 重新生成卡片'; btn.disabled=false; }
-    showToast('卡片已生成，长按图片保存 🎉','success');
-  }, 'image/png');
-  // fallback：如果 toBlob 不触发（极少数浏览器）
-  setTimeout(()=>{
-    if(!img.src||img.src==='about:blank'||img.style.display==='none'){
-      img.src=canvas.toDataURL('image/png');
-      img.style.display='block';
-      document.getElementById('shareHint').style.display='block';
+  img.style.display='none';
+  document.getElementById('shareHint').style.display='none';
+
+  canvas.toBlob(async blob=>{
+    try{
+      // 转 base64
+      const reader=new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onload=async()=>{
+        const b64=reader.result.split(',')[1];
+        const filename=`cards/card_${Date.now()}.png`;
+
+        // 通过 Worker 上传到 GitHub（token 在 Worker 里）
+        let imageURL='';
+        try{
+          const resp=await fetch(WORKER+'/upload-card',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({filename, content:b64})
+          });
+          const j=await resp.json();
+          if(j.url) imageURL=j.url;
+        }catch(e){}
+
+        if(imageURL){
+          // 用真实 URL，微信可长按保存
+          img.src=imageURL;
+          img.crossOrigin='anonymous';
+          img.style.display='block';
+          document.getElementById('shareHint').style.display='block';
+          document.getElementById('shareHint').innerHTML=`
+            📱 微信用户：长按图片 → 保存到相册<br>
+            <span style="font-size:11px;opacity:.6">电脑用户：右键图片 → 图片另存为</span>
+          `;
+          showToast('卡片已生成，长按图片保存 🎉','success');
+        } else {
+          // Worker 不通（如 workers.dev 被拦截），降级用 blob URL 并提示
+          const blobURL=URL.createObjectURL(blob);
+          img.src=blobURL;
+          img.style.display='block';
+          document.getElementById('shareHint').style.display='block';
+          document.getElementById('shareHint').innerHTML=`
+            💾 点击图片下载到本地，再转发<br>
+            <span style="font-size:11px;opacity:.6">微信内保存请点击下方按钮</span><br>
+            <button onclick="downloadCardDirect()" style="margin-top:8px;background:rgba(157,123,255,0.2);border:1px solid var(--accent);border-radius:8px;color:var(--accent);font-size:12px;padding:6px 16px;cursor:pointer">📥 下载图片</button>
+          `;
+          showToast('生成成功，请点击下载后转发','info');
+        }
+        if(btn){ btn.textContent='✦ 重新生成卡片'; btn.disabled=false; }
+      };
+    }catch(e){
       if(btn){ btn.textContent='✦ 重新生成卡片'; btn.disabled=false; }
+      showToast('生成失败，请重试','error');
     }
-  }, 2000);
+  },'image/png');
+}
+
+function downloadCardDirect(){
+  const canvas=document.getElementById('shareCanvas');
+  const a=document.createElement('a');
+  a.download=`今日运势_${new Date().toISOString().slice(0,10)}.png`;
+  a.href=canvas.toDataURL('image/png');
+  a.click();
 }
 
 </script>
