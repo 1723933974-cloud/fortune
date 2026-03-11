@@ -3,7 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>今日运势</title>
+<title>今天，适合做什么？· 今日运势</title>
+<meta name="description" content="输入生辰信息，融合八字五行与易经，看看今天的气场对你意味着什么。">
+<meta property="og:title" content="今天，适合做什么？· 今日运势">
+<meta property="og:description" content="融合八字五行与易经，看看今天的气场对你意味着什么。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://1723933974-cloud.github.io/fortune/">
+<meta property="og:image" content="https://1723933974-cloud.github.io/fortune/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="今天，适合做什么？· 今日运势">
+<meta name="twitter:description" content="融合八字五行与易经，看看今天的气场对你意味着什么。">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -99,6 +108,8 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 #loadingPage{display:none;text-align:center;padding:60px 20px}
 .loader-ring{width:80px;height:80px;border-radius:50%;border:2px solid var(--border);border-top-color:var(--accent);animation:spin 1s linear infinite;margin:0 auto 24px}
 @keyframes spin{to{transform:rotate(360deg)}}
+@keyframes spinR{to{transform:rotate(-360deg)}}
+@keyframes pulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.15)}}
 .loader-text{color:var(--muted2);font-size:14px;line-height:2}
 .loader-steps{margin-top:20px;display:flex;flex-direction:column;gap:6px}
 .loader-step{font-size:12px;color:var(--muted);opacity:0;transform:translateY(8px);transition:all .5s}
@@ -305,7 +316,21 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
   <!-- ── 加载页 ── -->
   <div id="loadingPage">
-    <div class="loader-ring"></div>
+    <div style="position:relative;width:100px;height:100px;margin:0 auto 28px">
+      <!-- 外圈慢转 -->
+      <svg style="position:absolute;inset:0;animation:spin 3s linear infinite" viewBox="0 0 100 100" width="100" height="100">
+        <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(157,123,255,0.12)" stroke-width="2"/>
+        <circle cx="50" cy="50" r="46" fill="none" stroke="url(#lg1)" stroke-width="2" stroke-dasharray="72 220" stroke-linecap="round"/>
+        <defs><linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#9d7bff"/><stop offset="100%" stop-color="#ff7eb3"/></linearGradient></defs>
+      </svg>
+      <!-- 内圈反转 -->
+      <svg style="position:absolute;inset:12px;animation:spinR 2s linear infinite" viewBox="0 0 76 76" width="76" height="76">
+        <circle cx="38" cy="38" r="34" fill="none" stroke="rgba(255,126,179,0.15)" stroke-width="1.5"/>
+        <circle cx="38" cy="38" r="34" fill="none" stroke="#ff7eb3" stroke-width="1.5" stroke-dasharray="40 174" stroke-linecap="round"/>
+      </svg>
+      <!-- 中心符号 -->
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:28px;animation:pulse 2s ease-in-out infinite">☯</div>
+    </div>
     <div class="loader-text">正在推演命局<br><span style="font-size:12px;color:var(--muted)">融合八字 · 五行 · 易经</span></div>
     <div class="loader-steps" id="loaderSteps">
       <div class="loader-step">⊙ 排列生辰八字柱...</div>
@@ -371,6 +396,15 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
     <!-- 幸运模块 -->
     <div class="lucky-grid" id="luckyGrid"></div>
 
+    <!-- 分享卡片区 -->
+    <div id="shareSection" style="margin-bottom:16px">
+      <button onclick="generateShareCard()" style="width:100%;padding:15px;background:rgba(157,123,255,0.1);border:1px solid rgba(157,123,255,0.3);border-radius:14px;color:var(--accent);font-size:14px;font-weight:600;cursor:pointer;transition:all .3s;letter-spacing:0.5px" onmouseover="this.style.background='rgba(157,123,255,0.2)'" onmouseout="this.style.background='rgba(157,123,255,0.1)'">
+        ✦ 生成今日运势卡片（可保存分享）
+      </button>
+      <canvas id="shareCanvas" style="display:none;width:100%;border-radius:16px;margin-top:12px;cursor:pointer" title="长按或右键保存图片" onclick="downloadCard()"></canvas>
+      <div id="shareHint" style="display:none;text-align:center;font-size:11px;color:var(--muted);margin-top:6px">长按图片保存 · 点击图片下载</div>
+    </div>
+
     <div class="result-footer">
       <button class="btn-redo" onclick="resetAll()">↺ 重新推算</button>
       <div class="disclaimer">✦ 命理推算仅供娱乐参考，不构成任何决策建议 ✦</div>
@@ -380,39 +414,30 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 </div>
 
 <script>
-// ──────────── 数据收集（直接写 GitHub Issues） ────────────
+// ──────────── 数据收集 ────────────
+// 写入：通过 Cloudflare Worker 中转（token 藏在 Worker secret，前端不暴露）
+// 读取：直接读 GitHub Issues（公开可读，不需要 token）
 const GH_REPO = "1723933974-cloud/fortune";
-const _t = ["ghp_uhoYQ7GZ1L","o6mcRHjvO1Quaa","3cZsgF1BWflC"].join("");
+const WORKER = ["https://fortune-collector",".fortune1723.workers.dev"].join("");
 
 async function collectData(data) {
   try {
-    const body = Object.entries(data).map(([k,v]) =>
-      `**${k}**: ${Array.isArray(v) ? v.join(', ') : v}`
-    ).join('\n');
-    await fetch(`https://api.github.com/repos/${GH_REPO}/issues`, {
+    await fetch(WORKER + "/collect", {
       method: "POST",
-      headers: {
-        "Authorization": "token " + _t,
-        "Content-Type": "application/json",
-        "User-Agent": "fortune-app"
-      },
-      body: JSON.stringify({
-        title: `[推算] ${data.year||''}年 ${data.gender==='male'?'男':'女'} ${new Date().toISOString().slice(0,10)}`,
-        body,
-        labels: ["fortune-data"]
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
     });
   } catch(e) {}
 }
 
 async function loadCount() {
   try {
-    const sr = await fetch(
-      `https://api.github.com/search/issues?q=repo:${GH_REPO}+label:fortune-data&per_page=1`,
-      { headers: { "Authorization": "token " + _t, "User-Agent": "fortune-app" } }
+    // 直接用 GitHub 公开 search API（无需 token，无速率限制问题）
+    const r = await fetch(
+      `https://api.github.com/search/issues?q=repo:${GH_REPO}+label:fortune-data&per_page=1`
     );
-    const sj = await sr.json();
-    const count = sj.total_count || 0;
+    const j = await r.json();
+    const count = j.total_count || 0;
     if (count > 0) {
       document.getElementById('visitCount').textContent = "已有 " + count.toLocaleString() + " 人测算";
       document.getElementById('visitCount').style.display = "inline-block";
@@ -1033,6 +1058,176 @@ function resetAll(){
 
 initForm();
 loadCount();
+
+// ──────────── Toast 通知 ────────────
+function showToast(msg, type='info'){
+  const el=document.createElement('div');
+  const colors={info:'rgba(157,123,255,0.9)',success:'rgba(74,222,128,0.9)',error:'rgba(255,100,100,0.9)'};
+  el.style.cssText=`position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:${colors[type]||colors.info};color:#fff;padding:10px 20px;border-radius:100px;font-size:13px;font-weight:500;z-index:9999;opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);pointer-events:none;white-space:nowrap`;
+  el.textContent=msg;
+  document.body.appendChild(el);
+  requestAnimationFrame(()=>{el.style.opacity='1';el.style.transform='translateX(-50%) translateY(0)';});
+  setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(-50%) translateY(10px)';setTimeout(()=>el.remove(),400);},2800);
+}
+
+// ──────────── 滑动手势（步骤页） ────────────
+(function(){
+  let sx=0,sy=0;
+  const wrap=document.querySelector('.wrap');
+  wrap.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
+  wrap.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-sx;
+    const dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)<Math.abs(dy)||Math.abs(dx)<50)return; // 竖向或太短忽略
+    const pages=['page1','page2','page3','page4'];
+    const curId='page'+curPage;
+    const idx=pages.indexOf(curId);
+    if(dx<0&&idx<pages.length-1&&curPage<4){
+      // 左滑=下一步，但要检查按钮是否可用
+      const btn=document.querySelector('#'+curId+' .btn-primary');
+      if(btn&&!btn.disabled)btn.click();
+    } else if(dx>0&&idx>0){
+      goPage(curPage-1);
+    }
+  },{passive:true});
+})();
+
+// ──────────── 分享卡片生成 ────────────
+function generateShareCard(){
+  const canvas=document.getElementById('shareCanvas');
+  const W=750,H=1200;
+  canvas.width=W;canvas.height=H;
+  const ctx=canvas.getContext('2d');
+
+  // 背景渐变
+  const bg=ctx.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0,'#07070f');bg.addColorStop(0.5,'#0e0820');bg.addColorStop(1,'#07070f');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+
+  // 星点装饰
+  ctx.fillStyle='rgba(190,180,255,0.5)';
+  for(let i=0;i<120;i++){
+    const x=Math.random()*W,y=Math.random()*H,r=Math.random()*1.4+0.3;
+    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+  }
+
+  // 顶部光晕
+  const glow=ctx.createRadialGradient(W/2,0,0,W/2,0,400);
+  glow.addColorStop(0,'rgba(157,123,255,0.25)');glow.addColorStop(1,'transparent');
+  ctx.fillStyle=glow;ctx.fillRect(0,0,W,500);
+
+  // 品牌标签
+  ctx.save();
+  ctx.fillStyle='rgba(157,123,255,0.15)';
+  roundRect(ctx,W/2-80,42,160,32,16);ctx.fill();
+  ctx.fillStyle='rgba(157,123,255,0.9)';ctx.font='500 13px PingFang SC,sans-serif';
+  ctx.textAlign='center';ctx.fillText('✦ 今日运势 ✦',W/2,63);
+  ctx.restore();
+
+  // 今日日期
+  const g=getTodayGanzhi();
+  ctx.fillStyle='rgba(255,255,255,0.35)';ctx.font='500 22px PingFang SC,sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText(`${g.y}年${g.m}月${g.d}日  ${g.yearTG}${g.yearDZ}年  今日${g.dayTG}${g.dayDZ}`,W/2,118);
+
+  // 大卦象
+  const guaSym=document.getElementById('resGua').textContent;
+  const guaName=document.getElementById('resGuaName').textContent;
+  ctx.font='bold 100px serif';ctx.fillStyle='rgba(157,123,255,0.9)';
+  ctx.textAlign='center';ctx.fillText(guaSym,W/2,260);
+  ctx.font='bold 34px PingFang SC,sans-serif';ctx.fillStyle='#eeeeff';
+  ctx.fillText(guaName,W/2,310);
+  const guaSub=document.getElementById('resGuaSub').textContent;
+  ctx.font='500 17px PingFang SC,sans-serif';ctx.fillStyle='rgba(255,255,255,0.4)';
+  ctx.fillText(guaSub,W/2,345);
+
+  // 分隔线
+  ctx.strokeStyle='rgba(157,123,255,0.2)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(60,375);ctx.lineTo(W-60,375);ctx.stroke();
+
+  // 大分数
+  const score=document.getElementById('resBigScore').textContent;
+  const tagline=document.getElementById('resTagline').textContent;
+  ctx.font='800 110px PingFang SC,sans-serif';
+  const sg2=ctx.createLinearGradient(W/2-80,400,W/2+80,500);
+  sg2.addColorStop(0,'#ffffff');sg2.addColorStop(0.5,'#c4b5ff');sg2.addColorStop(1,'#ff7eb3');
+  ctx.fillStyle=sg2;ctx.textAlign='center';ctx.fillText(score,W/2,500);
+  ctx.font='500 18px PingFang SC,sans-serif';ctx.fillStyle='rgba(157,123,255,0.85)';
+  ctx.fillText(tagline,W/2,540);
+
+  // 五行能量条
+  const wxRows=document.querySelectorAll('.wx-row');
+  let wy=590;
+  ctx.font='500 15px PingFang SC,sans-serif';ctx.textAlign='left';
+  wxRows.forEach(row=>{
+    const name=row.querySelector('.wx-name').textContent.trim();
+    const fill=row.querySelector('.wx-fill');
+    const val=row.querySelector('.wx-val').textContent;
+    const pct=parseFloat(fill.style.width)||0;
+    const color=fill.style.background||fill.style.backgroundColor||'#9d7bff';
+    ctx.fillStyle='rgba(255,255,255,0.6)';ctx.fillText(name,60,wy+4);
+    ctx.fillStyle='rgba(255,255,255,0.08)';
+    roundRect(ctx,130,wy-12,440,8,4);ctx.fill();
+    ctx.fillStyle=color;
+    roundRect(ctx,130,wy-12,440*(pct/100),8,4);ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,0.35)';ctx.textAlign='right';
+    ctx.fillText(val,W-60,wy+4);ctx.textAlign='left';
+    wy+=36;
+  });
+
+  // 三条幸运信息
+  const luckyItems=document.querySelectorAll('.lucky-item');
+  let lx=60,ly=wy+24;
+  ctx.font='500 14px PingFang SC,sans-serif';
+  const lSlice=Array.from(luckyItems).slice(0,3);
+  lSlice.forEach((item,i)=>{
+    const label=item.querySelector('.lucky-label')?.textContent||'';
+    const val=item.querySelector('.lucky-val')?.textContent||'';
+    const bw=(W-120-20*(lSlice.length-1))/lSlice.length;
+    const bx=lx+i*(bw+20);
+    ctx.fillStyle='rgba(255,255,255,0.05)';
+    roundRect(ctx,bx,ly,bw,68,12);ctx.fill();
+    ctx.fillStyle='rgba(157,123,255,0.7)';ctx.textAlign='center';
+    ctx.font='500 12px PingFang SC,sans-serif';ctx.fillText(label,bx+bw/2,ly+22);
+    ctx.fillStyle='#eeeeff';ctx.font='700 15px PingFang SC,sans-serif';
+    ctx.fillText(val.slice(0,6),bx+bw/2,ly+50);
+  });
+  ctx.textAlign='left';
+
+  // 分隔线
+  ly+=96;
+  ctx.strokeStyle='rgba(255,255,255,0.06)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(60,ly);ctx.lineTo(W-60,ly);ctx.stroke();
+
+  // 底部 CTA
+  ctx.fillStyle='rgba(255,255,255,0.2)';ctx.font='500 14px PingFang SC,sans-serif';
+  ctx.textAlign='center';ctx.fillText('扫码测算你的今日运势',W/2,ly+34);
+  ctx.fillStyle='rgba(255,255,255,0.12)';ctx.font='500 12px PingFang SC,sans-serif';
+  ctx.fillText('1723933974-cloud.github.io/fortune',W/2,ly+58);
+
+  // 显示
+  canvas.style.display='block';
+  document.getElementById('shareHint').style.display='block';
+  canvas.style.width='100%';
+  showToast('卡片生成成功，长按保存 🎉','success');
+}
+
+function downloadCard(){
+  const canvas=document.getElementById('shareCanvas');
+  const a=document.createElement('a');
+  a.download=`今日运势_${new Date().toISOString().slice(0,10)}.png`;
+  a.href=canvas.toDataURL('image/png');a.click();
+  showToast('图片已下载','success');
+}
+
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+}
+
 </script>
 </body>
 </html>
