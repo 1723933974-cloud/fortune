@@ -59,8 +59,8 @@ tr:hover td{background:rgba(157,123,255,0.04)}
 
 <script>
 const GH_REPO = "1723933974-cloud/fortune";
-const _t = ["ghp_uhoYQ7GZ1L","o6mcRHjvO1Quaa","3cZsgF1BWflC"].join("");
-const GH_HEADERS = { "Authorization": "token " + _t, "User-Agent": "fortune-stats" };
+// 公开读取 GitHub Issues，无需 token
+const GH_HEADERS = { "User-Agent": "fortune-stats" };
 
 // 从 issue body markdown 解析字段
 function parseIssueBody(body) {
