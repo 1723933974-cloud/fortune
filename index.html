@@ -71,16 +71,16 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 .sb-tool-name{font-size:12px;color:var(--muted2);font-weight:500}
 .sb-tool-desc{font-size:10px;color:var(--muted);line-height:1.4}
 
-/* ── 手机端工具箱横滑 ── */
+/* ── 手机端工具箱（网格，非滑动） ── */
 .mobile-tools{padding:0 20px 32px;position:relative;z-index:1}
 .mobile-tools-title{font-size:10px;letter-spacing:2.5px;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:6px}
 .mobile-tools-title::before{content:'';display:block;width:2px;height:10px;border-radius:2px;background:var(--accent);flex-shrink:0}
-.mobile-tools-scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none;-ms-overflow-style:none}
-.mobile-tools-scroll::-webkit-scrollbar{display:none}
-.mobile-tool-card{flex:0 0 auto;width:100px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:14px 10px;text-align:center;text-decoration:none;transition:all .2s}
+.mobile-tools-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between}
+.mobile-tool-card{width:calc(50% - 4px);background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:16px 12px;text-align:center;text-decoration:none;transition:all .2s}
+@media(max-width:340px){.mobile-tool-card{width:100%}} <!-- 超小屏一行一个 -->
 .mobile-tool-card:hover,.mobile-tool-card:active{border-color:rgba(157,123,255,0.4);background:rgba(157,123,255,0.08)}
-.mobile-tool-card .mtc-icon{font-size:26px;margin-bottom:8px}
-.mobile-tool-card .mtc-name{font-size:11px;color:var(--muted2);line-height:1.4}
+.mobile-tool-card .mtc-icon{font-size:30px;margin-bottom:8px;opacity:0.8}
+.mobile-tool-card .mtc-name{font-size:11px;color:var(--muted2);line-height:1.4;font-weight:500}
 
 /* ── 顶部 ── */
 .hero{text-align:center;margin-bottom:64px}
@@ -554,7 +554,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 <!-- ── 手机端工具箱（桌面隐藏） ── -->
 <div class="mobile-tools">
   <div class="mobile-tools-title">✦ 神秘工具箱</div>
-  <div class="mobile-tools-scroll">
+  <div class="mobile-tools-grid">
     <a href="/yes-no.html" class="mobile-tool-card">
       <div class="mtc-icon">🔮</div>
       <div class="mtc-name">是否神谕</div>
@@ -631,16 +631,6 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
   <div style="font-size:11px;color:var(--muted);line-height:2.8">
     <a href="/" style="color:var(--muted2);text-decoration:none;margin:0 8px">首页</a>
     <span style="color:rgba(255,255,255,0.1)">|</span>
-    <a href="/yes-no.html" style="color:var(--muted2);text-decoration:none;margin:0 8px">是否神谕</a>
-    <span style="color:rgba(255,255,255,0.1)">|</span>
-    <a href="/lucky-number.html" style="color:var(--muted2);text-decoration:none;margin:0 8px">幸运数字</a>
-    <span style="color:rgba(255,255,255,0.1)">|</span>
-    <a href="/lucky-color.html" style="color:var(--muted2);text-decoration:none;margin:0 8px">幸运颜色</a>
-    <span style="color:rgba(255,255,255,0.1)">|</span>
-    <a href="/fortune-cookie.html" style="color:var(--muted2);text-decoration:none;margin:0 8px">幸运饼干</a>
-    <span style="color:rgba(255,255,255,0.1)">|</span>
-    <a href="/random-decision.html" style="color:var(--muted2);text-decoration:none;margin:0 8px">随机决策</a>
-    <br>
     <a href="/about.html" style="color:var(--muted2);text-decoration:none;margin:0 8px">关于本站</a>
     <span style="color:rgba(255,255,255,0.1)">|</span>
     <a href="/faq.html" style="color:var(--muted2);text-decoration:none;margin:0 8px">常见问题</a>
