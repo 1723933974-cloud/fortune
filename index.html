@@ -15,6 +15,17 @@
 <meta name="twitter:title" content="今天，适合做什么？· 今日运势">
 <meta name="twitter:description" content="融合八字五行与易经，看看今天的气场对你意味着什么。">
 <link rel="canonical" href="https://pboboo.cn">
+<link rel="alternate" hreflang="zh" href="https://pboboo.cn/">
+<link rel="alternate" hreflang="en" href="https://pboboo.cn/en.html">
+<link rel="alternate" hreflang="es" href="https://pboboo.cn/es.html">
+<link rel="alternate" hreflang="ja" href="https://pboboo.cn/ja.html">
+<link rel="alternate" hreflang="ko" href="https://pboboo.cn/ko.html">
+<link rel="alternate" hreflang="fr" href="https://pboboo.cn/fr.html">
+<link rel="alternate" hreflang="de" href="https://pboboo.cn/de.html">
+<link rel="alternate" hreflang="pt" href="https://pboboo.cn/pt.html">
+<link rel="alternate" hreflang="ru" href="https://pboboo.cn/ru.html">
+<link rel="alternate" hreflang="ar" href="https://pboboo.cn/ar.html">
+<link rel="alternate" hreflang="x-default" href="https://pboboo.cn/">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -37,6 +48,9 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
   .page-layout{display:grid;grid-template-columns:220px 1fr 220px;gap:32px;max-width:1140px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
   .sidebar-left,.sidebar-right{padding-top:80px;position:sticky;top:80px;align-self:start}
   .wrap{max-width:680px;margin:0;padding:64px 0 100px}
+  .lang-bar{text-align:center;padding:10px 24px 0;position:relative;z-index:10}
+  .lang-bar a{display:inline-block;margin:3px 4px;font-size:11px;color:var(--muted);text-decoration:none;padding:3px 8px;border:1px solid rgba(255,255,255,0.06);border-radius:6px;transition:all .2s;letter-spacing:.5px}
+  .lang-bar a:hover,.lang-bar a.active{color:var(--accent);border-color:rgba(157,123,255,0.4);background:rgba(157,123,255,0.08)}
 }
 @media(max-width:1099px){
   .page-layout{display:block}
@@ -237,6 +251,20 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 </head>
 <body>
 <canvas id="cosmos"></canvas>
+
+<!-- 语言切换栏 -->
+<div class="lang-bar">
+  <a href="/" class="active">中文</a>
+  <a href="/en.html">EN</a>
+  <a href="/es.html">ES</a>
+  <a href="/ja.html">JP</a>
+  <a href="/ko.html">KR</a>
+  <a href="/fr.html">FR</a>
+  <a href="/de.html">DE</a>
+  <a href="/pt.html">PT</a>
+  <a href="/ru.html">RU</a>
+  <a href="/ar.html">AR</a>
+</div>
 
 <div class="page-layout">
 
@@ -555,18 +583,28 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
 <!-- ── Footer ── -->
 <footer style="text-align:center;padding:32px 24px 48px;position:relative;z-index:1;border-top:1px solid rgba(255,255,255,0.04);margin-top:40px">
-  <div style="font-size:12px;color:var(--muted);line-height:2.5">
-    <a href="/" style="color:var(--muted2);text-decoration:none;margin:0 10px">首页</a>
+  <div style="font-size:11px;color:var(--muted);line-height:2.8">
+    <a href="/" style="color:var(--muted2);text-decoration:none;margin:0 8px">首页</a>
     <span style="color:rgba(255,255,255,0.1)">|</span>
-    <a href="/about.html" style="color:var(--muted2);text-decoration:none;margin:0 10px">关于本站</a>
+    <a href="/yes-no.html" style="color:var(--muted2);text-decoration:none;margin:0 8px">是否神谕</a>
     <span style="color:rgba(255,255,255,0.1)">|</span>
-    <a href="/privacy.html" style="color:var(--muted2);text-decoration:none;margin:0 10px">隐私政策</a>
+    <a href="/lucky-number.html" style="color:var(--muted2);text-decoration:none;margin:0 8px">幸运数字</a>
     <span style="color:rgba(255,255,255,0.1)">|</span>
-    <a href="/terms.html" style="color:var(--muted2);text-decoration:none;margin:0 10px">服务条款</a>
+    <a href="/lucky-color.html" style="color:var(--muted2);text-decoration:none;margin:0 8px">幸运颜色</a>
     <span style="color:rgba(255,255,255,0.1)">|</span>
-    <a href="/faq.html" style="color:var(--muted2);text-decoration:none;margin:0 10px">常见问题</a>
+    <a href="/fortune-cookie.html" style="color:var(--muted2);text-decoration:none;margin:0 8px">幸运饼干</a>
+    <span style="color:rgba(255,255,255,0.1)">|</span>
+    <a href="/random-decision.html" style="color:var(--muted2);text-decoration:none;margin:0 8px">随机决策</a>
     <br>
-    <span style="font-size:11px;opacity:0.4">© 2026 pboboo.cn · 命理推算仅供娱乐参考</span>
+    <a href="/about.html" style="color:var(--muted2);text-decoration:none;margin:0 8px">关于本站</a>
+    <span style="color:rgba(255,255,255,0.1)">|</span>
+    <a href="/faq.html" style="color:var(--muted2);text-decoration:none;margin:0 8px">常见问题</a>
+    <span style="color:rgba(255,255,255,0.1)">|</span>
+    <a href="/privacy.html" style="color:var(--muted2);text-decoration:none;margin:0 8px">隐私政策</a>
+    <span style="color:rgba(255,255,255,0.1)">|</span>
+    <a href="/terms.html" style="color:var(--muted2);text-decoration:none;margin:0 8px">服务条款</a>
+    <br>
+    <span style="font-size:10px;opacity:0.3">© 2026 pboboo.cn · 命理推算仅供娱乐参考</span>
   </div>
 </footer>
 
