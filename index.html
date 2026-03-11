@@ -16,15 +16,6 @@
 <meta name="twitter:description" content="融合八字五行与易经，看看今天的气场对你意味着什么。">
 <link rel="canonical" href="https://pboboo.cn">
 <link rel="alternate" hreflang="zh" href="https://pboboo.cn/">
-<link rel="alternate" hreflang="en" href="https://pboboo.cn/en.html">
-<link rel="alternate" hreflang="es" href="https://pboboo.cn/es.html">
-<link rel="alternate" hreflang="ja" href="https://pboboo.cn/ja.html">
-<link rel="alternate" hreflang="ko" href="https://pboboo.cn/ko.html">
-<link rel="alternate" hreflang="fr" href="https://pboboo.cn/fr.html">
-<link rel="alternate" hreflang="de" href="https://pboboo.cn/de.html">
-<link rel="alternate" hreflang="pt" href="https://pboboo.cn/pt.html">
-<link rel="alternate" hreflang="ru" href="https://pboboo.cn/ru.html">
-<link rel="alternate" hreflang="ar" href="https://pboboo.cn/ar.html">
 <link rel="alternate" hreflang="x-default" href="https://pboboo.cn/">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -48,13 +39,12 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
   .page-layout{display:grid;grid-template-columns:220px 1fr 220px;gap:32px;max-width:1140px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
   .sidebar-left,.sidebar-right{padding-top:80px;position:sticky;top:80px;align-self:start}
   .wrap{max-width:680px;margin:0;padding:64px 0 100px}
-  .lang-bar{text-align:center;padding:10px 24px 0;position:relative;z-index:10}
-  .lang-bar a{display:inline-block;margin:3px 4px;font-size:11px;color:var(--muted);text-decoration:none;padding:3px 8px;border:1px solid rgba(255,255,255,0.06);border-radius:6px;transition:all .2s;letter-spacing:.5px}
-  .lang-bar a:hover,.lang-bar a.active{color:var(--accent);border-color:rgba(157,123,255,0.4);background:rgba(157,123,255,0.08)}
+  .mobile-tools{display:none}
 }
 @media(max-width:1099px){
   .page-layout{display:block}
   .sidebar-left,.sidebar-right{display:none}
+  .mobile-tools{display:block}
 }
 
 /* ── 侧边栏通用 ── */
@@ -72,6 +62,25 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 .sidebar-qr-wrap{text-align:center;padding:8px 0}
 .sidebar-qr-wrap img{width:120px;height:120px;border-radius:8px;border:1px solid rgba(255,255,255,0.08)}
 .sidebar-qr-wrap p{font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5}
+
+/* ── 侧边栏工具箱 ── */
+.sb-tool-link{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04);text-decoration:none;transition:all .2s}
+.sb-tool-link:last-child{border-bottom:none}
+.sb-tool-link:hover .sb-tool-name{color:var(--accent)}
+.sb-tool-icon{font-size:18px;min-width:24px;text-align:center}
+.sb-tool-name{font-size:12px;color:var(--muted2);font-weight:500}
+.sb-tool-desc{font-size:10px;color:var(--muted);line-height:1.4}
+
+/* ── 手机端工具箱横滑 ── */
+.mobile-tools{padding:0 20px 32px;position:relative;z-index:1}
+.mobile-tools-title{font-size:10px;letter-spacing:2.5px;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.mobile-tools-title::before{content:'';display:block;width:2px;height:10px;border-radius:2px;background:var(--accent);flex-shrink:0}
+.mobile-tools-scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none;-ms-overflow-style:none}
+.mobile-tools-scroll::-webkit-scrollbar{display:none}
+.mobile-tool-card{flex:0 0 auto;width:100px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:14px 10px;text-align:center;text-decoration:none;transition:all .2s}
+.mobile-tool-card:hover,.mobile-tool-card:active{border-color:rgba(157,123,255,0.4);background:rgba(157,123,255,0.08)}
+.mobile-tool-card .mtc-icon{font-size:26px;margin-bottom:8px}
+.mobile-tool-card .mtc-name{font-size:11px;color:var(--muted2);line-height:1.4}
 
 /* ── 顶部 ── */
 .hero{text-align:center;margin-bottom:64px}
@@ -252,20 +261,6 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 <body>
 <canvas id="cosmos"></canvas>
 
-<!-- 语言切换栏 -->
-<div class="lang-bar">
-  <a href="/" class="active">中文</a>
-  <a href="/en.html">EN</a>
-  <a href="/es.html">ES</a>
-  <a href="/ja.html">JP</a>
-  <a href="/ko.html">KR</a>
-  <a href="/fr.html">FR</a>
-  <a href="/de.html">DE</a>
-  <a href="/pt.html">PT</a>
-  <a href="/ru.html">RU</a>
-  <a href="/ar.html">AR</a>
-</div>
-
 <div class="page-layout">
 
 <!-- ── 左侧边栏 ── -->
@@ -278,6 +273,29 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
     <div class="sidebar-card-title">今日宜忌</div>
     <div id="sbYiList" style="margin-bottom:10px"></div>
     <div id="sbJiList"></div>
+  </div>
+  <div class="sidebar-card">
+    <div class="sidebar-card-title">神秘工具箱</div>
+    <a href="/yes-no.html" class="sb-tool-link">
+      <span class="sb-tool-icon">🔮</span>
+      <div><div class="sb-tool-name">是否神谕</div><div class="sb-tool-desc">让宇宙告诉你</div></div>
+    </a>
+    <a href="/lucky-number.html" class="sb-tool-link">
+      <span class="sb-tool-icon">🎲</span>
+      <div><div class="sb-tool-name">幸运数字</div><div class="sb-tool-desc">今日专属数字</div></div>
+    </a>
+    <a href="/lucky-color.html" class="sb-tool-link">
+      <span class="sb-tool-icon">🎨</span>
+      <div><div class="sb-tool-name">幸运颜色</div><div class="sb-tool-desc">今日能量色彩</div></div>
+    </a>
+    <a href="/fortune-cookie.html" class="sb-tool-link">
+      <span class="sb-tool-icon">🥠</span>
+      <div><div class="sb-tool-name">幸运饼干</div><div class="sb-tool-desc">一条命运金句</div></div>
+    </a>
+    <a href="/random-decision.html" class="sb-tool-link">
+      <span class="sb-tool-icon">🎯</span>
+      <div><div class="sb-tool-name">随机决策</div><div class="sb-tool-desc">现在该干什么</div></div>
+    </a>
   </div>
 </aside>
 
@@ -532,6 +550,33 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 </aside>
 
 </div><!-- /.page-layout -->
+
+<!-- ── 手机端工具箱（桌面隐藏） ── -->
+<div class="mobile-tools">
+  <div class="mobile-tools-title">✦ 神秘工具箱</div>
+  <div class="mobile-tools-scroll">
+    <a href="/yes-no.html" class="mobile-tool-card">
+      <div class="mtc-icon">🔮</div>
+      <div class="mtc-name">是否神谕</div>
+    </a>
+    <a href="/lucky-number.html" class="mobile-tool-card">
+      <div class="mtc-icon">🎲</div>
+      <div class="mtc-name">幸运数字</div>
+    </a>
+    <a href="/lucky-color.html" class="mobile-tool-card">
+      <div class="mtc-icon">🎨</div>
+      <div class="mtc-name">幸运颜色</div>
+    </a>
+    <a href="/fortune-cookie.html" class="mobile-tool-card">
+      <div class="mtc-icon">🥠</div>
+      <div class="mtc-name">幸运饼干</div>
+    </a>
+    <a href="/random-decision.html" class="mobile-tool-card">
+      <div class="mtc-icon">🎯</div>
+      <div class="mtc-name">随机决策</div>
+    </a>
+  </div>
+</div>
 
 <!-- ── SEO 内容区 ── -->
 <div style="max-width:760px;margin:0 auto;padding:48px 24px 0;position:relative;z-index:1">
