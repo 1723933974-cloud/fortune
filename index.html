@@ -200,6 +200,8 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
   <!-- 顶部 -->
   <div class="hero">
     <div class="hero-badge">✦ 八字 · 五行 · 易经 ✦</div>
+    <!-- 今日日期卡片 -->
+    <div id="todayCard" style="display:inline-flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;padding:10px 20px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;font-size:12px;color:var(--muted2);letter-spacing:1px"></div>
     <h1><span>今天，</span><br>适合做什么？</h1>
     <p>输入你的生辰信息，融合五行与易经<br>看看今天的气场对你意味着什么</p>
     <div id="visitCount" style="display:none;margin-top:16px;background:rgba(157,123,255,0.1);border:1px solid rgba(157,123,255,0.2);border-radius:100px;padding:5px 16px;font-size:12px;color:var(--accent);letter-spacing:1px;"></div>
@@ -249,6 +251,11 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
       </div>
 
       <button class="btn-primary" onclick="goPage(2)">下一步 →</button>
+      <!-- 记住我 -->
+      <div style="display:flex;align-items:center;gap:8px;margin-top:12px;justify-content:center">
+        <input type="checkbox" id="rememberMe" style="accent-color:var(--accent);width:14px;height:14px;cursor:pointer">
+        <label for="rememberMe" style="font-size:12px;color:var(--muted);cursor:pointer">记住我的信息，下次直接跳到结果</label>
+      </div>
     </div>
   </div>
 
@@ -512,6 +519,81 @@ let state={
 };
 
 // ──────────── 初始化表单 ────────────
+// ──────────── 今日日期 & 干支 ────────────
+const TIANGAN=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const DIZHI=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const SHUXIANG=['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'];
+const MONTHS_CN=['一','二','三','四','五','六','七','八','九','十','十一','十二'];
+const WEEKS_CN=['日','一','二','三','四','五','六'];
+function getTodayGanzhi(){
+  const now=new Date();
+  const y=now.getFullYear(),m=now.getMonth()+1,d=now.getDate();
+  // 年干支：以1984甲子年为基准
+  const yearIdx=(y-1984+400)%60;
+  const yearTG=TIANGAN[yearIdx%10];
+  const yearDZ=DIZHI[yearIdx%12];
+  const sx=SHUXIANG[(y-4)%12];
+  // 日干支：以2000-01-01为甲子日（offset=6）
+  const base=new Date(2000,0,1);
+  const diff=Math.floor((now-base)/86400000);
+  const dayIdx=(diff+6+600)%60;
+  const dayTG=TIANGAN[dayIdx%10];
+  const dayDZ=DIZHI[dayIdx%12];
+  return {y,m,d,yearTG,yearDZ,sx,dayTG,dayDZ,week:now.getDay()};
+}
+function renderTodayCard(){
+  const g=getTodayGanzhi();
+  const el=document.getElementById('todayCard');
+  if(!el)return;
+  el.innerHTML=`
+    <span>📅 ${g.y}年${g.m}月${g.d}日</span>
+    <span style="color:rgba(255,255,255,0.15)">|</span>
+    <span>周${WEEKS_CN[g.week]}</span>
+    <span style="color:rgba(255,255,255,0.15)">|</span>
+    <span style="color:var(--accent)">${g.yearTG}${g.yearDZ}年 · ${g.sx}年</span>
+    <span style="color:rgba(255,255,255,0.15)">|</span>
+    <span>今日 <strong style="color:var(--accent2)">${g.dayTG}${g.dayDZ}</strong></span>
+  `;
+}
+
+// ──────────── localStorage 记住我 ────────────
+const LS_KEY='fortune_user_v1';
+function saveUser(){
+  if(!document.getElementById('rememberMe').checked)return;
+  localStorage.setItem(LS_KEY,JSON.stringify({
+    year:state.year,month:state.month,day:state.day,
+    gender:state.gender,shichen:state.shichen,
+    focuses:state.focuses,intuition:state.intuition,mood:state.mood,
+    savedAt:Date.now()
+  }));
+}
+function loadSavedUser(){
+  try{
+    const raw=localStorage.getItem(LS_KEY);
+    if(!raw)return false;
+    const s=JSON.parse(raw);
+    // 只保留7天
+    if(Date.now()-s.savedAt>7*86400000){localStorage.removeItem(LS_KEY);return false;}
+    return s;
+  }catch{return false;}
+}
+function applyAndSkip(s){
+  // 填入 state
+  state.year=s.year;state.month=s.month;state.day=s.day;
+  state.gender=s.gender;state.shichen=s.shichen;
+  state.focuses=s.focuses;state.intuition=s.intuition;state.mood=s.mood||5;
+  // 更新表单 DOM
+  document.getElementById('birthYear').value=s.year;
+  document.getElementById('birthMonth').value=s.month;
+  updateDays(); document.getElementById('birthDay').value=s.day;
+  selectGender(s.gender);
+  if(s.shichen>=0){
+    document.querySelectorAll('.shichen-btn')[s.shichen]?.classList.add('active');
+  }
+  // 直接跳推算
+  startCalc();
+}
+
 function initForm(){
   const yEl=document.getElementById('birthYear');
   for(let y=1940;y<=2005;y++){
@@ -565,6 +647,29 @@ function initForm(){
     };
     il.appendChild(item);
   });
+
+  // 今日日期卡片
+  renderTodayCard();
+
+  // 检查 localStorage —— 有存档则插入快速入口
+  const saved=loadSavedUser();
+  if(saved){
+    const sx=SHUXIANG[(saved.year-4)%12];
+    const gLabel=saved.gender==='male'?'男':'女';
+    const banner=document.createElement('div');
+    banner.style.cssText='margin-bottom:16px;padding:14px 18px;background:rgba(157,123,255,0.08);border:1px solid rgba(157,123,255,0.25);border-radius:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap';
+    banner.innerHTML=`
+      <div>
+        <div style="font-size:12px;color:var(--accent);margin-bottom:4px">✦ 检测到你的信息</div>
+        <div style="font-size:13px;color:var(--text)">${saved.year}年生 · ${gLabel} · ${sx}年</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onclick="applyAndSkip(${JSON.stringify(saved).replace(/"/g,'&quot;')})" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;color:#fff;font-size:12px;padding:8px 16px;cursor:pointer;font-weight:600">直接看今日运势 →</button>
+        <button onclick="localStorage.removeItem('${LS_KEY}');this.parentElement.parentElement.remove()" style="background:none;border:1px solid var(--border2);border-radius:10px;color:var(--muted);font-size:12px;padding:8px 12px;cursor:pointer">重新填写</button>
+      </div>
+    `;
+    document.getElementById('page1').prepend(banner);
+  }
 }
 
 function updateDays(){
@@ -616,9 +721,12 @@ function updateSteps(n){
 
 // ──────────── 推算 ────────────
 function startCalc(){
-  state.year=parseInt(document.getElementById('birthYear').value);
-  state.month=parseInt(document.getElementById('birthMonth').value);
-  state.day=parseInt(document.getElementById('birthDay').value);
+  state.year=parseInt(document.getElementById('birthYear').value)||state.year;
+  state.month=parseInt(document.getElementById('birthMonth').value)||state.month;
+  state.day=parseInt(document.getElementById('birthDay').value)||state.day;
+
+  // 保存用户信息（如勾选了记住我）
+  saveUser();
 
   // 上报数据
   collectData({
