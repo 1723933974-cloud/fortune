@@ -116,12 +116,13 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 .q-check{margin-left:auto;width:18px;height:18px;border-radius:50%;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .25s}
 .q-item.active .q-check{background:var(--accent);border-color:var(--accent);color:#fff}
 
-/* ── 心情滑块 ── */
-.mood-track{position:relative;margin:20px 0 8px}
-.mood-slider{width:100%;-webkit-appearance:none;height:4px;border-radius:100px;background:linear-gradient(90deg,#7c6aff,#ff6ab0);outline:none;cursor:pointer}
-.mood-slider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 0 12px rgba(157,123,255,0.5);cursor:grab}
-.mood-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:8px}
-.mood-emoji{text-align:center;font-size:28px;margin-bottom:8px;transition:all .3s}
+/* ── 状态卡片（替换心情滑块） ── */
+.state-card{background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:18px;padding:20px 16px;cursor:pointer;transition:all .25s cubic-bezier(.34,1.56,.64,1);text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px}
+.state-card:hover{border-color:rgba(157,123,255,0.4);transform:translateY(-2px)}
+.state-card.active{border-color:var(--accent);background:rgba(157,123,255,0.12);box-shadow:0 4px 24px rgba(157,123,255,0.2)}
+.state-card .sc-emoji{font-size:32px;line-height:1}
+.state-card .sc-name{font-size:14px;font-weight:600;color:var(--text)}
+.state-card .sc-desc{font-size:11px;color:var(--muted2);line-height:1.5}
 
 /* ── 按钮 ── */
 .btn-primary{width:100%;padding:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;transition:all .3s;letter-spacing:0.5px;margin-top:8px}
@@ -337,16 +338,12 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
   <!-- ── 第四步：当下状态 ── -->
   <div class="form-page" id="page4">
     <div class="card">
-      <div class="card-title">当下气场 · 能量感知</div>
+      <div class="card-title">当下气场 · 今日状态</div>
+      <p class="hint" style="margin-bottom:20px">此刻你的整体感觉最接近哪个？</p>
 
-      <p class="hint" style="margin-bottom:16px">你现在的整体状态如何？</p>
-      <div class="mood-emoji" id="moodEmoji">😐</div>
-      <div class="mood-track">
-        <input type="range" class="mood-slider" id="moodSlider" min="1" max="10" value="5" oninput="updateMood(this.value)">
-      </div>
-      <div class="mood-labels"><span>低迷</span><span>平稳</span><span>亢奋</span></div>
+      <div id="stateGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px"></div>
 
-      <div style="margin-top:28px">
+      <div style="margin-top:8px">
         <p class="hint" style="margin-bottom:12px">今日直觉感知（选一个）</p>
         <div class="q-list" id="intuitionList"></div>
       </div>
@@ -761,8 +758,9 @@ function initForm(){
     il.appendChild(item);
   });
 
-  // 今日日期卡片
+  // 今日日期卡片 + 状态选项格
   renderTodayCard();
+  initStateGrid();
 
   // 检查 localStorage —— 有存档则插入快速入口
   const saved=loadSavedUser();
@@ -804,10 +802,30 @@ function selectGender(g){
   document.getElementById('genderF').classList.toggle('active',g==='female');
 }
 
-const MOOD_EMOJIS=['😔','😞','😕','😐','🙂','😊','😄','😁','🤩','🌟'];
-function updateMood(v){
-  state.mood=parseInt(v);
-  document.getElementById('moodEmoji').textContent=MOOD_EMOJIS[Math.min(parseInt(v)-1,9)];
+// 今日状态选项（替换心情滑块）
+const STATE_OPTIONS=[
+  {emoji:'🔥',name:'精力充沛',desc:'思维活跃，跃跃欲试',mood:9},
+  {emoji:'😌',name:'平和稳定',desc:'心平气和，从容自在',mood:6},
+  {emoji:'🌫️',name:'有些迷茫',desc:'思绪纷乱，方向不清',mood:4},
+  {emoji:'😴',name:'低落疲惫',desc:'提不起劲，需要休息',mood:2},
+];
+function initStateGrid(){
+  const grid=document.getElementById('stateGrid');
+  if(!grid)return;
+  STATE_OPTIONS.forEach((s,i)=>{
+    const card=document.createElement('div');
+    card.className='state-card';
+    card.innerHTML=`<div class="sc-emoji">${s.emoji}</div><div class="sc-name">${s.name}</div><div class="sc-desc">${s.desc}</div>`;
+    card.onclick=()=>{
+      document.querySelectorAll('.state-card').forEach(c=>c.classList.remove('active'));
+      card.classList.add('active');
+      state.mood=s.mood;
+    };
+    grid.appendChild(card);
+  });
+  // 默认选第二个（平和稳定）
+  grid.children[1]?.classList.add('active');
+  state.mood=STATE_OPTIONS[1].mood;
 }
 
 // ──────────── 步骤切换 ────────────
@@ -1179,8 +1197,10 @@ function resetAll(){
   document.querySelectorAll('.shichen-btn').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('#focusList .q-item').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('#intuitionList .q-item').forEach(b=>b.classList.remove('active'));
-  document.getElementById('moodSlider').value=5;
-  document.getElementById('moodEmoji').textContent='😐';
+  document.getElementById('moodSlider')?.value && (document.getElementById('moodSlider').value=5);
+  // 重置状态卡选中，默认平和稳定
+  document.querySelectorAll('.state-card').forEach((c,i)=>{c.classList.toggle('active',i===1);});
+  state.mood=STATE_OPTIONS[1].mood;
   document.getElementById('focusNextBtn').disabled=true;
   document.getElementById('loaderSteps').querySelectorAll('.loader-step').forEach(s=>s.classList.remove('show'));
   curPage=1;
@@ -1417,226 +1437,6 @@ function downloadCardDirect(){
   const a=document.createElement('a');
   a.download=`今日运势_${new Date().toISOString().slice(0,10)}.jpg`;
   a.href=canvas.toDataURL('image/jpeg',0.92);
-  a.click();
-}
-
-</script>
-</body>
-</html>
-
-async function generateShareCard(){
-  const btn = document.querySelector('#shareSection button');
-  if(btn){ btn.textContent='⏳ 生成中…'; btn.disabled=true; }
-
-  // 手机友好尺寸：9:16 竖版，适合截图分享
-  const W=1080, H=1920;
-  const canvas=document.getElementById('shareCanvas');
-  canvas.width=W; canvas.height=H;
-  const ctx=canvas.getContext('2d');
-
-  // ── 背景 ──
-  const bg=ctx.createLinearGradient(0,0,0,H);
-  bg.addColorStop(0,'#0a0714');bg.addColorStop(0.45,'#0d0a1e');bg.addColorStop(1,'#07050f');
-  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
-
-  // 星点
-  for(let i=0;i<200;i++){
-    const x=Math.random()*W, y=Math.random()*H*0.7;
-    const r=Math.random()*1.8+0.3;
-    const a=Math.random()*0.6+0.2;
-    ctx.fillStyle=`rgba(200,190,255,${a})`;
-    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
-  }
-
-  // 顶部大光晕
-  const glow=ctx.createRadialGradient(W/2,0,0,W/2,0,700);
-  glow.addColorStop(0,'rgba(120,80,255,0.3)');glow.addColorStop(0.6,'rgba(157,123,255,0.08)');glow.addColorStop(1,'transparent');
-  ctx.fillStyle=glow;ctx.fillRect(0,0,W,900);
-
-  // ── 顶部品牌区 ──
-  const PAD=80;
-  ctx.textAlign='center';
-
-  // 品牌 badge
-  ctx.fillStyle='rgba(157,123,255,0.12)';
-  roundRect(ctx,W/2-120,PAD,240,52,26);ctx.fill();
-  ctx.strokeStyle='rgba(157,123,255,0.4)';ctx.lineWidth=1.5;
-  roundRect(ctx,W/2-120,PAD,240,52,26);ctx.stroke();
-  ctx.fillStyle='rgba(157,123,255,0.95)';ctx.font='500 20px PingFang SC,sans-serif';
-  ctx.fillText('✦  今天，适合做什么？  ✦',W/2,PAD+34);
-
-  // 日期
-  const g=getTodayGanzhi();
-  ctx.fillStyle='rgba(255,255,255,0.28)';ctx.font='400 28px PingFang SC,sans-serif';
-  ctx.fillText(`${g.y}.${String(g.m).padStart(2,'0')}.${String(g.d).padStart(2,'0')}  周${WEEKS_CN[g.week]}  ${g.yearTG}${g.yearDZ}年`,W/2,PAD+108);
-
-  // ── 大卦象区 ──
-  const guaSym=document.getElementById('resGua').textContent;
-  const guaName=document.getElementById('resGuaName').textContent;
-  const guaSub=document.getElementById('resGuaSub').textContent;
-
-  // 卦象背景光圈
-  const cGlow=ctx.createRadialGradient(W/2,430,0,W/2,430,220);
-  cGlow.addColorStop(0,'rgba(157,123,255,0.18)');cGlow.addColorStop(1,'transparent');
-  ctx.fillStyle=cGlow;ctx.fillRect(0,210,W,450);
-
-  ctx.font='bold 160px serif';ctx.fillStyle='rgba(157,123,255,0.95)';
-  ctx.fillText(guaSym,W/2,440);
-  ctx.font='bold 52px PingFang SC,sans-serif';ctx.fillStyle='#eeeeff';
-  ctx.fillText(guaName,W/2,522);
-  ctx.font='400 26px PingFang SC,sans-serif';ctx.fillStyle='rgba(255,255,255,0.35)';
-  ctx.fillText(guaSub,W/2,570);
-
-  // ── 分数大字 ──
-  const score=document.getElementById('resBigScore').textContent;
-  const tagline=document.getElementById('resTagline').textContent;
-  ctx.font='800 160px PingFang SC,sans-serif';
-  const sg=ctx.createLinearGradient(W/2-120,600,W/2+120,750);
-  sg.addColorStop(0,'#ffffff');sg.addColorStop(0.4,'#d4c4ff');sg.addColorStop(1,'#ff7eb3');
-  ctx.fillStyle=sg;ctx.fillText(score,W/2,750);
-  ctx.font='500 26px PingFang SC,sans-serif';ctx.fillStyle='rgba(157,123,255,0.9)';
-  ctx.fillText(tagline,W/2,800);
-
-  // 分隔线
-  const lg=ctx.createLinearGradient(PAD,0,W-PAD,0);
-  lg.addColorStop(0,'transparent');lg.addColorStop(0.5,'rgba(157,123,255,0.35)');lg.addColorStop(1,'transparent');
-  ctx.strokeStyle=lg;ctx.lineWidth=1.5;
-  ctx.beginPath();ctx.moveTo(PAD,848);ctx.lineTo(W-PAD,848);ctx.stroke();
-
-  // ── 五行能量（简化版，只显示3条最高的） ──
-  const wxRows=document.querySelectorAll('.wx-row');
-  const wxData=[];
-  wxRows.forEach(row=>{
-    const nameEl=row.querySelector('.wx-name');
-    const nameText=nameEl?nameEl.textContent.trim().replace(/\s/g,'').slice(-1):'';
-    const fill=row.querySelector('.wx-fill');
-    const val=row.querySelector('.wx-val')?.textContent||'';
-    const pct=parseFloat(fill?.style?.width)||0;
-    const dotEl=row.querySelector('.wx-dot');
-    const color=dotEl?.style?.background||'#9d7bff';
-    wxData.push({nameText,val,pct,color});
-  });
-  // 取前5条全部显示
-  let wy=900;
-  ctx.textAlign='left';
-  const BARLEFT=PAD+60, BARW=W-BARLEFT-PAD-80;
-  wxData.forEach(({nameText,val,pct,color})=>{
-    ctx.fillStyle='rgba(255,255,255,0.6)';ctx.font='600 26px PingFang SC,sans-serif';
-    ctx.fillText(nameText,PAD,wy+6);
-    ctx.fillStyle='rgba(255,255,255,0.07)';
-    roundRect(ctx,BARLEFT,wy-14,BARW,14,7);ctx.fill();
-    ctx.fillStyle=color;
-    roundRect(ctx,BARLEFT,wy-14,BARW*(pct/100),14,7);ctx.fill();
-    ctx.fillStyle='rgba(255,255,255,0.38)';ctx.font='500 24px PingFang SC,sans-serif';
-    ctx.textAlign='right';ctx.fillText(val,W-PAD,wy+6);ctx.textAlign='left';
-    wy+=58;
-  });
-
-  // ── 幸运格（2×2，取4个）──
-  const luckyItems=document.querySelectorAll('.lucky-item');
-  const lSlice=Array.from(luckyItems).slice(0,4);
-  const COLS=2, GBOX=20;
-  const boxW=(W-PAD*2-(COLS-1)*GBOX)/COLS;
-  const boxH=140;
-  let ly=wy+40;
-  lSlice.forEach((item,i)=>{
-    const label=item.querySelector('.lucky-l')?.textContent||'';
-    const val=item.querySelector('.lucky-v')?.textContent||'';
-    const sub=item.querySelector('.lucky-sub')?.textContent||'';
-    const col=i%COLS, row=Math.floor(i/COLS);
-    const bx=PAD+col*(boxW+GBOX);
-    const by=ly+row*(boxH+GBOX);
-    ctx.fillStyle='rgba(255,255,255,0.04)';
-    ctx.strokeStyle='rgba(255,255,255,0.1)';ctx.lineWidth=1;
-    roundRect(ctx,bx,by,boxW,boxH,16);ctx.fill();
-    roundRect(ctx,bx,by,boxW,boxH,16);ctx.stroke();
-    ctx.fillStyle='rgba(157,123,255,0.6)';ctx.font='400 22px PingFang SC,sans-serif';
-    ctx.textAlign='center';ctx.fillText(label,bx+boxW/2,by+38);
-    ctx.fillStyle='#eeeeff';ctx.font='700 30px PingFang SC,sans-serif';
-    ctx.fillText(val.slice(0,6),bx+boxW/2,by+82);
-    if(sub){ctx.fillStyle='rgba(255,255,255,0.3)';ctx.font='400 20px PingFang SC,sans-serif';ctx.fillText(sub.slice(0,8),bx+boxW/2,by+114);}
-  });
-  ctx.textAlign='left';
-
-  // ── 底部二维码区 ──
-  const QR_SIZE=160;
-  const qrImg=await getQRDataURL('https://1723933974-cloud.github.io/fortune/',QR_SIZE);
-  const bottomY=H-300;
-
-  // 底部分隔
-  ctx.strokeStyle='rgba(255,255,255,0.07)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(PAD,bottomY);ctx.lineTo(W-PAD,bottomY);ctx.stroke();
-
-  if(qrImg){
-    ctx.fillStyle='rgba(255,255,255,0.05)';
-    roundRect(ctx,W-PAD-QR_SIZE-20,bottomY+30,QR_SIZE+40,QR_SIZE+40,16);ctx.fill();
-    ctx.drawImage(qrImg,W-PAD-QR_SIZE,bottomY+50,QR_SIZE,QR_SIZE);
-  }
-  ctx.fillStyle='rgba(255,255,255,0.7)';ctx.font='700 30px PingFang SC,sans-serif';
-  ctx.fillText('扫码',PAD,bottomY+76);
-  ctx.fillStyle='rgba(255,255,255,0.7)';ctx.font='700 30px PingFang SC,sans-serif';
-  ctx.fillText('测算今日运势',PAD,bottomY+118);
-  ctx.fillStyle='rgba(255,255,255,0.2)';ctx.font='400 22px PingFang SC,sans-serif';
-  ctx.fillText('1723933974-cloud.github.io/fortune',PAD,bottomY+158);
-  ctx.fillStyle='rgba(255,255,255,0.1)';ctx.font='400 20px PingFang SC,sans-serif';
-  ctx.fillText('✦ 娱乐参考，非决策建议 ✦',PAD,bottomY+200);
-
-  // ── 输出 ──
-  const img=document.getElementById('shareImg');
-  img.style.display='none';
-  document.getElementById('shareHint').style.display='none';
-
-  canvas.toBlob(async blob=>{
-    try{
-      const reader=new FileReader();
-      reader.readAsDataURL(blob);
-      reader.onload=async()=>{
-        const b64=reader.result.split(',')[1];
-        const filename=`cards/card_${Date.now()}.png`;
-        let imageURL='';
-        try{
-          const resp=await fetch(WORKER+'/upload-card',{
-            method:'POST',headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({filename,content:b64})
-          });
-          const j=await resp.json();
-          if(j.url) imageURL=j.url;
-        }catch(e){}
-
-        if(imageURL){
-          img.src=imageURL;
-          img.style.display='block';
-          document.getElementById('shareHint').style.display='block';
-          document.getElementById('shareHint').innerHTML=`
-            📱 微信：跳转浏览器后长按图片保存<br>
-            <span style="font-size:11px;opacity:.6">或截图分享给朋友</span>
-          `;
-          showToast('卡片已生成 🎉','success');
-        } else {
-          const blobURL=URL.createObjectURL(blob);
-          img.src=blobURL;
-          img.style.display='block';
-          document.getElementById('shareHint').style.display='block';
-          document.getElementById('shareHint').innerHTML=`
-            截图分享，或点击下载后发给朋友<br>
-            <button onclick="downloadCardDirect()" style="margin-top:8px;background:rgba(157,123,255,0.2);border:1px solid var(--accent);border-radius:8px;color:var(--accent);font-size:12px;padding:6px 16px;cursor:pointer">📥 下载图片</button>
-          `;
-          showToast('已生成，截图或下载分享','info');
-        }
-        if(btn){ btn.textContent='✦ 重新生成卡片'; btn.disabled=false; }
-      };
-    }catch(e){
-      if(btn){ btn.textContent='✦ 重新生成卡片'; btn.disabled=false; }
-      showToast('生成失败，请重试','error');
-    }
-  },'image/png');
-}
-
-function downloadCardDirect(){
-  const canvas=document.getElementById('shareCanvas');
-  const a=document.createElement('a');
-  a.download=`今日运势_${new Date().toISOString().slice(0,10)}.png`;
-  a.href=canvas.toDataURL('image/png');
   a.click();
 }
 
