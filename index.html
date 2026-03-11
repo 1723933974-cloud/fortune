@@ -441,16 +441,13 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
     <!-- 分享卡片区 -->
     <div id="shareSection" style="margin-bottom:16px">
       <button onclick="generateShareCard()" style="width:100%;padding:15px;background:rgba(157,123,255,0.1);border:1px solid rgba(157,123,255,0.3);border-radius:14px;color:var(--accent);font-size:14px;font-weight:600;cursor:pointer;transition:all .3s;letter-spacing:0.5px" onmouseover="this.style.background='rgba(157,123,255,0.2)'" onmouseout="this.style.background='rgba(157,123,255,0.1)'">
-        ✦ 生成今日运势卡片（可保存分享）
+        ✦ 生成运势卡片（截图分享）
       </button>
       <!-- canvas 仅用于绘制，隐藏 -->
       <canvas id="shareCanvas" style="display:none"></canvas>
-      <!-- img 用于展示（微信可长按保存） -->
-      <img id="shareImg" style="display:none;width:100%;border-radius:16px;margin-top:12px" alt="今日运势卡片">
-      <div id="shareHint" style="display:none;text-align:center;padding:10px 0 4px;font-size:12px;color:var(--muted)">
-        📱 微信用户：长按图片 → 保存到相册<br>
-        <span style="font-size:11px;opacity:.6">电脑用户：右键图片 → 图片另存为</span>
-      </div>
+      <!-- img 展示卡片 -->
+      <img id="shareImg" style="display:none;width:100%;border-radius:12px;margin-top:12px" alt="今日运势卡片">
+      <div id="shareHint" style="display:none"></div>
     </div>
 
     <div class="result-footer">
@@ -1235,11 +1232,13 @@ function showToast(msg, type='info'){
 // 为保持零依赖，使用 Google Charts QR API 生成二维码图片（公开免费）
 function getQRDataURL(text, size){
   return new Promise((resolve)=>{
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = ()=>resolve(img);
-    img.onerror = ()=>resolve(null);
-    img.src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(text)}&bgcolor=0e0820&color=ffffff&format=png&margin=2`;
+    const img=new Image();
+    img.crossOrigin='anonymous';
+    // 超时 3 秒放弃，不阻塞卡片生成
+    const timer=setTimeout(()=>resolve(null),3000);
+    img.onload=()=>{clearTimeout(timer);resolve(img);};
+    img.onerror=()=>{clearTimeout(timer);resolve(null);};
+    img.src=`https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(text)}&bgcolor=0d0a1e&color=c4b5ff&format=png&margin=2`;
   });
 }
 
@@ -1250,6 +1249,180 @@ function roundRect(ctx,x,y,w,h,r){
   ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);
   ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
 }
+
+async function generateShareCard(){
+  const btn=document.querySelector('#shareSection button');
+  if(btn){btn.textContent='⏳ 绘制中…';btn.disabled=true;}
+
+  // 1080×1920 手机竖版（9:16）
+  const W=1080,H=1920,P=80;
+  const canvas=document.getElementById('shareCanvas');
+  canvas.width=W;canvas.height=H;
+  const ctx=canvas.getContext('2d');
+
+  // ── 背景 ──
+  const bg=ctx.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0,'#0a0714');bg.addColorStop(0.5,'#0d0a1e');bg.addColorStop(1,'#07050f');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+
+  // 星点
+  const rng2=(s)=>{let x=Math.sin(s+1)*10000;return x-Math.floor(x);};
+  for(let i=0;i<180;i++){
+    const x=rng2(i*3)*W,y=rng2(i*7)*H*0.72,r=rng2(i*13)*1.6+0.4;
+    ctx.fillStyle=`rgba(200,190,255,${rng2(i*17)*0.5+0.15})`;
+    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+  }
+
+  // 顶部光晕
+  const gl=ctx.createRadialGradient(W/2,0,0,W/2,0,720);
+  gl.addColorStop(0,'rgba(110,70,255,0.32)');
+  gl.addColorStop(0.5,'rgba(157,123,255,0.1)');
+  gl.addColorStop(1,'transparent');
+  ctx.fillStyle=gl;ctx.fillRect(0,0,W,900);
+
+  // ── 品牌 badge ──
+  ctx.textAlign='center';
+  ctx.fillStyle='rgba(157,123,255,0.14)';
+  roundRect(ctx,W/2-140,P,280,56,28);ctx.fill();
+  ctx.strokeStyle='rgba(157,123,255,0.45)';ctx.lineWidth=1.5;
+  roundRect(ctx,W/2-140,P,280,56,28);ctx.stroke();
+  ctx.fillStyle='rgba(157,123,255,0.95)';
+  ctx.font='500 22px PingFang SC,Hiragino Sans GB,sans-serif';
+  ctx.fillText('✦  今天，适合做什么？  ✦',W/2,P+38);
+
+  // ── 日期 ──
+  const g=getTodayGanzhi();
+  ctx.fillStyle='rgba(255,255,255,0.3)';
+  ctx.font='400 28px PingFang SC,sans-serif';
+  ctx.fillText(`${g.y}.${String(g.m).padStart(2,'0')}.${String(g.d).padStart(2,'0')}  周${WEEKS_CN[g.week]}  ${g.yearTG}${g.yearDZ}年`,W/2,P+116);
+
+  // ── 卦象区 ──
+  const guaSym=document.getElementById('resGua').textContent||'☰';
+  const guaName=document.getElementById('resGuaName').textContent||'';
+  const guaSub=document.getElementById('resGuaSub').textContent||'';
+
+  // 卦象光圈
+  const cg=ctx.createRadialGradient(W/2,440,0,W/2,440,260);
+  cg.addColorStop(0,'rgba(157,123,255,0.2)');cg.addColorStop(1,'transparent');
+  ctx.fillStyle=cg;ctx.fillRect(0,180,W,520);
+
+  ctx.font='bold 160px serif';ctx.fillStyle='rgba(157,123,255,0.95)';
+  ctx.fillText(guaSym,W/2,450);
+  ctx.font='bold 52px PingFang SC,sans-serif';ctx.fillStyle='#eef0ff';
+  ctx.fillText(guaName,W/2,530);
+  ctx.font='400 26px PingFang SC,sans-serif';ctx.fillStyle='rgba(255,255,255,0.35)';
+  ctx.fillText(guaSub,W/2,578);
+
+  // ── 分数 ──
+  const score=document.getElementById('resBigScore').textContent||'--';
+  const tagline=(document.getElementById('resTagline').textContent||'').replace('✦ ','');
+  ctx.font='800 160px PingFang SC,sans-serif';
+  const sg=ctx.createLinearGradient(W/2-140,610,W/2+140,770);
+  sg.addColorStop(0,'#ffffff');sg.addColorStop(0.4,'#d4c4ff');sg.addColorStop(1,'#ff7eb3');
+  ctx.fillStyle=sg;ctx.fillText(score,W/2,760);
+  ctx.font='500 28px PingFang SC,sans-serif';ctx.fillStyle='rgba(157,123,255,0.9)';
+  ctx.fillText(tagline,W/2,812);
+
+  // 分隔线
+  const dg=ctx.createLinearGradient(P,0,W-P,0);
+  dg.addColorStop(0,'transparent');dg.addColorStop(0.5,'rgba(157,123,255,0.4)');dg.addColorStop(1,'transparent');
+  ctx.strokeStyle=dg;ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(P,860);ctx.lineTo(W-P,860);ctx.stroke();
+
+  // ── 五行能量 ──
+  const wxRows=document.querySelectorAll('.wx-row');
+  let wy=920;
+  const BARLEFT=P+64,BARW=W-BARLEFT-P-80;
+  ctx.textAlign='left';
+  wxRows.forEach(row=>{
+    const nameText=(row.querySelector('.wx-name')?.textContent||'').trim().replace(/\s/g,'').slice(-1);
+    const val=row.querySelector('.wx-val')?.textContent||'';
+    const pct=parseFloat(row.querySelector('.wx-fill')?.style?.width)||0;
+    const color=row.querySelector('.wx-dot')?.style?.background||'#9d7bff';
+    ctx.fillStyle='rgba(255,255,255,0.65)';ctx.font='600 26px PingFang SC,sans-serif';
+    ctx.fillText(nameText,P,wy+8);
+    ctx.fillStyle='rgba(255,255,255,0.08)';
+    roundRect(ctx,BARLEFT,wy-10,BARW,16,8);ctx.fill();
+    ctx.fillStyle=color;
+    roundRect(ctx,BARLEFT,wy-10,BARW*(pct/100),16,8);ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,0.4)';ctx.font='400 24px PingFang SC,sans-serif';
+    ctx.textAlign='right';ctx.fillText(val,W-P,wy+8);ctx.textAlign='left';
+    wy+=58;
+  });
+
+  // ── 幸运格（2×2）──
+  const luckyItems=document.querySelectorAll('.lucky-item');
+  const lSlice=Array.from(luckyItems).slice(0,4);
+  const GCOLS=2,GAP=20,BH=150;
+  const BW=(W-P*2-GAP)/GCOLS;
+  let ly=wy+44;
+  lSlice.forEach((item,idx)=>{
+    const label=item.querySelector('.lucky-l')?.textContent||'';
+    const val=item.querySelector('.lucky-v')?.textContent||'';
+    const col=idx%GCOLS,row=Math.floor(idx/GCOLS);
+    const bx=P+col*(BW+GAP),by=ly+row*(BH+GAP);
+    ctx.fillStyle='rgba(255,255,255,0.04)';
+    ctx.strokeStyle='rgba(157,123,255,0.18)';ctx.lineWidth=1;
+    roundRect(ctx,bx,by,BW,BH,18);ctx.fill();
+    roundRect(ctx,bx,by,BW,BH,18);ctx.stroke();
+    ctx.fillStyle='rgba(157,123,255,0.65)';ctx.font='400 22px PingFang SC,sans-serif';
+    ctx.textAlign='center';ctx.fillText(label,bx+BW/2,by+42);
+    ctx.fillStyle='#eef0ff';ctx.font='700 32px PingFang SC,sans-serif';
+    ctx.fillText(val.slice(0,6),bx+BW/2,by+92);
+  });
+  ctx.textAlign='left';
+
+  // ── 底部：二维码 + 文字 ──
+  const BOTTOM=H-280;
+  ctx.strokeStyle='rgba(255,255,255,0.07)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(P,BOTTOM);ctx.lineTo(W-P,BOTTOM);ctx.stroke();
+
+  const QR_SIZE=160;
+  const qrImg=await getQRDataURL('https://1723933974-cloud.github.io/fortune/',QR_SIZE);
+  if(qrImg){
+    ctx.fillStyle='rgba(255,255,255,0.05)';
+    roundRect(ctx,W-P-QR_SIZE-24,BOTTOM+28,QR_SIZE+48,QR_SIZE+48,16);ctx.fill();
+    ctx.drawImage(qrImg,W-P-QR_SIZE,BOTTOM+52,QR_SIZE,QR_SIZE);
+  }
+  ctx.fillStyle='rgba(255,255,255,0.75)';ctx.font='700 32px PingFang SC,sans-serif';
+  ctx.fillText('扫码测算今日运势',P,BOTTOM+72);
+  ctx.fillStyle='rgba(255,255,255,0.2)';ctx.font='400 22px PingFang SC,sans-serif';
+  ctx.fillText('1723933974-cloud.github.io/fortune',P,BOTTOM+114);
+  ctx.fillStyle='rgba(255,255,255,0.1)';ctx.font='400 20px PingFang SC,sans-serif';
+  ctx.fillText('✦ 娱乐参考，非决策建议 ✦',P,BOTTOM+158);
+
+  // ── 直接展示，不上传 ──
+  // 用 dataURL → img，在卡片区域内展示，用户截图即可
+  const dataURL=canvas.toDataURL('image/jpeg',0.92);
+  const img=document.getElementById('shareImg');
+  img.src=dataURL;
+  img.style.display='block';
+  img.style.borderRadius='12px';
+
+  document.getElementById('shareHint').style.display='block';
+  document.getElementById('shareHint').innerHTML=`
+    <div style="background:rgba(157,123,255,0.1);border:1px solid rgba(157,123,255,0.25);border-radius:12px;padding:12px 16px;margin-top:8px;font-size:12px;line-height:2;color:var(--muted2)">
+      📱 <strong style="color:var(--text)">微信用户</strong>：截图保存这张卡片，直接分享给朋友<br>
+      💻 <strong style="color:var(--text)">电脑用户</strong>：
+      <button onclick="downloadCardDirect()" style="background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;padding:0;text-decoration:underline">点击下载图片</button>
+    </div>
+  `;
+
+  if(btn){btn.textContent='✦ 重新生成卡片';btn.disabled=false;}
+  showToast('卡片已生成，截图保存分享 🎉','success');
+}
+
+function downloadCardDirect(){
+  const canvas=document.getElementById('shareCanvas');
+  const a=document.createElement('a');
+  a.download=`今日运势_${new Date().toISOString().slice(0,10)}.jpg`;
+  a.href=canvas.toDataURL('image/jpeg',0.92);
+  a.click();
+}
+
+</script>
+</body>
+</html>
 
 async function generateShareCard(){
   const btn = document.querySelector('#shareSection button');
