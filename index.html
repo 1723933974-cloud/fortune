@@ -45,6 +45,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
   .page-layout{display:block}
   .sidebar-left,.sidebar-right{display:none}
   .mobile-tools{display:block}
+  .wrap{padding:24px 20px 80px}
 }
 
 /* ── 侧边栏通用 ── */
@@ -83,14 +84,22 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 .mobile-tool-card .mtc-name{font-size:11px;color:var(--muted2);line-height:1.4;font-weight:500}
 
 /* ── 顶部 ── */
-.hero{text-align:center;margin-bottom:64px}
-.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(157,123,255,0.1);border:1px solid rgba(157,123,255,0.25);border-radius:100px;padding:5px 14px;font-size:11px;color:var(--accent);letter-spacing:3px;margin-bottom:24px}
-.hero h1{font-size:clamp(30px,7vw,52px);font-weight:800;line-height:1.15;margin-bottom:16px}
+.hero{text-align:center;margin-bottom:32px}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(157,123,255,0.1);border:1px solid rgba(157,123,255,0.25);border-radius:100px;padding:4px 12px;font-size:10px;color:var(--accent);letter-spacing:3px;margin-bottom:10px}
+.hero h1{font-size:clamp(22px,5.5vw,52px);font-weight:800;line-height:1.15;margin-bottom:8px}
 .hero h1 span{background:linear-gradient(135deg,#fff 0%,#c4b5ff 40%,#ff7eb3 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero p{color:var(--muted2);font-size:14px;line-height:1.8;max-width:380px;margin:0 auto}
+.hero p{color:var(--muted2);font-size:13px;line-height:1.6;max-width:380px;margin:0 auto}
+@media(max-width:1099px){
+  .hero{margin-bottom:20px}
+  .hero-badge{margin-bottom:8px}
+  .hero h1{font-size:clamp(20px,6vw,34px);margin-bottom:6px}
+  .hero p{font-size:12px}
+  #todayCard{display:none!important}
+}
 
 /* ── 步骤指示器 ── */
 .steps{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:48px}
+@media(max-width:1099px){.steps{margin-bottom:20px}}
 .step-dot{width:28px;height:28px;border-radius:50%;border:1px solid var(--border2);background:var(--card);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);transition:all .4s;position:relative;z-index:1}
 .step-dot.active{border-color:var(--accent);background:rgba(157,123,255,0.2);color:var(--accent);box-shadow:0 0 20px rgba(157,123,255,0.3)}
 .step-dot.done{border-color:var(--accent);background:var(--accent);color:#fff}
