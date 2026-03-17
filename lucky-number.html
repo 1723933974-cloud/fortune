@@ -1,88 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5612817044381809" crossorigin="anonymous"></script>
-<title>Lucky Number Generator | Free Daily Lucky Number — pboboo.cn</title>
-<meta name="description" content="Generate your lucky number instantly. Get a random lucky number from 1 to 99 for today. Fun, free, and instant lucky number tool.">
+<title>幸运数字 · 今日专属数字 | pboboo.cn</title>
+<meta name="description" content="获取你今日的幸运数字。随机生成 1-99 的专属幸运数字，为你的一天带来好运。">
 <link rel="canonical" href="https://pboboo.cn/lucky-number.html">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#07070f;--card:#13131f;--accent:#9d7bff;--accent2:#ff7eb3;--accent3:#ffbe5c;--text:#eeeeff;--muted:#6b6b90;--muted2:#9494b8;--border:rgba(255,255,255,0.06)}
 body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0 24px 80px}
-.lang-bar{text-align:center;padding:14px 0 0;width:100%;max-width:700px}
-.lang-bar a{display:inline-block;margin:3px 4px;font-size:11px;color:var(--muted);text-decoration:none;padding:3px 8px;border:1px solid rgba(255,255,255,0.06);border-radius:6px;transition:all .2s}
-.lang-bar a:hover{color:var(--accent);border-color:rgba(157,123,255,0.4);background:rgba(157,123,255,0.08)}
-.tool-wrap{width:100%;max-width:560px;margin-top:48px}
-.tool-header{text-align:center;margin-bottom:40px}
-.tool-badge{display:inline-block;background:rgba(255,190,92,0.1);border:1px solid rgba(255,190,92,0.3);border-radius:100px;padding:5px 16px;font-size:12px;color:var(--accent3);letter-spacing:2px;margin-bottom:16px}
-.tool-header h1{font-size:clamp(28px,6vw,42px);font-weight:800;margin-bottom:12px;background:linear-gradient(135deg,#ffbe5c,#ff7eb3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.topbar{width:100%;max-width:600px;padding:16px 0 8px}
+.back-link{color:var(--muted2);text-decoration:none;font-size:13px;display:flex;align-items:center;gap:4px}
+.back-link:hover{color:var(--accent)}
+.tool-wrap{width:100%;max-width:520px;margin-top:32px}
+.tool-header{text-align:center;margin-bottom:36px}
+.tool-badge{display:inline-block;background:rgba(255,190,92,0.1);border:1px solid rgba(255,190,92,0.3);border-radius:100px;padding:5px 16px;font-size:12px;color:var(--accent3);letter-spacing:2px;margin-bottom:14px}
+.tool-header h1{font-size:clamp(26px,6vw,40px);font-weight:800;margin-bottom:10px;background:linear-gradient(135deg,#ffbe5c,#ff7eb3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .tool-header p{color:var(--muted2);font-size:13px;line-height:1.8}
-.tool-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:40px;text-align:center;margin-bottom:20px}
-.result-display{font-size:clamp(80px,20vw,160px);font-weight:900;margin:16px 0;min-height:160px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#ffbe5c,#ff7eb3,#9d7bff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;transition:all .3s}
-.btn-generate{background:linear-gradient(135deg,var(--accent3),var(--accent2));border:none;border-radius:100px;color:#fff;font-size:16px;font-weight:700;padding:16px 48px;cursor:pointer;transition:all .2s;letter-spacing:1px;margin-top:8px}
-.btn-generate:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(255,190,92,0.4)}
-.seo-section{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:16px}
-.seo-section h2{font-size:15px;font-weight:600;color:var(--accent3);margin-bottom:12px}
-.seo-section p{font-size:13px;color:var(--muted2);line-height:2;margin-bottom:10px}
-.seo-section p:last-child{margin-bottom:0}
-footer{width:100%;max-width:700px;text-align:center;padding:32px 0 48px;border-top:1px solid rgba(255,255,255,0.04);margin-top:40px;font-size:11px;color:var(--muted);line-height:2.6}
-footer a{color:var(--muted2);text-decoration:none;margin:0 6px}
+.tool-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:36px 28px;text-align:center;margin-bottom:16px}
+.result-display{font-size:clamp(80px,20vw,150px);font-weight:900;margin:12px 0;min-height:140px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#ffbe5c,#ff7eb3,#9d7bff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;transition:all .3s}
+.sub-text{font-size:13px;color:var(--muted2);margin-bottom:20px;min-height:20px}
+.btn-go{background:linear-gradient(135deg,var(--accent3),var(--accent2));border:none;border-radius:100px;color:#fff;font-size:15px;font-weight:700;padding:14px 44px;cursor:pointer;transition:all .2s;letter-spacing:1px}
+.btn-go:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(255,190,92,0.4)}
+.info-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:12px}
+.info-card h2{font-size:14px;font-weight:600;color:var(--accent3);margin-bottom:10px}
+.info-card p{font-size:13px;color:var(--muted2);line-height:1.9}
+footer{width:100%;max-width:600px;text-align:center;padding:28px 0 40px;border-top:1px solid rgba(255,255,255,0.04);margin-top:32px;font-size:11px;color:var(--muted);line-height:2.4}
+footer a{color:var(--muted2);text-decoration:none;margin:0 8px}
 footer a:hover{color:var(--accent)}
 </style>
 </head>
 <body>
-<div class="lang-bar">
-  <a href="/">中文</a><a href="/en.html">EN</a><a href="/es.html">ES</a><a href="/ja.html">JP</a><a href="/ko.html">KR</a><a href="/fr.html">FR</a><a href="/de.html">DE</a><a href="/pt.html">PT</a><a href="/ru.html">RU</a><a href="/ar.html">AR</a>
+<div class="topbar">
+  <a href="/" class="back-link">← 返回首页</a>
 </div>
 
 <div class="tool-wrap">
   <div class="tool-header">
-    <div class="tool-badge">✦ LUCKY NUMBER ✦</div>
-    <h1>Lucky Number</h1>
-    <p>Tap to reveal your lucky number for today.</p>
+    <div class="tool-badge">✦ 幸运数字 ✦</div>
+    <h1>今日幸运数字</h1>
+    <p>点击获取今天属于你的专属幸运数字</p>
   </div>
 
   <div class="tool-card">
     <div class="result-display" id="result"><span style="opacity:0.2">?</span></div>
-    <div id="subtext" style="font-size:13px;color:var(--muted2);margin-bottom:24px;min-height:20px"></div>
-    <button class="btn-generate" onclick="generateNumber()">🎲 Generate Lucky Number</button>
+    <div class="sub-text" id="subtext"></div>
+    <button class="btn-go" onclick="generate()">🎲 生成幸运数字</button>
   </div>
 
-  <div class="seo-section">
-    <h2>What Is a Lucky Number?</h2>
-    <p>Lucky numbers have been part of human culture for thousands of years. In Chinese culture, the number 8 is considered extremely lucky because it sounds like the word for "prosperity." In Western cultures, 7 is often seen as the luckiest number.</p>
-    <p>This free lucky number generator gives you a random number between 1 and 99. You can use it to pick lottery numbers, choose a lucky seat, decide on a date, or simply add a little fun randomness to your day.</p>
-    <p>Many people use lucky numbers as a gentle daily ritual — a simple way to start the day with a positive mindset and a sense of playful possibility.</p>
+  <div class="info-card">
+    <h2>什么是幸运数字？</h2>
+    <p>幸运数字在各个文化中都有深厚的传统。在中国文化里，8 谐音「发」，象征财富与兴旺；6 谐音「顺」，寓意一切顺利。这里每次为你随机生成 1-99 的专属数字，带来一点好运加持。</p>
   </div>
-
-  <div class="seo-section">
-    <h2>How to Use Your Lucky Number</h2>
-    <p>· Use it as your lottery pick for the day</p>
-    <p>· Choose a seat or table with that number</p>
-    <p>· Set a goal to do that many pushups/steps/minutes</p>
-    <p>· Use it as a creative prompt or random challenge</p>
-    <p>· Share it with a friend and see if they get the same number</p>
+  <div class="info-card">
+    <h2>怎么用幸运数字？</h2>
+    <p>· 彩票、抽奖时作为参考号码<br>· 出行时挑选含有该数字的座位<br>· 设定今天的小目标（比如走该数字步数×100）<br>· 把它分享给朋友，看看大家的数字</p>
   </div>
 </div>
 
 <footer>
-  <a href="/">Home (中文)</a> | <a href="/yes-no.html">Yes/No Oracle</a> | <a href="/lucky-number.html">Lucky Number</a> | <a href="/lucky-color.html">Lucky Color</a> | <a href="/fortune-cookie.html">Fortune Cookie</a> | <a href="/random-decision.html">Random Decision</a>
-  <br><a href="/about.html">About</a> | <a href="/faq.html">FAQ</a> | <a href="/privacy.html">Privacy</a> | <a href="/terms.html">Terms</a>
+  <a href="/">首页</a> | <a href="/yes-no.html">是否神谕</a> | <a href="/lucky-number.html">幸运数字</a> | <a href="/lucky-color.html">幸运颜色</a> | <a href="/fortune-cookie.html">幸运饼干</a> | <a href="/random-decision.html">随机决策</a>
+  <br><a href="/about.html">关于</a> | <a href="/privacy.html">隐私</a> | <a href="/terms.html">条款</a>
   <br><span style="font-size:10px;opacity:0.3">© 2026 pboboo.cn</span>
 </footer>
 
 <script>
-const vibes = ["Lucky energy detected!","The universe chose this for you.","Trust this number today.","Your fortune aligns here.","This number carries good energy."];
-function generateNumber(){
-  const r = document.getElementById('result');
-  r.innerHTML = '<span style="opacity:0.3">...</span>';
+const vibes=["宇宙选中了这个数字给你。","今天它会带来好运。","相信这个数字的力量。","把它记在心里，带着它前进。","这就是今天属于你的幸运。"];
+function generate(){
+  const r=document.getElementById('result');
+  r.innerHTML='<span style="opacity:0.3">...</span>';
   setTimeout(()=>{
-    const n = Math.floor(Math.random()*99)+1;
-    r.textContent = n;
-    document.getElementById('subtext').textContent = vibes[Math.floor(Math.random()*vibes.length)];
-  }, 500);
+    const n=Math.floor(Math.random()*99)+1;
+    r.textContent=n;
+    document.getElementById('subtext').textContent=vibes[Math.floor(Math.random()*vibes.length)];
+  },500);
 }
 </script>
 </body>
