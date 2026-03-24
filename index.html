@@ -1835,7 +1835,7 @@ function applyAndSkip(s){
 
   if(mSlider){mSlider.value=state.mood;updateMood(state.mood);}
 
-  // 隐藏 hero / 步骤条 / 前4步，直接跳到第5步（直觉感知）
+  // 隐藏 hero / 步骤条 / 前3步，从第4步（心情）开始让用户选
 
   document.querySelector('.hero').style.display='none';
 
@@ -1843,13 +1843,13 @@ function applyAndSkip(s){
 
   document.getElementById('page1').style.display='none';
 
-  // 跳到直觉感知页让用户选一下
+  // 跳到心情页，让用户选心情和直觉
 
   document.querySelectorAll('.form-page').forEach(p=>p.classList.remove('active'));
 
-  document.getElementById('page5').classList.add('active');
+  document.getElementById('page4').classList.add('active');
 
-  curPage=5;
+  curPage=4;
 
   window.scrollTo({top:0,behavior:'smooth'});
 
@@ -1861,7 +1861,7 @@ function initForm(){
 
   const yEl=document.getElementById('birthYear');
 
-  for(let y=1940;y<=2005;y++){
+  for(let y=1940;y<=2007;y++){
 
     const o=document.createElement('option');o.value=y;o.textContent=y+'年';
 
