@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -45,6 +45,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
   .page-layout{display:block}
   .sidebar-left,.sidebar-right{display:none}
   .mobile-tools{display:block}
+  .mobile-articles{display:block}
   .wrap{padding:24px 20px 80px}
 }
 
@@ -84,16 +85,15 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 .mobile-tool-card .mtc-name{font-size:11px;color:var(--muted2);line-height:1.4;font-weight:500}
 
 /* ── 手机端文章横滑 ── */
-.mobile-articles{padding:0 20px 32px;position:relative;z-index:1}
+.mobile-articles{padding:0 20px 32px;position:relative;z-index:1;display:none}
 .mobile-articles-title{font-size:10px;letter-spacing:2.5px;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:6px}
 .mobile-articles-title::before{content:'';display:block;width:2px;height:10px;border-radius:2px;background:var(--accent2);flex-shrink:0}
-.mobile-articles-scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.mobile-articles-scroll::-webkit-scrollbar{display:none}
-.mobile-article-card{flex:0 0 160px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:16px 14px;text-decoration:none;transition:all .2s;display:flex;flex-direction:column;gap:8px}
+.mobile-articles-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between}
+.mobile-article-card{width:calc(50% - 4px);background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:14px 12px;text-align:center;text-decoration:none;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px}
 .mobile-article-card:hover,.mobile-article-card:active{border-color:rgba(255,126,179,0.4);background:rgba(255,126,179,0.06)}
-.mac-icon{font-size:26px}
+.mac-icon{font-size:26px;opacity:0.85}
 .mac-label{font-size:10px;color:var(--accent2);letter-spacing:1px}
-.mac-title{font-size:12px;color:var(--text);font-weight:600;line-height:1.4}
+.mac-title{font-size:11px;color:var(--muted2);line-height:1.4;font-weight:500}
 
 /* ── 顶部 ── */
 .hero{text-align:center;margin-bottom:32px}
@@ -550,7 +550,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
   <div class="sidebar-card">
     <div class="sidebar-card-title">扫码测算</div>
     <div class="sidebar-qr-wrap">
-      <img id="sidebarQR" src="" alt="二维码" onerror="this.parentElement.style.display='none'">
+      <img id="sidebarQR" src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https%3A%2F%2Fpboboo.cn&bgcolor=0e0820&color=c4b5ff&format=png&margin=2" alt="扫码测算" loading="eager" onerror="this.style.opacity='0.3'">
       <p>手机扫码<br>开启今日运势</p>
     </div>
   </div>
@@ -624,7 +624,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
 <div class="mobile-articles">
   <div class="mobile-articles-title">✦ 命理知识</div>
-  <div class="mobile-articles-scroll">
+  <div class="mobile-articles-grid">
     <a href="/blog-bazi-intro.html" class="mobile-article-card">
       <div class="mac-icon">📖</div>
       <div class="mac-label">入门</div>
