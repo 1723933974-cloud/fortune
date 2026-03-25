@@ -506,6 +506,10 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 .lang-btn{background:none;border:none;color:var(--muted);font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;cursor:pointer;transition:all .25s;letter-spacing:.5px}
 .lang-btn.active{background:rgba(157,123,255,0.25);color:var(--accent);border:1px solid rgba(157,123,255,0.35)}
 .lang-btn:not(.active):hover{color:var(--text)}
+@media(max-width:600px){
+  .lang-switch{top:10px;right:10px}
+  .wrap{padding-top:52px !important}
+}
 
 </style>
 
@@ -1093,7 +1097,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <span class="sb-tool-icon">📖</span>
 
-      <div><div class="sb-tool-name">八字五行入门</div><div class="sb-tool-desc">认识你的命盘</div></div>
+      <div><div class="sb-tool-name" data-zh="八字五行入门" data-en="Intro to Bazi & Five Elements">八字五行入门</div><div class="sb-tool-desc" data-zh="认识你的命盘" data-en="Learn your birth chart">认识你的命盘</div></div>
 
     </a>
 
@@ -1101,7 +1105,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <span class="sb-tool-icon">🗓️</span>
 
-      <div><div class="sb-tool-name">每日干支解析</div><div class="sb-tool-desc">今天的天干地支</div></div>
+      <div><div class="sb-tool-name" data-zh="每日干支解析" data-en="Daily Ganzhi Guide">每日干支解析</div><div class="sb-tool-desc" data-zh="今天的天干地支" data-en="Today's Heavenly Stems & Branches">今天的天干地支</div></div>
 
     </a>
 
@@ -1109,7 +1113,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <span class="sb-tool-icon">🎨</span>
 
-      <div><div class="sb-tool-name">五行与幸运色</div><div class="sb-tool-desc">颜色背后的能量</div></div>
+      <div><div class="sb-tool-name" data-zh="五行与幸运色" data-en="Five Elements & Lucky Colors">五行与幸运色</div><div class="sb-tool-desc" data-zh="颜色背后的能量" data-en="The energy behind each color">颜色背后的能量</div></div>
 
     </a>
 
@@ -1117,7 +1121,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <span class="sb-tool-icon">☯️</span>
 
-      <div><div class="sb-tool-name">五行完全指南</div><div class="sb-tool-desc">相生相克全解析</div></div>
+      <div><div class="sb-tool-name" data-zh="五行完全指南" data-en="Complete Wuxing Guide">五行完全指南</div><div class="sb-tool-desc" data-zh="相生相克全解析" data-en="Creation & Destruction cycles">相生相克全解析</div></div>
 
     </a>
 
@@ -1125,20 +1129,20 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <span class="sb-tool-icon">☀️</span>
 
-      <div><div class="sb-tool-name">晨间运势习惯</div><div class="sb-tool-desc">为什么每天测一测</div></div>
+      <div><div class="sb-tool-name" data-zh="晨间运势习惯" data-en="Morning Fortune Ritual">晨间运势习惯</div><div class="sb-tool-desc" data-zh="为什么每天测一测" data-en="Why check your fortune daily">为什么每天测一测</div></div>
 
     </a>
     <a href="/blog-ziwei-intro.html" class="sb-tool-link">
       <span class="sb-tool-icon">🌌</span>
-      <div><div class="sb-tool-name">紫微斗数入门</div><div class="sb-tool-desc">和八字有什么不同</div></div>
+      <div><div class="sb-tool-name" data-zh="紫微斗数入门" data-en="Intro to Purple Star Astrology">紫微斗数入门</div><div class="sb-tool-desc" data-zh="和八字有什么不同" data-en="How it differs from Bazi">和八字有什么不同</div></div>
     </a>
     <a href="/blog-shengxiao-wuxing.html" class="sb-tool-link">
       <span class="sb-tool-icon">🐉</span>
-      <div><div class="sb-tool-name">生肖与五行</div><div class="sb-tool-desc">你的生肖属什么五行</div></div>
+      <div><div class="sb-tool-name" data-zh="生肖与五行" data-en="Zodiac & Five Elements">生肖与五行</div><div class="sb-tool-desc" data-zh="你的生肖属什么五行" data-en="Which element is your zodiac sign?">你的生肖属什么五行</div></div>
     </a>
     <a href="/blog-2026-bingwu.html" class="sb-tool-link">
       <span class="sb-tool-icon">🔥</span>
-      <div><div class="sb-tool-name">2026丙午年解读</div><div class="sb-tool-desc">今年整体气场方向</div></div>
+      <div><div class="sb-tool-name" data-zh="2026丙午年解读" data-en="2026 Year of Fire Horse">2026丙午年解读</div><div class="sb-tool-desc" data-zh="今年整体气场方向" data-en="The energy of this year">今年整体气场方向</div></div>
     </a>
 
   </div>
@@ -1215,9 +1219,9 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <div class="mac-icon">📖</div>
 
-      <div class="mac-label">入门</div>
+      <div class="mac-label" data-zh="入门" data-en="Intro">入门</div>
 
-      <div class="mac-title">八字五行入门：认识你的命盘</div>
+      <div class="mac-title" data-zh="八字五行入门：认识你的命盘" data-en="Bazi & Five Elements: Your Birth Chart">八字五行入门：认识你的命盘</div>
 
     </a>
 
@@ -1225,9 +1229,9 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <div class="mac-icon">☯️</div>
 
-      <div class="mac-label">指南</div>
+      <div class="mac-label" data-zh="指南" data-en="Guide">指南</div>
 
-      <div class="mac-title">五行相生相克完全指南</div>
+      <div class="mac-title" data-zh="五行相生相克完全指南" data-en="Complete Wuxing: Creation & Destruction">五行相生相克完全指南</div>
 
     </a>
 
@@ -1235,9 +1239,9 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <div class="mac-icon">🗓️</div>
 
-      <div class="mac-label">每日</div>
+      <div class="mac-label" data-zh="每日" data-en="Daily">每日</div>
 
-      <div class="mac-title">每日干支解析：今天的天干地支</div>
+      <div class="mac-title" data-zh="每日干支解析：今天的天干地支" data-en="Daily Ganzhi: Stems & Branches Today">每日干支解析：今天的天干地支</div>
 
     </a>
 
@@ -1245,9 +1249,9 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <div class="mac-icon">🎨</div>
 
-      <div class="mac-label">五行</div>
+      <div class="mac-label" data-zh="五行" data-en="Color">五行</div>
 
-      <div class="mac-title">五行与幸运色：颜色背后的能量</div>
+      <div class="mac-title" data-zh="五行与幸运色：颜色背后的能量" data-en="Five Elements & Lucky Colors: Energy in Color">五行与幸运色：颜色背后的能量</div>
 
     </a>
 
@@ -1255,25 +1259,25 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <div class="mac-icon">☀️</div>
 
-      <div class="mac-label">习惯</div>
+      <div class="mac-label" data-zh="习惯" data-en="Habit">习惯</div>
 
-      <div class="mac-title">晨间运势：为什么每天测一测</div>
+      <div class="mac-title" data-zh="晨间运势：为什么每天测一测" data-en="Morning Fortune: Why Check Daily">晨间运势：为什么每天测一测</div>
 
     </a>
     <a href="/blog-ziwei-intro.html" class="mobile-article-card">
       <div class="mac-icon">🌌</div>
-      <div class="mac-label">星盘</div>
-      <div class="mac-title">紫微斗数入门：和八字有什么不同</div>
+      <div class="mac-label" data-zh="星盘" data-en="Chart">星盘</div>
+      <div class="mac-title" data-zh="紫微斗数入门：和八字有什么不同" data-en="Purple Star Astrology vs Bazi">紫微斗数入门：和八字有什么不同</div>
     </a>
     <a href="/blog-shengxiao-wuxing.html" class="mobile-article-card">
       <div class="mac-icon">🐉</div>
-      <div class="mac-label">生肖</div>
-      <div class="mac-title">十二生肖与五行对照</div>
+      <div class="mac-label" data-zh="生肖" data-en="Zodiac">生肖</div>
+      <div class="mac-title" data-zh="十二生肖与五行对照" data-en="Zodiac Signs & Five Elements">十二生肖与五行对照</div>
     </a>
     <a href="/blog-2026-bingwu.html" class="mobile-article-card">
       <div class="mac-icon">🔥</div>
-      <div class="mac-label">流年</div>
-      <div class="mac-title">2026丙午年：今年整体气场</div>
+      <div class="mac-label" data-zh="流年" data-en="Year">流年</div>
+      <div class="mac-title" data-zh="2026丙午年：今年整体气场" data-en="2026 Fire Horse Year: Overall Energy">2026丙午年：今年整体气场</div>
     </a>
 
   </div>
