@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>隐私政策 · pboboo.cn</title>
-<meta name="description" content="pboboo.cn 隐私政策 — 了解我们如何处理您的信息。">
+<title id="pageTitle">隐私政策 · pboboo.cn</title>
+<meta id="pageDesc" name="description" content="pboboo.cn 隐私政策 — 了解我们如何处理您的信息。">
 <link rel="canonical" href="https://pboboo.cn/privacy.html">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5612817044381809" crossorigin="anonymous"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#07070f;--card:#13131f;--accent:#9d7bff;--text:#eeeeff;--muted:#6b6b90;--muted2:#9494b8;--border:rgba(255,255,255,0.06)}
-body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;min-height:100vh;padding:48px 24px 80px}
+body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;min-height:100vh;padding:56px 24px 80px}
 .wrap{max-width:680px;margin:0 auto}
 .back{display:inline-flex;align-items:center;gap:6px;color:var(--muted2);font-size:13px;text-decoration:none;margin-bottom:32px;transition:color .2s}
 .back:hover{color:var(--accent)}
@@ -22,48 +22,86 @@ p{font-size:13px;color:var(--muted2);line-height:2;margin-bottom:10px}
 p:last-child{margin-bottom:0}
 footer{text-align:center;margin-top:48px;font-size:11px;color:var(--muted);opacity:.5}
 footer a{color:var(--muted2);text-decoration:none;margin:0 8px}
+.lang-switch{position:fixed;top:16px;right:16px;z-index:999;display:flex;gap:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:4px 6px;backdrop-filter:blur(8px)}
+.lang-btn{background:none;border:none;color:var(--muted);font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;cursor:pointer;transition:all .25s;letter-spacing:.5px}
+.lang-btn.active{background:rgba(157,123,255,0.25);color:var(--accent);border:1px solid rgba(157,123,255,0.35)}
 </style>
 </head>
 <body>
+
+<div class="lang-switch">
+  <button class="lang-btn active" id="btnZH" onclick="setLang('zh')">中文</button>
+  <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
+</div>
+
 <div class="wrap">
-  <a href="/" class="back">← 返回首页</a>
-  <h1>隐私政策</h1>
-  <div class="subtitle">最后更新：2026年3月</div>
+  <a href="/" class="back" data-zh="← 返回首页" data-en="← Back to Home">← 返回首页</a>
+  <h1 data-zh="隐私政策" data-en="Privacy Policy">隐私政策</h1>
+  <div class="subtitle" data-zh="最后更新：2026年3月" data-en="Last updated: March 2026">最后更新：2026年3月</div>
 
   <div class="section">
-    <h2>我们收集什么信息</h2>
-    <p>本网站不收集任何可识别个人身份的信息。您输入的生辰信息（出生年月日、性别、时辰）仅在您的本地浏览器中处理，不会传输到我们的服务器。</p>
-    <p>如果您勾选了「记住我」功能，相关信息将保存在您设备的本地存储（localStorage）中，您可以随时通过浏览器设置清除。</p>
+    <h2 data-zh="我们收集什么信息？" data-en="What Information Do We Collect?">我们收集什么信息？</h2>
+    <p data-zh="本网站不收集任何可识别个人身份的信息。您输入的生辰信息（出生年月日、性别、时辰）仅在您的本地浏览器中处理，不会传输到我们的服务器。" data-en="This site does not collect any personally identifiable information. Your birth info (year, month, day, gender, birth hour) is processed entirely in your local browser and never transmitted to our servers.">本网站不收集任何可识别个人身份的信息。您输入的生辰信息（出生年月日、性别、时辰）仅在您的本地浏览器中处理，不会传输到我们的服务器。</p>
+    <p data-zh="如果您勾选了「记住我」功能，相关信息将保存在您设备的本地存储（localStorage）中，您可以随时通过浏览器设置清除。" data-en="If you check 'Remember me', your info is saved in your device's local storage (localStorage). You can clear this at any time through your browser settings.">如果您勾选了「记住我」功能，相关信息将保存在您设备的本地存储（localStorage）中，您可以随时通过浏览器设置清除。</p>
   </div>
 
   <div class="section">
-    <h2>匿名统计数据</h2>
-    <p>我们收集匿名的使用统计数据，包括：测算次数、关注方向分布、心情分布等聚合信息。这些数据不包含任何可识别个人身份的内容，仅用于了解产品使用情况和改进体验。</p>
+    <h2 data-zh="匿名统计数据" data-en="Anonymous Usage Statistics">匿名统计数据</h2>
+    <p data-zh="我们收集匿名的使用统计数据，包括：测算次数、关注方向分布、心情分布等聚合信息。这些数据不包含任何可识别个人身份的内容，仅用于了解产品使用情况和改进体验。" data-en="We collect anonymous usage statistics including: total readings, distribution of focus areas, mood trends, and similar aggregated data. None of this data can identify any individual. It is used solely to understand usage patterns and improve the product.">我们收集匿名的使用统计数据，包括：测算次数、关注方向分布、心情分布等聚合信息。这些数据不包含任何可识别个人身份的内容，仅用于了解产品使用情况和改进体验。</p>
   </div>
 
   <div class="section">
-    <h2>广告服务</h2>
-    <p>本网站使用 Google AdSense 展示广告。Google 可能会使用 Cookie 向您展示基于您的兴趣的广告。您可以访问 <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener" style="color:var(--accent)">Google 广告设置</a> 来管理您的广告偏好。</p>
-    <p>我们不会将您的个人信息出售给任何第三方。</p>
+    <h2 data-zh="广告服务" data-en="Advertising">广告服务</h2>
+    <p data-zh="本网站使用 Google AdSense 展示广告。Google 可能会使用 Cookie 向您展示基于您的兴趣的广告。您可以访问 <a href='https://www.google.com/settings/ads' target='_blank' rel='noopener' style='color:var(--accent)'>Google 广告设置</a> 来管理您的广告偏好。" data-en="This site uses Google AdSense to display ads. Google may use cookies to show you interest-based ads. You can visit <a href='https://www.google.com/settings/ads' target='_blank' rel='noopener' style='color:var(--accent)'>Google Ad Settings</a> to manage your ad preferences.">本网站使用 Google AdSense 展示广告。Google 可能会使用 Cookie 向您展示基于您的兴趣的广告。您可以访问 <a href='https://www.google.com/settings/ads' target='_blank' rel='noopener' style='color:var(--accent)'>Google 广告设置</a> 来管理您的广告偏好。</p>
+    <p data-zh="我们不会将您的个人信息出售给任何第三方。" data-en="We do not sell your personal information to any third party.">我们不会将您的个人信息出售给任何第三方。</p>
   </div>
 
   <div class="section">
     <h2>Cookie</h2>
-    <p>本网站使用必要的 Cookie 以保证功能正常运行，以及 Google AdSense 的广告 Cookie。您可以通过浏览器设置管理或禁用 Cookie，但这可能影响网站部分功能。</p>
+    <p data-zh="本网站使用必要的 Cookie 以保证功能正常运行，以及 Google AdSense 的广告 Cookie。您可以通过浏览器设置管理或禁用 Cookie，但这可能影响网站部分功能。" data-en="This site uses necessary cookies for functionality and Google AdSense advertising cookies. You can manage or disable cookies through your browser settings, though this may affect some site features.">本网站使用必要的 Cookie 以保证功能正常运行，以及 Google AdSense 的广告 Cookie。您可以通过浏览器设置管理或禁用 Cookie，但这可能影响网站部分功能。</p>
   </div>
 
   <div class="section">
-    <h2>联系我们</h2>
-    <p>如果您对本隐私政策有任何疑问，或希望行使您的数据权利，请通过以下方式联系我们：</p>
-    <p>📧 电子邮件：<a href="mailto:1723933974@qq.com" style="color:var(--accent)">1723933974@qq.com</a></p>
-    <p>我们将在收到邮件后尽快回复（通常在 3 个工作日内）。</p>
+    <h2 data-zh="联系我们" data-en="Contact Us">联系我们</h2>
+    <p data-zh="如果您对本隐私政策有任何疑问，或希望行使您的数据权利，请通过以下方式联系我们：" data-en="If you have any questions about this Privacy Policy or wish to exercise your data rights, please contact us at:">如果您对本隐私政策有任何疑问，或希望行使您的数据权利，请通过以下方式联系我们：</p>
+    <p>📧 <a href="mailto:1723933974@qq.com" style="color:var(--accent)">1723933974@qq.com</a></p>
+    <p data-zh="我们将在收到邮件后尽快回复（通常在 3 个工作日内）。" data-en="We will respond as soon as possible after receiving your message (usually within 3 business days).">我们将在收到邮件后尽快回复（通常在 3 个工作日内）。</p>
   </div>
 </div>
 
 <footer>
-  <a href="/">首页</a> | <a href="/about.html">关于本站</a> | <a href="/privacy.html">隐私政策</a> | <a href="/terms.html">服务条款</a> | <a href="/faq.html">常见问题</a>
+  <a href="/" data-zh="首页" data-en="Home">首页</a> |
+  <a href="/about.html" data-zh="关于本站" data-en="About">关于本站</a> |
+  <a href="/privacy.html" data-zh="隐私政策" data-en="Privacy">隐私政策</a> |
+  <a href="/terms.html" data-zh="服务条款" data-en="Terms">服务条款</a> |
+  <a href="/faq.html" data-zh="常见问题" data-en="FAQ">常见问题</a>
   <br><br>© 2026 pboboo.cn
 </footer>
+
+<script>
+const LANG_KEY = 'fortune_lang';
+let LANG = localStorage.getItem(LANG_KEY) || 'zh';
+
+function setLang(lang) {
+  LANG = lang;
+  localStorage.setItem(LANG_KEY, lang);
+  document.getElementById('htmlRoot').lang = lang === 'zh' ? 'zh-CN' : 'en';
+  document.getElementById('btnZH').classList.toggle('active', lang === 'zh');
+  document.getElementById('btnEN').classList.toggle('active', lang === 'en');
+  document.querySelectorAll('[data-zh]').forEach(el => {
+    const val = el.getAttribute('data-' + lang);
+    if (val !== null) el.innerHTML = val;
+  });
+  if (lang === 'en') {
+    document.getElementById('pageTitle').textContent = 'Privacy Policy · pboboo.cn';
+    document.getElementById('pageDesc').setAttribute('content', 'Privacy Policy for pboboo.cn — learn how we handle your information.');
+  } else {
+    document.getElementById('pageTitle').textContent = '隐私政策 · pboboo.cn';
+    document.getElementById('pageDesc').setAttribute('content', 'pboboo.cn 隐私政策 — 了解我们如何处理您的信息。');
+  }
+}
+
+setLang(LANG);
+</script>
 </body>
 </html>
-

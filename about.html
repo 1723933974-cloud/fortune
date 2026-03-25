@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>关于本站 · pboboo.cn</title>
-<meta name="description" content="pboboo.cn 是一款融合八字五行与易经的每日运势生成器，帮助你找到今天的气场方向。">
+<title id="pageTitle">关于本站 · pboboo.cn</title>
+<meta id="pageDesc" name="description" content="pboboo.cn 是一款融合八字五行与易经的每日运势生成器，帮助你找到今天的气场方向。">
 <link rel="canonical" href="https://pboboo.cn/about.html">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5612817044381809" crossorigin="anonymous"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#07070f;--card:#13131f;--accent:#9d7bff;--accent2:#ff7eb3;--text:#eeeeff;--muted:#6b6b90;--muted2:#9494b8;--border:rgba(255,255,255,0.06)}
-body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;min-height:100vh;padding:48px 24px 80px}
+body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;min-height:100vh;padding:56px 24px 80px}
 .wrap{max-width:680px;margin:0 auto}
 .back{display:inline-flex;align-items:center;gap:6px;color:var(--muted2);font-size:13px;text-decoration:none;margin-bottom:32px;transition:color .2s}
 .back:hover{color:var(--accent)}
@@ -29,49 +29,87 @@ p:last-child{margin-bottom:0}
 .cta:hover{opacity:.85}
 footer{text-align:center;margin-top:48px;font-size:11px;color:var(--muted);opacity:.5}
 footer a{color:var(--muted2);text-decoration:none;margin:0 8px}
+.lang-switch{position:fixed;top:16px;right:16px;z-index:999;display:flex;gap:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:4px 6px;backdrop-filter:blur(8px)}
+.lang-btn{background:none;border:none;color:var(--muted);font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;cursor:pointer;transition:all .25s;letter-spacing:.5px}
+.lang-btn.active{background:rgba(157,123,255,0.25);color:var(--accent);border:1px solid rgba(157,123,255,0.35)}
 </style>
 </head>
 <body>
+
+<div class="lang-switch">
+  <button class="lang-btn active" id="btnZH" onclick="setLang('zh')">中文</button>
+  <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
+</div>
+
 <div class="wrap">
-  <a href="/" class="back">← 返回首页</a>
+  <a href="/" class="back" data-zh="← 返回首页" data-en="← Back to Home">← 返回首页</a>
 
   <div class="hero-about">
     <span class="hero-emoji">✦</span>
-    <h1>今天，适合做什么？</h1>
-    <p class="tagline">一款融合八字五行与易经的每日运势生成器<br>帮你找到今天的气场方向</p>
+    <h1 data-zh="今天，适合做什么？" data-en="What Should I Do Today?">今天，适合做什么？</h1>
+    <p class="tagline" data-zh="一款融合八字五行与易经的每日运势生成器<br>帮你找到今天的气场方向" data-en="A daily fortune generator blending Bazi, Five Elements, and I-Ching<br>Discover what today's energy holds for you">一款融合八字五行与易经的每日运势生成器<br>帮你找到今天的气场方向</p>
   </div>
 
   <div class="section">
-    <h2>关于本站</h2>
-    <p>pboboo.cn 是一个轻量级的每日运势工具，结合中国传统命理文化（八字、五行、易经、紫微斗数），为用户推演当天的气场走向。</p>
-    <p>我们相信传统文化有其独特的智慧。虽然运势推算无法预知未来，但它可以帮助我们在繁忙的日常中停下来，思考今天的状态和方向。</p>
+    <h2 data-zh="关于本站" data-en="About This Site">关于本站</h2>
+    <p data-zh="pboboo.cn 是一个轻量级的每日运势工具，结合中国传统命理文化（八字、五行、易经、紫微斗数），为用户推演当天的气场走向。" data-en="pboboo.cn is a lightweight daily fortune tool that combines traditional Chinese metaphysics — Bazi, Five Elements, I-Ching, and Purple Star Astrology — to map out your energy for today.">pboboo.cn 是一个轻量级的每日运势工具，结合中国传统命理文化（八字、五行、易经、紫微斗数），为用户推演当天的气场走向。</p>
+    <p data-zh="我们相信传统文化有其独特的智慧。虽然运势推算无法预知未来，但它可以帮助我们在繁忙的日常中停下来，思考今天的状态和方向。" data-en="We believe traditional wisdom has something real to offer. Fortune-telling can't predict the future, but it can be a meaningful pause — a moment to check in with yourself and consider your direction for the day.">我们相信传统文化有其独特的智慧。虽然运势推算无法预知未来，但它可以帮助我们在繁忙的日常中停下来，思考今天的状态和方向。</p>
   </div>
 
   <div class="section">
-    <h2>核心功能</h2>
+    <h2 data-zh="核心功能" data-en="Key Features">核心功能</h2>
     <div class="feature-list">
-      <div class="feature-item"><span class="feature-icon">🔮</span><span>基于生辰八字，结合今日干支流年推算每日运势</span></div>
-      <div class="feature-item"><span class="feature-icon">🌈</span><span>五行能量分析，六维雷达图展示事业、财运、感情等维度</span></div>
-      <div class="feature-item"><span class="feature-icon">☯️</span><span>每日起卦，六十四卦轮换，给出今日卦象解读</span></div>
-      <div class="feature-item"><span class="feature-icon">⏰</span><span>时段建议，告诉你今天什么时间做什么事最顺</span></div>
-      <div class="feature-item"><span class="feature-icon">🎨</span><span>幸运色、幸运数、幸运方位，让你每天多一点小确幸</span></div>
-      <div class="feature-item"><span class="feature-icon">📱</span><span>支持生成运势卡片，截图分享给朋友</span></div>
+      <div class="feature-item"><span class="feature-icon">🔮</span><span data-zh="基于生辰八字，结合今日干支流年推算每日运势" data-en="Personalized daily fortune based on your Bazi and today's Heavenly Stems & Branches">基于生辰八字，结合今日干支流年推算每日运势</span></div>
+      <div class="feature-item"><span class="feature-icon">🌈</span><span data-zh="五行能量分析，六维雷达图展示事业、财运、感情等维度" data-en="Five Elements energy analysis with a 6-dimension radar chart covering career, wealth, love, and more">五行能量分析，六维雷达图展示事业、财运、感情等维度</span></div>
+      <div class="feature-item"><span class="feature-icon">☯️</span><span data-zh="每日起卦，六十四卦轮换，给出今日卦象解读" data-en="Daily I-Ching hexagram reading, cycling through all 64 hexagrams">每日起卦，六十四卦轮换，给出今日卦象解读</span></div>
+      <div class="feature-item"><span class="feature-icon">⏰</span><span data-zh="时段建议，告诉你今天什么时间做什么事最顺" data-en="Hourly time-slot advice — when to act, rest, or connect">时段建议，告诉你今天什么时间做什么事最顺</span></div>
+      <div class="feature-item"><span class="feature-icon">🎨</span><span data-zh="幸运色、幸运数、幸运方位，让你每天多一点小确幸" data-en="Lucky color, lucky number, and lucky direction for a little daily joy">幸运色、幸运数、幸运方位，让你每天多一点小确幸</span></div>
+      <div class="feature-item"><span class="feature-icon">📱</span><span data-zh="支持生成运势卡片，截图分享给朋友" data-en="Generate a shareable fortune card — screenshot and send to friends">支持生成运势卡片，截图分享给朋友</span></div>
     </div>
   </div>
 
   <div class="section">
-    <h2>设计理念</h2>
-    <p>我们希望把传统命理文化做得更现代、更有趣、更易用。不是让你迷信，而是给你一个每天的仪式感——停下来，感受一下今天的自己。</p>
-    <p>所有推算完全在本地完成，你的生辰信息不会上传到任何服务器。</p>
+    <h2 data-zh="设计理念" data-en="Our Philosophy">设计理念</h2>
+    <p data-zh="我们希望把传统命理文化做得更现代、更有趣、更易用。不是让你迷信，而是给你一个每天的仪式感——停下来，感受一下今天的自己。" data-en="We want to make traditional Chinese wisdom feel modern, fun, and accessible. Not superstition — just a little ritual. A moment each morning to pause and tune in to yourself.">我们希望把传统命理文化做得更现代、更有趣、更易用。不是让你迷信，而是给你一个每天的仪式感——停下来，感受一下今天的自己。</p>
+    <p data-zh="所有推算完全在本地完成，你的生辰信息不会上传到任何服务器。" data-en="All calculations happen entirely in your browser. Your birth info is never uploaded to any server.">所有推算完全在本地完成，你的生辰信息不会上传到任何服务器。</p>
   </div>
 
-  <a href="/" class="cta">✦ 开始今日测算</a>
+  <a href="/" class="cta" data-zh="✦ 开始今日测算" data-en="✦ Check Today's Fortune">✦ 开始今日测算</a>
 </div>
 
 <footer>
-  <a href="/">首页</a> | <a href="/about.html">关于本站</a> | <a href="/privacy.html">隐私政策</a> | <a href="/terms.html">服务条款</a> | <a href="/faq.html">常见问题</a>
+  <a href="/" data-zh="首页" data-en="Home">首页</a> |
+  <a href="/about.html" data-zh="关于本站" data-en="About">关于本站</a> |
+  <a href="/privacy.html" data-zh="隐私政策" data-en="Privacy">隐私政策</a> |
+  <a href="/terms.html" data-zh="服务条款" data-en="Terms">服务条款</a> |
+  <a href="/faq.html" data-zh="常见问题" data-en="FAQ">常见问题</a>
   <br><br>© 2026 pboboo.cn
 </footer>
+
+<script>
+const LANG_KEY = 'fortune_lang';
+let LANG = localStorage.getItem(LANG_KEY) || 'zh';
+
+function setLang(lang) {
+  LANG = lang;
+  localStorage.setItem(LANG_KEY, lang);
+  document.getElementById('htmlRoot').lang = lang === 'zh' ? 'zh-CN' : 'en';
+  document.getElementById('btnZH').classList.toggle('active', lang === 'zh');
+  document.getElementById('btnEN').classList.toggle('active', lang === 'en');
+  document.querySelectorAll('[data-zh]').forEach(el => {
+    const val = el.getAttribute('data-' + lang);
+    if (val !== null) el.innerHTML = val;
+  });
+  if (lang === 'en') {
+    document.getElementById('pageTitle').textContent = 'About · pboboo.cn';
+    document.getElementById('pageDesc').setAttribute('content', 'pboboo.cn is a daily fortune generator combining Bazi, Five Elements, and I-Ching to help you discover today\'s energy.');
+  } else {
+    document.getElementById('pageTitle').textContent = '关于本站 · pboboo.cn';
+    document.getElementById('pageDesc').setAttribute('content', 'pboboo.cn 是一款融合八字五行与易经的每日运势生成器，帮助你找到今天的气场方向。');
+  }
+}
+
+setLang(LANG);
+</script>
 </body>
 </html>
-
