@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="zh-CN">
+<html lang="zh-CN" id="htmlRoot">
 
 <head>
 
@@ -10,9 +10,9 @@
 
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5612817044381809" crossorigin="anonymous"></script>
 
-<title>今天，适合做什么？· 今日运势 | 每日运势生成器</title>
+<title id="pageTitle">今天，适合做什么？· 今日运势 | 每日运势生成器</title>
 
-<meta name="description" content="输入生辰信息，融合八字五行与易经，看看今天的气场对你意味着什么。每天一测，发现今日幸运色与吉时。">
+<meta id="pageDesc" name="description" content="输入生辰信息，融合八字五行与易经，看看今天的气场对你意味着什么。每天一测，发现今日幸运色与吉时。">
 
 <meta property="og:title" content="今天，适合做什么？· 今日运势">
 
@@ -501,11 +501,20 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
 .c-tip b{color:var(--text);font-weight:600}
 
-</style>
+/* ── 语言切换按钮 ── */
+.lang-switch{position:fixed;top:16px;right:16px;z-index:999;display:flex;gap:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:4px 6px;backdrop-filter:blur(8px)}
+.lang-btn{background:none;border:none;color:var(--muted);font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;cursor:pointer;transition:all .25s;letter-spacing:.5px}
+.lang-btn.active{background:rgba(157,123,255,0.25);color:var(--accent);border:1px solid rgba(157,123,255,0.35)}
+.lang-btn:not(.active):hover{color:var(--text)}
 
-</head>
+
 
 <body>
+
+<div class="lang-switch">
+  <button class="lang-btn active" id="btnZH" onclick="setLang('zh')">中文</button>
+  <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
+</div>
 
 <canvas id="cosmos"></canvas>
 
@@ -521,7 +530,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
   <div class="sidebar-card">
 
-    <div class="sidebar-card-title">今日概览</div>
+    <div class="sidebar-card-title" data-zh="今日概览" data-en="TODAY'S OVERVIEW">今日概览</div>
 
     <div id="sbDateInfo" style="font-size:12px;color:var(--muted2);line-height:2"></div>
 
@@ -529,7 +538,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
   <div class="sidebar-card" id="sbYiJiCard" style="display:none">
 
-    <div class="sidebar-card-title">今日宜忌</div>
+    <div class="sidebar-card-title" id="sbYiJiTitle" data-zh="今日宜忌" data-en="TODAY'S DO & DON'T">今日宜忌</div>
 
     <div id="sbYiList" style="margin-bottom:10px"></div>
 
@@ -538,8 +547,10 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
   </div>
 
   <div class="sidebar-card">
-    <div class="sidebar-card-title">使用说明</div>
-    <div style="font-size:11px;color:var(--muted2);line-height:1.9">
+    <div class="sidebar-card-title" data-zh="使用说明" data-en="HOW IT WORKS">使用说明</div>
+    <div id="howItWorks" style="font-size:11px;color:var(--muted2);line-height:1.9"
+      data-zh="· 基于你的生辰八字<br>· 结合今日干支流年<br>· 每天结果不同<br>· 同一天结果稳定<br><span style='color:rgba(255,255,255,0.1);font-size:10px;display:block;margin-top:8px'>✦ 娱乐参考，非决策依据</span>"
+      data-en="· Based on your birth chart<br>· Combined with today's energy<br>· Changes every day<br>· Consistent same-day results<br><span style='color:rgba(255,255,255,0.1);font-size:10px;display:block;margin-top:8px'>✦ For fun · Not a life guide</span>">
       · 基于你的生辰八字<br>
       · 结合今日干支流年<br>
       · 每天结果不同<br>
@@ -550,13 +561,13 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
   <div class="sidebar-card">
 
-    <div class="sidebar-card-title">神秘工具箱</div>
+    <div class="sidebar-card-title" data-zh="神秘工具箱" data-en="MYSTIC TOOLS">神秘工具箱</div>
 
     <a href="/yes-no.html" class="sb-tool-link">
 
       <span class="sb-tool-icon">🔮</span>
 
-      <div><div class="sb-tool-name">是否神谕</div><div class="sb-tool-desc">让宇宙告诉你</div></div>
+      <div><div class="sb-tool-name" data-zh="是否神谕" data-en="Yes/No Oracle">是否神谕</div><div class="sb-tool-desc" data-zh="让宇宙告诉你" data-en="Let the universe decide">让宇宙告诉你</div></div>
 
     </a>
 
@@ -564,7 +575,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <span class="sb-tool-icon">🎲</span>
 
-      <div><div class="sb-tool-name">幸运数字</div><div class="sb-tool-desc">今日专属数字</div></div>
+      <div><div class="sb-tool-name" data-zh="幸运数字" data-en="Lucky Number">幸运数字</div><div class="sb-tool-desc" data-zh="今日专属数字" data-en="Your number for today">今日专属数字</div></div>
 
     </a>
 
@@ -572,7 +583,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <span class="sb-tool-icon">🎨</span>
 
-      <div><div class="sb-tool-name">幸运颜色</div><div class="sb-tool-desc">今日能量色彩</div></div>
+      <div><div class="sb-tool-name" data-zh="幸运颜色" data-en="Lucky Color">幸运颜色</div><div class="sb-tool-desc" data-zh="今日能量色彩" data-en="Today's energy color">今日能量色彩</div></div>
 
     </a>
 
@@ -580,7 +591,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <span class="sb-tool-icon">🥠</span>
 
-      <div><div class="sb-tool-name">幸运饼干</div><div class="sb-tool-desc">一条命运金句</div></div>
+      <div><div class="sb-tool-name" data-zh="幸运饼干" data-en="Fortune Cookie">幸运饼干</div><div class="sb-tool-desc" data-zh="一条命运金句" data-en="One fortune for you">一条命运金句</div></div>
 
     </a>
 
@@ -588,7 +599,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <span class="sb-tool-icon">🎯</span>
 
-      <div><div class="sb-tool-name">随机决策</div><div class="sb-tool-desc">现在该干什么</div></div>
+      <div><div class="sb-tool-name" data-zh="随机决策" data-en="Random Decision">随机决策</div><div class="sb-tool-desc" data-zh="现在该干什么" data-en="What should I do now?">现在该干什么</div></div>
 
     </a>
 
@@ -606,15 +617,15 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
   <div class="hero">
 
-    <div class="hero-badge">✦ 八字 · 五行 · 易经 ✦</div>
+    <div class="hero-badge" data-zh="✦ 八字 · 五行 · 易经 ✦" data-en="✦ BAZI · WUXING · YIJING ✦">✦ 八字 · 五行 · 易经 ✦</div>
 
     <!-- 今日日期卡片 -->
 
     <div id="todayCard" style="display:inline-flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;padding:10px 20px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;font-size:12px;color:var(--muted2);letter-spacing:1px"></div>
 
-    <h1><span>今天，</span><br>适合做什么？</h1>
+    <h1><span id="heroTitle" data-zh="今天，" data-en="What Should">今天，</span><br><span id="heroTitle2" data-zh="适合做什么？" data-en="I Do Today?">适合做什么？</span></h1>
 
-    <p>输入你的生辰信息，融合五行与易经<br>看看今天的气场对你意味着什么</p>
+    <p id="heroSub" data-zh="输入你的生辰信息，融合五行与易经<br>看看今天的气场对你意味着什么" data-en="Enter your birth info · Five Elements · I-Ching<br>Discover what today's energy means for you">输入你的生辰信息，融合五行与易经<br>看看今天的气场对你意味着什么</p>
 
     <div id="visitCount" style="display:none;margin-top:16px;background:rgba(157,123,255,0.1);border:1px solid rgba(157,123,255,0.2);border-radius:100px;padding:5px 16px;font-size:12px;color:var(--accent);letter-spacing:1px;"></div>
 
@@ -654,7 +665,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
     <div class="card">
 
-      <div class="card-title">生辰八字 · 基础信息</div>
+      <div class="card-title" data-zh="生辰八字 · 基础信息" data-en="Birth Info · Basics">生辰八字 · 基础信息</div>
 
 
 
@@ -662,7 +673,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
         <div class="field-group">
 
-          <div class="field-label">出生年份</div>
+          <div class="field-label" data-zh="出生年份" data-en="Birth Year">出生年份</div>
 
           <select class="field-select" id="birthYear"></select>
 
@@ -670,7 +681,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
         <div class="field-group">
 
-          <div class="field-label">出生月份</div>
+          <div class="field-label" data-zh="出生月份" data-en="Birth Month">出生月份</div>
 
           <select class="field-select" id="birthMonth"></select>
 
@@ -678,7 +689,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
         <div class="field-group">
 
-          <div class="field-label">出生日期</div>
+          <div class="field-label" data-zh="出生日期" data-en="Birth Day">出生日期</div>
 
           <select class="field-select" id="birthDay"></select>
 
@@ -690,19 +701,19 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <div class="field-group" style="margin-bottom:20px">
 
-        <div class="field-label">性别</div>
+        <div class="field-label" data-zh="性别" data-en="Gender">性别</div>
 
         <div class="gender-row" style="margin-top:8px">
 
           <button class="gender-btn active" id="genderM" onclick="selectGender('male')">
 
-            <span class="g-icon">♂</span> 男命
+            <span class="g-icon">♂</span> <span data-zh="男命" data-en="Male">男命</span>
 
           </button>
 
           <button class="gender-btn" id="genderF" onclick="selectGender('female')">
 
-            <span class="g-icon">♀</span> 女命
+            <span class="g-icon">♀</span> <span data-zh="女命" data-en="Female">女命</span>
 
           </button>
 
@@ -712,7 +723,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
 
 
-      <button class="btn-primary" onclick="goPage(2)">下一步 →</button>
+      <button class="btn-primary" id="btnNext1" onclick="goPage(2)" data-zh="下一步 →" data-en="Next →">下一步 →</button>
 
       <!-- 记住我 -->
 
@@ -720,7 +731,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
         <input type="checkbox" id="rememberMe" style="accent-color:var(--accent);width:14px;height:14px;cursor:pointer">
 
-        <label for="rememberMe" style="font-size:12px;color:var(--muted);cursor:pointer">记住我的信息，下次直接跳到结果</label>
+        <label for="rememberMe" id="rememberLabel" style="font-size:12px;color:var(--muted);cursor:pointer" data-zh="记住我的信息，下次直接跳到结果" data-en="Remember me, skip to result next time">记住我的信息，下次直接跳到结果</label>
 
       </div>
 
@@ -736,17 +747,17 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
     <div class="card">
 
-      <div class="card-title">时辰宫位 · 紫微斗数</div>
+      <div class="card-title" data-zh="时辰宫位 · 紫微斗数" data-en="Birth Hour · Purple Star">时辰宫位 · 紫微斗数</div>
 
-      <p class="hint" style="margin-bottom:16px">时辰影响命盘宫位，请尽量准确选择。不确定可选「未知」</p>
+      <p class="hint" id="page2Hint" style="margin-bottom:16px" data-zh="时辰影响命盘宫位，请尽量准确选择。不确定可选「未知」" data-en="Birth hour affects your chart — select as precisely as you can. Choose 'Unknown' if unsure">时辰影响命盘宫位，请尽量准确选择。不确定可选「未知」</p>
 
       <div class="shichen-grid" id="shichenGrid"></div>
 
-      <button class="btn-primary" onclick="goPage(3)" style="margin-top:16px">下一步 →</button>
+      <button class="btn-primary" id="btnNext2" onclick="goPage(3)" style="margin-top:16px" data-zh="下一步 →" data-en="Next →">下一步 →</button>
 
     </div>
 
-    <button class="btn-back" onclick="goPage(1)">← 返回</button>
+    <button class="btn-back" id="btnBack2" onclick="goPage(1)" data-zh="← 返回" data-en="← Back">← 返回</button>
 
   </div>
 
@@ -758,17 +769,17 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
     <div class="card">
 
-      <div class="card-title">今日关注 · 意向场域</div>
+      <div class="card-title" data-zh="今日关注 · 意向场域" data-en="Today's Focus · Intention">今日关注 · 意向场域</div>
 
-      <p class="hint" style="margin-bottom:16px">选择今天你最在意的方向（可多选，最多3个）</p>
+      <p class="hint" id="page3Hint" style="margin-bottom:16px" data-zh="选择今天你最在意的方向（可多选，最多3个）" data-en="Choose what matters most today (up to 3 selections)">选择今天你最在意的方向（可多选，最多3个）</p>
 
       <div class="q-list" id="focusList"></div>
 
-      <button class="btn-primary" onclick="goPage(4)" style="margin-top:16px" id="focusNextBtn" disabled>下一步 →</button>
+      <button class="btn-primary" onclick="goPage(4)" style="margin-top:16px" id="focusNextBtn" disabled data-zh="下一步 →" data-en="Next →">下一步 →</button>
 
     </div>
 
-    <button class="btn-back" onclick="goPage(2)">← 返回</button>
+    <button class="btn-back" id="btnBack3" onclick="goPage(2)" data-zh="← 返回" data-en="← Back">← 返回</button>
 
   </div>
 
@@ -782,7 +793,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <div class="card-title">当下气场 · 能量感知</div>
 
-      <p class="hint" style="margin-bottom:24px">此刻你的状态如何？拖动滑块感受一下</p>
+      <p class="hint" id="page4Hint" style="margin-bottom:24px" data-zh="此刻你的状态如何？拖动滑块感受一下" data-en="How are you feeling right now? Drag the slider">此刻你的状态如何？拖动滑块感受一下</p>
 
 
 
@@ -796,7 +807,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
         </div>
 
-        <div class="mood-labels"><span>😔 低迷</span><span>😐 平稳</span><span>🌟 亢奋</span></div>
+        <div class="mood-labels"><span id="moodLow" data-zh="😔 低迷" data-en="😔 Low">😔 低迷</span><span id="moodMid" data-zh="😐 平稳" data-en="😐 Steady">😐 平稳</span><span id="moodHigh" data-zh="🌟 亢奋" data-en="🌟 Energized">🌟 亢奋</span></div>
 
         <div class="mood-hint" id="moodHint">还不错，气场稳定</div>
 
@@ -804,11 +815,11 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
 
 
-      <button class="btn-primary" onclick="goPage(5)" style="margin-top:8px">下一步 →</button>
+      <button class="btn-primary" id="btnNext4" onclick="goPage(5)" style="margin-top:8px" data-zh="下一步 →" data-en="Next →">下一步 →</button>
 
     </div>
 
-    <button class="btn-back" onclick="goPage(3)">← 返回</button>
+    <button class="btn-back" id="btnBack4" onclick="goPage(3)" data-zh="← 返回" data-en="← Back">← 返回</button>
 
   </div>
 
@@ -820,17 +831,17 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
     <div class="card">
 
-      <div class="card-title">直觉感知 · 今日预感</div>
+      <div class="card-title" data-zh="直觉感知 · 今日预感" data-en="Intuition · Today's Vibe">直觉感知 · 今日预感</div>
 
-      <p class="hint" style="margin-bottom:16px">不用想太多，凭第一直觉选一个</p>
+      <p class="hint" id="page5Hint" style="margin-bottom:16px" data-zh="不用想太多，凭第一直觉选一个" data-en="Don't overthink it — pick your first instinct">不用想太多，凭第一直觉选一个</p>
 
       <div class="q-list" id="intuitionList"></div>
 
-      <button class="btn-primary" onclick="startCalc()" style="margin-top:20px" id="calcBtn" disabled>✦ 开始推算命局</button>
+      <button class="btn-primary" onclick="startCalc()" style="margin-top:20px" id="calcBtn" disabled data-zh="✦ 开始推算命局" data-en="✦ Calculate My Fortune">✦ 开始推算命局</button>
 
     </div>
 
-    <button class="btn-back" onclick="goPage(4)">← 返回</button>
+    <button class="btn-back" id="btnBack5" onclick="goPage(4)" data-zh="← 返回" data-en="← Back">← 返回</button>
 
   </div>
 
@@ -870,21 +881,21 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
     </div>
 
-    <div class="loader-text">正在推演命局<br><span style="font-size:12px;color:var(--muted)">融合八字 · 五行 · 易经</span></div>
+    <div class="loader-text" id="loaderText" data-zh="正在推演命局<br><span style='font-size:12px;color:var(--muted)'>融合八字 · 五行 · 易经</span>" data-en="Reading your fortune<br><span style='font-size:12px;color:var(--muted)'>Bazi · Five Elements · I-Ching</span>">正在推演命局<br><span style="font-size:12px;color:var(--muted)">融合八字 · 五行 · 易经</span></div>
 
     <div class="loader-steps" id="loaderSteps">
 
-      <div class="loader-step">⊙ 排列生辰八字柱...</div>
+      <div class="loader-step" data-zh="⊙ 排列生辰八字柱..." data-en="⊙ Arranging Bazi pillars...">⊙ 排列生辰八字柱...</div>
 
-      <div class="loader-step">⊙ 推算五行生克...</div>
+      <div class="loader-step" data-zh="⊙ 推算五行生克..." data-en="⊙ Calculating Five Elements...">⊙ 推算五行生克...</div>
 
-      <div class="loader-step">⊙ 起卦六十四卦...</div>
+      <div class="loader-step" data-zh="⊙ 起卦六十四卦..." data-en="⊙ Drawing I-Ching hexagram...">⊙ 起卦六十四卦...</div>
 
-      <div class="loader-step">⊙ 布置紫微命盘...</div>
+      <div class="loader-step" data-zh="⊙ 布置紫微命盘..." data-en="⊙ Mapping Purple Star chart...">⊙ 布置紫微命盘...</div>
 
-      <div class="loader-step">⊙ 推演今日流年...</div>
+      <div class="loader-step" data-zh="⊙ 推演今日流年..." data-en="⊙ Analyzing today's energy...">⊙ 推演今日流年...</div>
 
-      <div class="loader-step" style="color:var(--accent)">✦ 天机已明，即将呈现...</div>
+      <div class="loader-step" style="color:var(--accent)" data-zh="✦ 天机已明，即将呈现..." data-en="✦ The stars have spoken...">✦ 天机已明，即将呈现...</div>
 
     </div>
 
@@ -902,7 +913,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
     <div class="conclusion-card" id="conclusionCard">
 
-      <div class="conclusion-label">✦ 今日总览</div>
+      <div class="conclusion-label" id="conclusionLabel" data-zh="✦ 今日总览" data-en="✦ Today's Overview">✦ 今日总览</div>
 
       <div class="conclusion-body" id="conclusionBody"></div>
 
@@ -938,7 +949,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
     <div class="wuxing-card">
 
-      <div class="wuxing-title">五行能量 · 今日格局</div>
+      <div class="wuxing-title" id="wuxingTitle" data-zh="五行能量 · 今日格局" data-en="Five Elements · Today's Pattern">五行能量 · 今日格局</div>
 
       <div class="wuxing-bars" id="wuxingBars"></div>
 
@@ -950,7 +961,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
     <div class="radar-card">
 
-      <div class="card-title">六维运势</div>
+      <div class="card-title" id="radarTitle" data-zh="六维运势" data-en="Six-Dimension Fortune">六维运势</div>
 
       <div class="radar-wrap">
 
@@ -972,7 +983,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
     <div class="gua-card">
 
-      <div class="card-title">卦象解读</div>
+      <div class="card-title" id="guaTitle" data-zh="卦象解读" data-en="Hexagram Reading">卦象解读</div>
 
       <div class="gua-yao" id="guaYao"></div>
 
@@ -986,7 +997,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
     <div class="timeline-card">
 
-      <div class="card-title">今日时段建议</div>
+      <div class="card-title" id="timelineTitle" data-zh="今日时段建议" data-en="Today's Time Guide">今日时段建议</div>
 
       <div class="timeline" id="timeline"></div>
 
@@ -1004,7 +1015,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
     <div id="shareSection" style="margin-bottom:16px">
 
-      <button onclick="generateShareCard()" style="width:100%;padding:15px;background:rgba(157,123,255,0.1);border:1px solid rgba(157,123,255,0.3);border-radius:14px;color:var(--accent);font-size:14px;font-weight:600;cursor:pointer;transition:all .3s;letter-spacing:0.5px" onmouseover="this.style.background='rgba(157,123,255,0.2)'" onmouseout="this.style.background='rgba(157,123,255,0.1)'">
+      <button id="shareCardBtn" onclick="generateShareCard()" style="width:100%;padding:15px;background:rgba(157,123,255,0.1);border:1px solid rgba(157,123,255,0.3);border-radius:14px;color:var(--accent);font-size:14px;font-weight:600;cursor:pointer;transition:all .3s;letter-spacing:0.5px" onmouseover="this.style.background='rgba(157,123,255,0.2)'" onmouseout="this.style.background='rgba(157,123,255,0.1)'" data-zh="✦ 生成运势卡片（截图分享）" data-en="✦ Generate Fortune Card (Save & Share)">
 
         ✦ 生成运势卡片（截图分享）
 
@@ -1016,7 +1027,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <!-- img 展示卡片 -->
 
-      <img id="shareImg" style="display:none;width:100%;border-radius:12px;margin-top:12px" alt="今日运势卡片">
+      <img id="shareImg" style="display:none;width:100%;border-radius:12px;margin-top:12px" alt="fortune card">
 
       <div id="shareHint" style="display:none"></div>
 
@@ -1026,15 +1037,15 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
     <div class="result-footer">
 
-      <button class="btn-redo" onclick="resetAll()">↺ 重新推算</button>
+      <button class="btn-redo" id="btnRedo" onclick="resetAll()" data-zh="↺ 重新推算" data-en="↺ Start Over">↺ 重新推算</button>
 
-      <div class="disclaimer">✦ 命理推算仅供娱乐参考，不构成任何决策建议 ✦</div>
+      <div class="disclaimer" id="disclaimerText" data-zh="✦ 命理推算仅供娱乐参考，不构成任何决策建议 ✦" data-en="✦ For entertainment only · Not a substitute for real advice ✦">✦ 命理推算仅供娱乐参考，不构成任何决策建议 ✦</div>
 
       <div style="margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
 
-        <button onclick="shareToWeibo()" style="background:rgba(255,126,179,0.15);border:1px solid rgba(255,126,179,0.3);border-radius:100px;color:#ff7eb3;font-size:12px;padding:8px 18px;cursor:pointer;transition:all .2s">🔗 分享到微博</button>
+        <button id="shareWeiboBtn" onclick="shareToWeibo()" style="background:rgba(255,126,179,0.15);border:1px solid rgba(255,126,179,0.3);border-radius:100px;color:#ff7eb3;font-size:12px;padding:8px 18px;cursor:pointer;transition:all .2s" data-zh="🔗 分享到微博" data-en="🔗 Share">🔗 分享到微博</button>
 
-        <button onclick="copyShareText()" style="background:rgba(157,123,255,0.15);border:1px solid rgba(157,123,255,0.3);border-radius:100px;color:#9d7bff;font-size:12px;padding:8px 18px;cursor:pointer;transition:all .2s">📋 复制结果</button>
+        <button id="copyResultBtn" onclick="copyShareText()" style="background:rgba(157,123,255,0.15);border:1px solid rgba(157,123,255,0.3);border-radius:100px;color:#9d7bff;font-size:12px;padding:8px 18px;cursor:pointer;transition:all .2s" data-zh="📋 复制结果" data-en="📋 Copy Result">📋 复制结果</button>
 
       </div>
 
@@ -1054,13 +1065,13 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
   <div class="sidebar-card">
 
-    <div class="sidebar-card-title">扫码测算</div>
+    <div class="sidebar-card-title" data-zh="扫码测算" data-en="SCAN TO TRY">扫码测算</div>
 
     <div class="sidebar-qr-wrap">
 
       <img id="sidebarQR" src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https%3A%2F%2Fpboboo.cn&bgcolor=0e0820&color=c4b5ff&format=png&margin=2" alt="扫码测算" loading="eager" onerror="this.style.opacity='0.3'">
 
-      <p>手机扫码<br>开启今日运势</p>
+      <p id="qrDesc" data-zh="手机扫码<br>开启今日运势" data-en="Scan to check<br>your daily fortune">手机扫码<br>开启今日运势</p>
 
     </div>
 
@@ -1068,7 +1079,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
   <div class="sidebar-card" id="sbScoreCard" style="display:none">
 
-    <div class="sidebar-card-title">今日运势</div>
+    <div class="sidebar-card-title" id="sbScoreTitle" data-zh="今日运势" data-en="TODAY'S FORTUNE">今日运势</div>
 
     <div id="sbScoreInfo" style="text-align:center;padding:8px 0"></div>
 
@@ -1076,7 +1087,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
   <div class="sidebar-card">
 
-    <div class="sidebar-card-title">命理知识</div>
+    <div class="sidebar-card-title" data-zh="命理知识" data-en="ASTROLOGY GUIDES">命理知识</div>
 
     <a href="/blog-bazi-intro.html" class="sb-tool-link">
 
@@ -1144,7 +1155,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
 <div class="mobile-tools">
 
-  <div class="mobile-tools-title">✦ 神秘工具箱</div>
+  <div class="mobile-tools-title" id="mobileToolsTitle" data-zh="✦ 神秘工具箱" data-en="✦ MYSTIC TOOLS">✦ 神秘工具箱</div>
 
   <div class="mobile-tools-grid">
 
@@ -1152,7 +1163,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <div class="mtc-icon">🔮</div>
 
-      <div class="mtc-name">是否神谕</div>
+      <div class="mtc-name" data-zh="是否神谕" data-en="Yes/No Oracle">是否神谕</div>
 
     </a>
 
@@ -1160,7 +1171,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <div class="mtc-icon">🎲</div>
 
-      <div class="mtc-name">幸运数字</div>
+      <div class="mtc-name" data-zh="幸运数字" data-en="Lucky Number">幸运数字</div>
 
     </a>
 
@@ -1168,7 +1179,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <div class="mtc-icon">🎨</div>
 
-      <div class="mtc-name">幸运颜色</div>
+      <div class="mtc-name" data-zh="幸运颜色" data-en="Lucky Color">幸运颜色</div>
 
     </a>
 
@@ -1176,7 +1187,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <div class="mtc-icon">🥠</div>
 
-      <div class="mtc-name">幸运饼干</div>
+      <div class="mtc-name" data-zh="幸运饼干" data-en="Fortune Cookie">幸运饼干</div>
 
     </a>
 
@@ -1184,7 +1195,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
       <div class="mtc-icon">🎯</div>
 
-      <div class="mtc-name">随机决策</div>
+      <div class="mtc-name" data-zh="随机决策" data-en="Random Decision">随机决策</div>
 
     </a>
 
@@ -1196,7 +1207,7 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
 <div class="mobile-articles">
 
-  <div class="mobile-articles-title">✦ 命理知识</div>
+  <div class="mobile-articles-title" id="mobileArticlesTitle" data-zh="✦ 命理知识" data-en="✦ ASTROLOGY GUIDES">✦ 命理知识</div>
 
   <div class="mobile-articles-grid">
 
@@ -1281,27 +1292,35 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
   <section style="margin:40px 0">
 
-    <h2 style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:16px">今天，适合做什么？</h2>
+    <h2 id="seoH2" style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:16px" data-zh="今天，适合做什么？" data-en="What Should I Do Today?">今天，适合做什么？</h2>
 
-    <p style="font-size:13px;color:var(--muted2);line-height:2;margin-bottom:12px">
+    <p id="seoP1" style="font-size:13px;color:var(--muted2);line-height:2;margin-bottom:12px"
+      data-zh="这是一款融合八字五行与易经的每日运势生成器。输入你的生辰信息，系统将结合今日干支流年，为你推演今天的气场走向、幸运色彩与最佳行动时机。"
+      data-en="This daily fortune generator combines traditional Chinese astrology, Five Elements (Wuxing), and I-Ching hexagrams to give you a personalized reading for today. Enter your birth year, month, day, and hour to get started.">
 
       这是一款融合八字五行与易经的每日运势生成器。输入你的生辰信息，系统将结合今日干支流年，为你推演今天的气场走向、幸运色彩与最佳行动时机。
 
     </p>
 
-    <p style="font-size:13px;color:var(--muted2);line-height:2;margin-bottom:12px">
+    <p id="seoP2" style="font-size:13px;color:var(--muted2);line-height:2;margin-bottom:12px"
+      data-zh="每天的结果都不同，但同一天输入相同信息结果保持稳定。适合早晨起床后测一测，为今天的决策寻找一点参考与灵感。"
+      data-en="Many people use daily fortune tools as a fun morning ritual. Discover your lucky color, lucky number, lucky direction, and the best activities for today — all based on ancient Chinese wisdom.">
 
       每天的结果都不同，但同一天输入相同信息结果保持稳定。适合早晨起床后测一测，为今天的决策寻找一点参考与灵感。
 
     </p>
 
-    <p style="font-size:13px;color:var(--muted2);line-height:2;margin-bottom:12px">
+    <p id="seoP3" style="font-size:13px;color:var(--muted2);line-height:2;margin-bottom:12px"
+      data-zh="很多人把每日运势测算当作一种有趣的晨间仪式。如果你今天不知道该做什么，这个工具可以给你一个随机的建议、幸运色和幸运数字，为你的一天带来一点灵感。"
+      data-en="Each day brings new energy based on the Heavenly Stems and Earthly Branches of the Chinese calendar. Your birth chart interacts with today's energy to reveal your unique fortune.">
 
       很多人把每日运势测算当作一种有趣的晨间仪式。如果你今天不知道该做什么，这个工具可以给你一个随机的建议、幸运色和幸运数字，为你的一天带来一点灵感。
 
     </p>
 
-    <p style="font-size:13px;color:var(--muted2);line-height:2">
+    <p id="seoP4" style="font-size:13px;color:var(--muted2);line-height:2"
+      data-zh="每天都可以测一测，发现新的视角，把一点轻松的随机性带入你的日常生活。"
+      data-en="Check it every day, discover new perspectives, and bring a little playful randomness into your daily routine.">
 
       每天都可以测一测，发现新的视角，把一点轻松的随机性带入你的日常生活。
 
@@ -1313,49 +1332,49 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
   <section style="margin:40px 0">
 
-    <h2 style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:20px">常见问题</h2>
+    <h2 id="faqH2" style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:20px" data-zh="常见问题" data-en="FAQ">常见问题</h2>
 
     <div style="margin-bottom:20px">
 
-      <h3 style="font-size:14px;font-weight:600;color:var(--accent);margin-bottom:8px">运势结果准确吗？</h3>
+      <h3 id="faqQ1" style="font-size:14px;font-weight:600;color:var(--accent);margin-bottom:8px" data-zh="运势结果准确吗？" data-en="Is the fortune accurate?">运势结果准确吗？</h3>
 
-      <p style="font-size:13px;color:var(--muted2);line-height:1.9">本工具基于传统命理文化，结合每日干支推算，结果仅供娱乐参考，不构成任何决策建议。</p>
+      <p id="faqA1" style="font-size:13px;color:var(--muted2);line-height:1.9" data-zh="本工具基于传统命理文化，结合每日干支推算，结果仅供娱乐参考，不构成任何决策建议。" data-en="Results are based on traditional Chinese astrology and are for entertainment purposes only.">本工具基于传统命理文化，结合每日干支推算，结果仅供娱乐参考，不构成任何决策建议。</p>
 
     </div>
 
     <div style="margin-bottom:20px">
 
-      <h3 style="font-size:14px;font-weight:600;color:var(--accent);margin-bottom:8px">可以每天都测吗？</h3>
+      <h3 id="faqQ2" style="font-size:14px;font-weight:600;color:var(--accent);margin-bottom:8px" data-zh="可以每天都测吗？" data-en="Can I use it every day?">可以每天都测吗？</h3>
 
-      <p style="font-size:13px;color:var(--muted2);line-height:1.9">当然可以。每天的干支不同，结果也会随之变化。勾选「记住我」后，下次打开可以快速跳到结果。</p>
-
-    </div>
-
-    <div style="margin-bottom:20px">
-
-      <h3 style="font-size:14px;font-weight:600;color:var(--accent);margin-bottom:8px">我的信息会被保存吗？</h3>
-
-      <p style="font-size:13px;color:var(--muted2);line-height:1.9">生辰信息仅保存在你的本地浏览器（localStorage），不会上传到服务器。我们只收集匿名统计数据用于改进产品。</p>
+      <p id="faqA2" style="font-size:13px;color:var(--muted2);line-height:1.9" data-zh="当然可以。每天的干支不同，结果也会随之变化。勾选「记住我」后，下次打开可以快速跳到结果。" data-en="Yes! Each day has different heavenly stems and earthly branches, so your reading changes daily. Check 'Remember me' to skip directly to results next time.">当然可以。每天的干支不同，结果也会随之变化。勾选「记住我」后，下次打开可以快速跳到结果。</p>
 
     </div>
 
     <div style="margin-bottom:20px">
 
-      <h3 style="font-size:14px;font-weight:600;color:var(--accent);margin-bottom:8px">幸运色是怎么确定的？</h3>
+      <h3 id="faqQ3" style="font-size:14px;font-weight:600;color:var(--accent);margin-bottom:8px" data-zh="我的信息会被保存吗？" data-en="Is my data saved anywhere?">我的信息会被保存吗？</h3>
 
-      <p style="font-size:13px;color:var(--muted2);line-height:1.9">幸运色由你的生辰五行属性结合今日直觉感知共同决定，同一天选择不同直觉，幸运色也会有所不同。</p>
+      <p id="faqA3" style="font-size:13px;color:var(--muted2);line-height:1.9" data-zh="生辰信息仅保存在你的本地浏览器（localStorage），不会上传到服务器。我们只收集匿名统计数据用于改进产品。" data-en="Your birth info is stored only in your local browser (localStorage) and never uploaded to any server. We only collect anonymous usage statistics.">生辰信息仅保存在你的本地浏览器（localStorage），不会上传到服务器。我们只收集匿名统计数据用于改进产品。</p>
 
     </div>
 
     <div style="margin-bottom:20px">
 
-      <h3 style="font-size:14px;font-weight:600;color:var(--accent);margin-bottom:8px">如何分享结果？</h3>
+      <h3 id="faqQ4" style="font-size:14px;font-weight:600;color:var(--accent);margin-bottom:8px" data-zh="幸运色是怎么确定的？" data-en="How is the lucky color determined?">幸运色是怎么确定的？</h3>
 
-      <p style="font-size:13px;color:var(--muted2);line-height:1.9">在结果页面点击「生成今日运势卡片」，可以生成一张精美的分享图，截图保存后发给朋友。</p>
+      <p id="faqA4" style="font-size:13px;color:var(--muted2);line-height:1.9" data-zh="幸运色由你的生辰五行属性结合今日直觉感知共同决定，同一天选择不同直觉，幸运色也会有所不同。" data-en="Your lucky color is determined by your birth chart's Five Elements combined with your intuition selection. Different intuition choices lead to different lucky colors.">幸运色由你的生辰五行属性结合今日直觉感知共同决定，同一天选择不同直觉，幸运色也会有所不同。</p>
 
     </div>
 
-    <p style="font-size:12px;color:var(--muted);margin-top:8px">→ <a href="/faq.html" style="color:var(--accent);text-decoration:none">查看更多常见问题</a></p>
+    <div style="margin-bottom:20px">
+
+      <h3 id="faqQ5" style="font-size:14px;font-weight:600;color:var(--accent);margin-bottom:8px" data-zh="如何分享结果？" data-en="How do I share my result?">如何分享结果？</h3>
+
+      <p id="faqA5" style="font-size:13px;color:var(--muted2);line-height:1.9" data-zh="在结果页面点击「生成今日运势卡片」，可以生成一张精美的分享图，截图保存后发给朋友。" data-en="On the result page, click 'Generate Fortune Card' to create a shareable image. Save it and share with friends!">在结果页面点击「生成今日运势卡片」，可以生成一张精美的分享图，截图保存后发给朋友。</p>
+
+    </div>
+
+    <p style="font-size:12px;color:var(--muted);margin-top:8px">→ <a id="faqMoreLink" href="/faq.html" style="color:var(--accent);text-decoration:none" data-zh="查看更多常见问题" data-en="See more FAQs">查看更多常见问题</a></p>
 
   </section>
 
@@ -1373,27 +1392,27 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
   <div style="font-size:11px;color:var(--muted);line-height:2.8">
 
-    <a href="/" style="color:var(--muted2);text-decoration:none;margin:0 8px">首页</a>
+    <a id="footerHome" href="/" style="color:var(--muted2);text-decoration:none;margin:0 8px" data-zh="首页" data-en="Home">首页</a>
 
     <span style="color:rgba(255,255,255,0.1)">|</span>
 
-    <a href="/about.html" style="color:var(--muted2);text-decoration:none;margin:0 8px">关于本站</a>
+    <a id="footerAbout" href="/about.html" style="color:var(--muted2);text-decoration:none;margin:0 8px" data-zh="关于本站" data-en="About">关于本站</a>
 
     <span style="color:rgba(255,255,255,0.1)">|</span>
 
-    <a href="/faq.html" style="color:var(--muted2);text-decoration:none;margin:0 8px">常见问题</a>
+    <a id="footerFaq" href="/faq.html" style="color:var(--muted2);text-decoration:none;margin:0 8px" data-zh="常见问题" data-en="FAQ">常见问题</a>
 
     <span style="color:rgba(255,255,255,0.1)">|</span>
 
-    <a href="/privacy.html" style="color:var(--muted2);text-decoration:none;margin:0 8px">隐私政策</a>
+    <a id="footerPrivacy" href="/privacy.html" style="color:var(--muted2);text-decoration:none;margin:0 8px" data-zh="隐私政策" data-en="Privacy">隐私政策</a>
 
     <span style="color:rgba(255,255,255,0.1)">|</span>
 
-    <a href="/terms.html" style="color:var(--muted2);text-decoration:none;margin:0 8px">服务条款</a>
+    <a id="footerTerms" href="/terms.html" style="color:var(--muted2);text-decoration:none;margin:0 8px" data-zh="服务条款" data-en="Terms">服务条款</a>
 
     <br>
 
-        <br><span style="font-size:10px;opacity:0.3">© 2026 pboboo.cn · 命理推算仅供娱乐参考</span>
+        <br><span style="font-size:10px;opacity:0.3" id="footerCopy" data-zh="© 2026 pboboo.cn · 命理推算仅供娱乐参考" data-en="© 2026 pboboo.cn · For entertainment only">© 2026 pboboo.cn · 命理推算仅供娱乐参考</span>
 
   </div>
 
@@ -1402,6 +1421,145 @@ body{background:var(--bg);color:var(--text);font-family:'PingFang SC','Hiragino 
 
 
 <script>
+
+// ──────────── 语言切换 ────────────
+let LANG = localStorage.getItem('fortune_lang') || 'zh';
+
+function setLang(lang) {
+  LANG = lang;
+  localStorage.setItem('fortune_lang', lang);
+  document.getElementById('htmlRoot').lang = lang === 'zh' ? 'zh-CN' : 'en';
+  document.getElementById('btnZH').classList.toggle('active', lang === 'zh');
+  document.getElementById('btnEN').classList.toggle('active', lang === 'en');
+
+  // 切换所有带 data-zh/data-en 的元素
+  document.querySelectorAll('[data-zh]').forEach(el => {
+    const val = el.getAttribute('data-' + lang);
+    if (val !== null) {
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        el.placeholder = val;
+      } else {
+        el.innerHTML = val;
+      }
+    }
+  });
+
+  // 更新 title & meta description
+  if (lang === 'en') {
+    document.getElementById('pageTitle').textContent = "What Should I Do Today? · Daily Fortune Generator";
+    document.getElementById('pageDesc').setAttribute('content', 'Enter your birth info to get a personalized daily fortune based on Chinese astrology, Five Elements, and I-Ching.');
+  } else {
+    document.getElementById('pageTitle').textContent = "今天，适合做什么？· 今日运势 | 每日运势生成器";
+    document.getElementById('pageDesc').setAttribute('content', '输入生辰信息，融合八字五行与易经，看看今天的气场对你意味着什么。每天一测，发现今日幸运色与吉时。');
+  }
+
+  // 重新渲染动态生成的时辰/关注/直觉按钮（因为它们是JS动态生成的）
+  rebuildDynamicForms();
+
+  // 重新渲染今日日期卡片
+  renderTodayCard();
+
+  // 如果结果页已显示，重新渲染结果
+  if (document.getElementById('resultPage').style.display === 'block') {
+    renderResult();
+  }
+}
+
+function t(zh, en) {
+  return LANG === 'en' ? en : zh;
+}
+
+function rebuildDynamicForms() {
+  // 重建时辰按钮
+  const sg = document.getElementById('shichenGrid');
+  if (sg) {
+    const prevActive = state.shichen;
+    sg.innerHTML = '';
+    SHICHEN.forEach((s, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'shichen-btn' + (i === prevActive ? ' active' : '');
+      btn.innerHTML = `<span class="sc-name">${LANG === 'en' ? s.en : s.name}</span><span class="sc-time">${s.time}</span>`;
+      btn.onclick = () => {
+        document.querySelectorAll('.shichen-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active'); state.shichen = i;
+      };
+      sg.appendChild(btn);
+    });
+  }
+
+  // 重建关注项
+  const fl = document.getElementById('focusList');
+  if (fl) {
+    const prevFocuses = [...state.focuses];
+    fl.innerHTML = '';
+    FOCUSES.forEach((f, i) => {
+      const item = document.createElement('div');
+      item.className = 'q-item' + (prevFocuses.includes(i) ? ' active' : '');
+      item.innerHTML = `<span class="q-icon">${f.icon}</span>${LANG === 'en' ? f.en : f.text}<span class="q-check">✓</span>`;
+      item.onclick = () => {
+        const idx = state.focuses.indexOf(i);
+        if (idx > -1) { item.classList.remove('active'); state.focuses.splice(idx, 1); }
+        else if (state.focuses.length < 3) { item.classList.add('active'); state.focuses.push(i); }
+        document.getElementById('focusNextBtn').disabled = state.focuses.length === 0;
+      };
+      fl.appendChild(item);
+    });
+  }
+
+  // 重建直觉项
+  const il = document.getElementById('intuitionList');
+  if (il) {
+    const prevIntuition = state.intuition;
+    il.innerHTML = '';
+    INTUITIONS.forEach((it, i) => {
+      const item = document.createElement('div');
+      item.className = 'q-item' + (i === prevIntuition ? ' active' : '');
+      item.innerHTML = `<span class="q-icon">${it.icon}</span>${LANG === 'en' ? it.en : it.text}<span class="q-check">✓</span>`;
+      item.onclick = () => {
+        document.querySelectorAll('#intuitionList .q-item').forEach(b => b.classList.remove('active'));
+        item.classList.add('active'); state.intuition = i;
+        const cb = document.getElementById('calcBtn');
+        if (cb) cb.disabled = false;
+      };
+      il.appendChild(item);
+    });
+  }
+
+  // 重建月份 select（中英月份名称不同）
+  const mEl = document.getElementById('birthMonth');
+  if (mEl) {
+    const curMonth = parseInt(mEl.value) || 1;
+    mEl.innerHTML = '';
+    const MONTHS_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    ['一','二','三','四','五','六','七','八','九','十','十一','十二'].forEach((m, i) => {
+      const o = document.createElement('option');
+      o.value = i + 1;
+      o.textContent = LANG === 'en' ? `${i+1} (${MONTHS_EN[i]})` : `${i+1}月（${m}月）`;
+      if (i + 1 === curMonth) o.selected = true;
+      mEl.appendChild(o);
+    });
+  }
+
+  // 重建出生年份（年/year后缀）
+  const yEl = document.getElementById('birthYear');
+  if (yEl) {
+    const curYear = parseInt(yEl.value) || 1990;
+    yEl.innerHTML = '';
+    for (let y = 1940; y <= 2007; y++) {
+      const o = document.createElement('option');
+      o.value = y;
+      o.textContent = LANG === 'en' ? y : y + '年';
+      if (y === curYear) o.selected = true;
+      yEl.appendChild(o);
+    }
+  }
+
+  // 重建出生日期
+  updateDays();
+
+  // 更新心情
+  updateMood(state.mood);
+}
 
 // ──────────── 数据收集 ────────────
 
@@ -1523,19 +1681,19 @@ async function loadCount() {
 
 const SHICHEN=[
 
-  {name:'子时',time:'23-01',tz:'壬子'},{name:'丑时',time:'01-03',tz:'癸丑'},
+  {name:'子时',en:'Zi (11pm-1am)',time:'23-01',tz:'壬子'},{name:'丑时',en:'Chou (1-3am)',time:'01-03',tz:'癸丑'},
 
-  {name:'寅时',time:'03-05',tz:'甲寅'},{name:'卯时',time:'05-07',tz:'乙卯'},
+  {name:'寅时',en:'Yin (3-5am)',time:'03-05',tz:'甲寅'},{name:'卯时',en:'Mao (5-7am)',time:'05-07',tz:'乙卯'},
 
-  {name:'辰时',time:'07-09',tz:'丙辰'},{name:'巳时',time:'09-11',tz:'丁巳'},
+  {name:'辰时',en:'Chen (7-9am)',time:'07-09',tz:'丙辰'},{name:'巳时',en:'Si (9-11am)',time:'09-11',tz:'丁巳'},
 
-  {name:'午时',time:'11-13',tz:'戊午'},{name:'未时',time:'13-15',tz:'己未'},
+  {name:'午时',en:'Wu (11am-1pm)',time:'11-13',tz:'戊午'},{name:'未时',en:'Wei (1-3pm)',time:'13-15',tz:'己未'},
 
-  {name:'申时',time:'15-17',tz:'庚申'},{name:'酉时',time:'17-19',tz:'辛酉'},
+  {name:'申时',en:'Shen (3-5pm)',time:'15-17',tz:'庚申'},{name:'酉时',en:'You (5-7pm)',time:'17-19',tz:'辛酉'},
 
-  {name:'戌时',time:'19-21',tz:'壬戌'},{name:'亥时',time:'21-23',tz:'癸亥'},
+  {name:'戌时',en:'Xu (7-9pm)',time:'19-21',tz:'壬戌'},{name:'亥时',en:'Hai (9-11pm)',time:'21-23',tz:'癸亥'},
 
-  {name:'未知',time:'不确定',tz:''}
+  {name:'未知',en:'Unknown',time:'?',tz:''}
 
 ];
 
@@ -1543,13 +1701,13 @@ const SHICHEN=[
 
 const FOCUSES=[
 
-  {icon:'💼',text:'事业与工作'},{icon:'💕',text:'感情与姻缘'},
+  {icon:'💼',text:'事业与工作',en:'Career & Work'},{icon:'💕',text:'感情与姻缘',en:'Love & Relationships'},
 
-  {icon:'💰',text:'财运与投资'},{icon:'🎓',text:'学业与考试'},
+  {icon:'💰',text:'财运与投资',en:'Wealth & Investment'},{icon:'🎓',text:'学业与考试',en:'Study & Exams'},
 
-  {icon:'🏥',text:'健康与身体'},{icon:'👨‍👩‍👧',text:'家庭与亲情'},
+  {icon:'🏥',text:'健康与身体',en:'Health & Body'},{icon:'👨‍👩‍👧',text:'家庭与亲情',en:'Family & Kinship'},
 
-  {icon:'🤝',text:'人际与贵人'},{icon:'🌱',text:'个人成长'},
+  {icon:'🤝',text:'人际与贵人',en:'Connections & Mentors'},{icon:'🌱',text:'个人成长',en:'Personal Growth'},
 
 ];
 
@@ -1557,15 +1715,15 @@ const FOCUSES=[
 
 const INTUITIONS=[
 
-  {icon:'🌅',text:'感觉今天会有好事发生'},
+  {icon:'🌅',text:'感觉今天会有好事发生',en:'I feel something good is coming today'},
 
-  {icon:'🌧',text:'隐约觉得需要谨慎行事'},
+  {icon:'🌧',text:'隐约觉得需要谨慎行事',en:'I sense I should tread carefully today'},
 
-  {icon:'🌀',text:'心绪不定，难以判断'},
+  {icon:'🌀',text:'心绪不定，难以判断',en:"My mind is unsettled, hard to read"},
 
-  {icon:'⚡',text:'精力充沛，想大干一场'},
+  {icon:'⚡',text:'精力充沛，想大干一场',en:'Full of energy — ready to make things happen'},
 
-  {icon:'🍃',text:'平静如水，顺其自然'},
+  {icon:'🍃',text:'平静如水，顺其自然',en:'Calm and flowing, going with the current'},
 
 ];
 
@@ -1577,11 +1735,11 @@ const WUXING_COLORS={木:'#4ade80',火:'#f87171',土:'#fbbf24',金:'#e2e8f0',水
 
 const RADAR_DIMS=[
 
-  {label:'事业',color:'#9d7bff'},{label:'财运',color:'#ffbe5c'},
+  {label:'事业',en:'Career',color:'#9d7bff'},{label:'财运',en:'Wealth',color:'#ffbe5c'},
 
-  {label:'感情',color:'#ff7eb3'},{label:'健康',color:'#4ade80'},
+  {label:'感情',en:'Love',color:'#ff7eb3'},{label:'健康',en:'Health',color:'#4ade80'},
 
-  {label:'人缘',color:'#60a5fa'},{label:'智慧',color:'#f87171'},
+  {label:'人缘',en:'Social',color:'#60a5fa'},{label:'智慧',en:'Wisdom',color:'#f87171'},
 
 ];
 
@@ -1589,21 +1747,21 @@ const RADAR_DIMS=[
 
 const GUA_LIST=[
 
-  {sym:'☰',name:'乾卦',sub:'天行健，君子以自强不息',text:'今日乾卦当令，阳气充沛，主动进取之象。宜大胆推进计划，与上级或权威人士沟通，事半功倍。忌过于刚猛，留三分余地。'},
+  {sym:'☰',name:'乾卦',en:'Qián · Heaven',sub:'天行健，君子以自强不息',sub_en:'Heaven moves ceaselessly; the noble one strives without rest',text:'今日乾卦当令，阳气充沛，主动进取之象。宜大胆推进计划，与上级或权威人士沟通，事半功倍。忌过于刚猛，留三分余地。',text_en:'Heaven energy is strong today — bold initiative pays off. Move your plans forward confidently, and connect with authority figures. Avoid being too forceful; leave room for others.'},
 
-  {sym:'☷',name:'坤卦',sub:'地势坤，君子以厚德载物',text:'坤卦主稳，今日不宜冒进，以守为攻。默默耕耘之事今日最有成效，踏实做好手边事，积累胜于突破。'},
+  {sym:'☷',name:'坤卦',en:'Kūn · Earth',sub:'地势坤，君子以厚德载物',sub_en:'Earth supports all; the noble one sustains all with virtue',text:'坤卦主稳，今日不宜冒进，以守为攻。默默耕耘之事今日最有成效，踏实做好手边事，积累胜于突破。',text_en:'Earth energy dominates today — steady, not bold. Quiet effort yields the best results. Focus on what\'s in front of you; accumulation beats breakthroughs today.'},
 
-  {sym:'☳',name:'震卦',sub:'洊雷震，君子以恐惧修省',text:'震卦主动，有突然变动之象。今日可能遇到意外信息或转折，保持灵活应变，不要固执于原来的计划。'},
+  {sym:'☳',name:'震卦',en:'Zhèn · Thunder',sub:'洊雷震，君子以恐惧修省',sub_en:'Thunder upon thunder; the noble one reflects with reverence',text:'震卦主动，有突然变动之象。今日可能遇到意外信息或转折，保持灵活应变，不要固执于原来的计划。',text_en:'Thunder brings sudden change. Expect unexpected news or a shift in direction. Stay flexible — clinging to original plans may backfire today.'},
 
-  {sym:'☴',name:'巽卦',sub:'随风巽，君子以申命行事',text:'巽卦如风，今日信息流通顺畅，适合沟通谈判、签订合约、处理文件事务。言辞需柔中带刚。'},
+  {sym:'☴',name:'巽卦',en:'Xùn · Wind',sub:'随风巽，君子以申命行事',sub_en:'Wind follows wind; the noble one spreads their message clearly',text:'巽卦如风，今日信息流通顺畅，适合沟通谈判、签订合约、处理文件事务。言辞需柔中带刚。',text_en:'Wind energy flows freely — communication is easy today. Great for negotiations, contracts, and paperwork. Be gentle but firm in your words.'},
 
-  {sym:'☵',name:'坎卦',sub:'水洊至，君子以常德行',text:'坎卦主险，今日需多一份谨慎。暗流涌动，不宜冲动决策，以冷静观察为主。但水善利万物，逢险有渡。'},
+  {sym:'☵',name:'坎卦',en:'Kǎn · Water',sub:'水洊至，君子以常德行',sub_en:'Water flows on; the noble one persists in virtue',text:'坎卦主险，今日需多一份谨慎。暗流涌动，不宜冲动决策，以冷静观察为主。但水善利万物，逢险有渡。',text_en:'Water brings depth and hidden currents. Be cautious and observant today — avoid impulsive decisions. But remember: water nourishes all things, and every challenge has a way through.'},
 
-  {sym:'☲',name:'离卦',sub:'明两作，大人以继明照四方',text:'离卦主明，今日思维敏锐，创意迸发。适合需要表达、创作、公开展示的事务。人际关系中光芒毕露，获得认可。'},
+  {sym:'☲',name:'离卦',en:'Lí · Fire',sub:'明两作，大人以继明照四方',sub_en:'Fire upon fire; the great one illuminates all directions',text:'离卦主明，今日思维敏锐，创意迸发。适合需要表达、创作、公开展示的事务。人际关系中光芒毕露，获得认可。',text_en:'Fire brings clarity and brilliance. Your mind is sharp and creative today — great for expression, creativity, and public presence. Recognition comes naturally.'},
 
-  {sym:'☶',name:'艮卦',sub:'兼山艮，君子以思不出其位',text:'艮卦主止，今日宜静不宜动。该停下来的事不要硬撑，反思比行动更有价值。休息即是积蓄，等待即是智慧。'},
+  {sym:'☶',name:'艮卦',en:'Gèn · Mountain',sub:'兼山艮，君子以思不出其位',sub_en:'Mountain upon mountain; the noble one stays in their place',text:'艮卦主止，今日宜静不宜动。该停下来的事不要硬撑，反思比行动更有价值。休息即是积蓄，等待即是智慧。',text_en:'Mountain energy says: stop and reflect. Don\'t force what isn\'t moving. Today, rest is investment and patience is wisdom.'},
 
-  {sym:'☱',name:'兑卦',sub:'丽泽兑，君子以朋友讲习',text:'兑卦主悦，今日人缘极旺，适合社交、合作、谈判。喜悦之气感染四方，贵人易现。但防口舌，言多必失。'},
+  {sym:'☱',name:'兑卦',en:'Duì · Lake',sub:'丽泽兑，君子以朋友讲习',sub_en:'Lakes joined together; noble ones learn and share with friends',text:'兑卦主悦，今日人缘极旺，适合社交、合作、谈判。喜悦之气感染四方，贵人易现。但防口舌，言多必失。',text_en:'Lake energy brings joy and connection. Social energy is high — great for networking, collaboration, and negotiations. A mentor or helpful person may appear. Watch your words; oversharing can backfire.'},
 
 ];
 
@@ -1611,21 +1769,21 @@ const GUA_LIST=[
 
 const TIMELINE_POOL=[
 
-  {time:'06–09时',tag:'good',title:'✦ 黄金启动时段',desc:'阳气初升，精力最充沛。适合处理最重要的工作，做需要专注的决策。'},
+  {time:'06–09',tag:'good',title:'✦ 黄金启动时段',title_en:'✦ Golden Start Window',desc:'阳气初升，精力最充沛。适合处理最重要的工作，做需要专注的决策。',desc_en:'Rising yang energy — peak focus. Best time for your most important work and key decisions.'},
 
-  {time:'09–11时',tag:'good',title:'✦ 最佳沟通时窗',desc:'思维活跃，表达流畅。重要的会议、谈判、沟通安排在这个时段效果最好。'},
+  {time:'09–11',tag:'good',title:'✦ 最佳沟通时窗',title_en:'✦ Peak Communication Window',desc:'思维活跃，表达流畅。重要的会议、谈判、沟通安排在这个时段效果最好。',desc_en:'Mind is sharp and articulate. Schedule important meetings, negotiations, or difficult conversations now.'},
 
-  {time:'11–13时',tag:'caution',title:'⚠ 能量转换节点',desc:'午时阴阳交替，容易出现判断偏差。避免签署重要文件，以轻松活动为主。'},
+  {time:'11–13',tag:'caution',title:'⚠ 能量转换节点',title_en:'⚠ Energy Transition Point',desc:'午时阴阳交替，容易出现判断偏差。避免签署重要文件，以轻松活动为主。',desc_en:'Midday yin-yang shift — judgment can waver. Avoid signing contracts or making critical choices; keep it light.'},
 
-  {time:'13–15时',tag:'rest',title:'◎ 蓄力休整时段',desc:'气血流注心经，适当休息充电。冥想、小憩片刻，为下午储备能量。'},
+  {time:'13–15',tag:'rest',title:'◎ 蓄力休整时段',title_en:'◎ Rest & Recharge',desc:'气血流注心经，适当休息充电。冥想、小憩片刻，为下午储备能量。',desc_en:'Energy flows to the heart meridian. A short nap or meditation now restores you for the afternoon.'},
 
-  {time:'15–17时',tag:'good',title:'✦ 下午第二波峰',desc:'精力回升，创意涌现。适合需要创造力的工作，或处理下午的重要事项。'},
+  {time:'15–17',tag:'good',title:'✦ 下午第二波峰',title_en:'✦ Afternoon Power Surge',desc:'精力回升，创意涌现。适合需要创造力的工作，或处理下午的重要事项。',desc_en:'Energy rebounds and creativity flows. Great for creative work or tackling afternoon tasks.'},
 
-  {time:'17–19时',tag:'good',title:'✦ 社交收获时段',desc:'人缘场能量高，适合约见朋友、维系关系、享受美食。今日贵人可能在此时出现。'},
+  {time:'17–19',tag:'good',title:'✦ 社交收获时段',title_en:'✦ Social & Connection Time',desc:'人缘场能量高，适合约见朋友、维系关系、享受美食。今日贵人可能在此时出现。',desc_en:'High social energy — a great window to meet people, nurture relationships, or enjoy a meal. Your helpful person may appear now.'},
 
-  {time:'19–21时',tag:'caution',title:'⚠ 情绪敏感时窗',desc:'感情方面容易波动，避免在此时做重要的情感决定。可以阅读、整理思绪。'},
+  {time:'19–21',tag:'caution',title:'⚠ 情绪敏感时窗',title_en:'⚠ Emotionally Sensitive Window',desc:'感情方面容易波动，避免在此时做重要的情感决定。可以阅读、整理思绪。',desc_en:'Emotions can run high — avoid major romantic decisions. Reading or journaling works better than confrontations.'},
 
-  {time:'21–23时',tag:'rest',title:'◎ 沉淀复盘时段',desc:'适合回顾今日，记录感悟。为明日蓄能，早睡比熬夜更符合今日命局。'},
+  {time:'21–23',tag:'rest',title:'◎ 沉淀复盘时段',title_en:'◎ Wind-Down & Reflect',desc:'适合回顾今日，记录感悟。为明日蓄能，早睡比熬夜更符合今日命局。',desc_en:'Review your day, record insights. An early night recharges you better than staying up late today.'},
 
 ];
 
@@ -1633,17 +1791,17 @@ const TIMELINE_POOL=[
 
 const LUCKY_THINGS=[
 
-  {l:'幸运色',pool:['深紫','暗金','翡翠绿','玫瑰红','天青蓝','烟灰','珊瑚橙','月光白']},
+  {l:'幸运色',l_en:'Lucky Color',pool:['深紫','暗金','翡翠绿','玫瑰红','天青蓝','烟灰','珊瑚橙','月光白'],pool_en:['Deep Violet','Dark Gold','Jade Green','Rose Red','Sky Blue','Smoke Gray','Coral Orange','Moonlight White']},
 
-  {l:'幸运数',pool:['3','7','8','9','12','18','21','27','36','42']},
+  {l:'幸运数',l_en:'Lucky Number',pool:['3','7','8','9','12','18','21','27','36','42'],pool_en:['3','7','8','9','12','18','21','27','36','42']},
 
-  {l:'幸运方位',pool:['东南方','正北方','西南方','正东方','东北方','西北方']},
+  {l:'幸运方位',l_en:'Lucky Direction',pool:['东南方','正北方','西南方','正东方','东北方','西北方'],pool_en:['Southeast','North','Southwest','East','Northeast','Northwest']},
 
-  {l:'幸运时辰',pool:['卯时 05-07','午时 11-13','申时 15-17','亥时 21-23']},
+  {l:'幸运时辰',l_en:'Lucky Hour',pool:['卯时 05-07','午时 11-13','申时 15-17','亥时 21-23'],pool_en:['05–07 (Mao)','11–13 (Wu)','15–17 (Shen)','21–23 (Hai)']},
 
-  {l:'宜',pool:['出行','签约','求职','见贵人','开业','求财','祭祀','嫁娶']},
+  {l:'宜',l_en:'Favored',pool:['出行','签约','求职','见贵人','开业','求财','祭祀','嫁娶'],pool_en:['Travel','Signing Contracts','Job Seeking','Meeting Mentors','Starting Business','Seeking Fortune','Honoring Ancestors','Weddings']},
 
-  {l:'忌',pool:['动土','争讼','远行','大额消费','冲动决策','熬夜','轻信他人']},
+  {l:'忌',l_en:'Avoid',pool:['动土','争讼','远行','大额消费','冲动决策','熬夜','轻信他人'],pool_en:['Construction','Legal Disputes','Long Journeys','Big Spending','Impulsive Decisions','Staying Up Late','Blind Trust']},
 
 ];
 
@@ -1711,27 +1869,53 @@ function renderTodayCard(){
 
   const g=getTodayGanzhi();
 
+  const WEEKS_EN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
   const el=document.getElementById('todayCard');
 
   if(el){
 
-    el.innerHTML=`
+    if(LANG==='en'){
 
-      <span>📅 ${g.y}年${g.m}月${g.d}日</span>
+      el.innerHTML=`
 
-      <span style="color:rgba(255,255,255,0.15)">|</span>
+        <span>📅 ${g.y}/${String(g.m).padStart(2,'0')}/${String(g.d).padStart(2,'0')}</span>
 
-      <span>周${WEEKS_CN[g.week]}</span>
+        <span style="color:rgba(255,255,255,0.15)">|</span>
 
-      <span style="color:rgba(255,255,255,0.15)">|</span>
+        <span>${WEEKS_EN[g.week]}</span>
 
-      <span style="color:var(--accent)">${g.yearTG}${g.yearDZ}年 · ${g.sx}年</span>
+        <span style="color:rgba(255,255,255,0.15)">|</span>
 
-      <span style="color:rgba(255,255,255,0.15)">|</span>
+        <span style="color:var(--accent)">${g.yearTG}${g.yearDZ} Year · ${g.sx}</span>
 
-      <span>今日 <strong style="color:var(--accent2)">${g.dayTG}${g.dayDZ}</strong></span>
+        <span style="color:rgba(255,255,255,0.15)">|</span>
 
-    `;
+        <span>Day <strong style="color:var(--accent2)">${g.dayTG}${g.dayDZ}</strong></span>
+
+      `;
+
+    } else {
+
+      el.innerHTML=`
+
+        <span>📅 ${g.y}年${g.m}月${g.d}日</span>
+
+        <span style="color:rgba(255,255,255,0.15)">|</span>
+
+        <span>周${WEEKS_CN[g.week]}</span>
+
+        <span style="color:rgba(255,255,255,0.15)">|</span>
+
+        <span style="color:var(--accent)">${g.yearTG}${g.yearDZ}年 · ${g.sx}年</span>
+
+        <span style="color:rgba(255,255,255,0.15)">|</span>
+
+        <span>今日 <strong style="color:var(--accent2)">${g.dayTG}${g.dayDZ}</strong></span>
+
+      `;
+
+    }
 
   }
 
@@ -1739,7 +1923,17 @@ function renderTodayCard(){
 
   const sb=document.getElementById('sbDateInfo');
 
-  if(sb) sb.innerHTML=`
+  if(sb) sb.innerHTML=LANG==='en'?`
+
+    <div style="margin-bottom:4px"><span style="color:var(--muted)">Date: </span>${g.y}/${String(g.m).padStart(2,'0')}/${String(g.d).padStart(2,'0')}</div>
+
+    <div style="margin-bottom:4px"><span style="color:var(--muted)">Weekday: </span>${WEEKS_EN[g.week]}</div>
+
+    <div style="margin-bottom:4px"><span style="color:var(--muted)">Year: </span>${g.yearTG}${g.yearDZ} <span style="color:var(--muted)">(${g.sx})</span></div>
+
+    <div><span style="color:var(--muted)">Day: </span><strong style="color:var(--accent2)">${g.dayTG}${g.dayDZ}</strong></div>
+
+  `:`
 
     <div style="margin-bottom:4px"><span style="color:var(--muted)">公历：</span>${g.y}/${String(g.m).padStart(2,'0')}/${String(g.d).padStart(2,'0')}</div>
 
@@ -1865,7 +2059,7 @@ function initForm(){
 
   for(let y=1940;y<=2007;y++){
 
-    const o=document.createElement('option');o.value=y;o.textContent=y+'年';
+    const o=document.createElement('option');o.value=y;o.textContent=LANG==='en'?y:(y+'年');
 
     if(y===1990)o.selected=true;yEl.appendChild(o);
 
@@ -1873,9 +2067,13 @@ function initForm(){
 
   const mEl=document.getElementById('birthMonth');
 
+  const MONTHS_EN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
   ['一','二','三','四','五','六','七','八','九','十','十一','十二'].forEach((m,i)=>{
 
-    const o=document.createElement('option');o.value=i+1;o.textContent=(i+1)+'月（'+m+'月）';
+    const o=document.createElement('option');o.value=i+1;
+
+    o.textContent=LANG==='en'?`${i+1} (${MONTHS_EN[i]})`:(i+1)+'月（'+m+'月）';
 
     mEl.appendChild(o);
 
@@ -1899,7 +2097,7 @@ function initForm(){
 
     btn.className='shichen-btn';
 
-    btn.innerHTML=`<span class="sc-name">${s.name}</span><span class="sc-time">${s.time}</span>`;
+    btn.innerHTML=`<span class="sc-name">${LANG==='en'?s.en:s.name}</span><span class="sc-time">${s.time}</span>`;
 
     btn.onclick=()=>{
 
@@ -1923,7 +2121,7 @@ function initForm(){
 
     const item=document.createElement('div');item.className='q-item';
 
-    item.innerHTML=`<span class="q-icon">${f.icon}</span>${f.text}<span class="q-check">✓</span>`;
+    item.innerHTML=`<span class="q-icon">${f.icon}</span>${LANG==='en'?f.en:f.text}<span class="q-check">✓</span>`;
 
     item.onclick=()=>{
 
@@ -1951,7 +2149,7 @@ function initForm(){
 
     const item=document.createElement('div');item.className='q-item';
 
-    item.innerHTML=`<span class="q-icon">${it.icon}</span>${it.text}<span class="q-check">✓</span>`;
+    item.innerHTML=`<span class="q-icon">${it.icon}</span>${LANG==='en'?it.en:it.text}<span class="q-check">✓</span>`;
 
     item.onclick=()=>{
 
@@ -2005,17 +2203,17 @@ function initForm(){
 
       <div>
 
-        <div style="font-size:12px;color:var(--accent);margin-bottom:4px">✦ 检测到你的信息</div>
+        <div style="font-size:12px;color:var(--accent);margin-bottom:4px">${LANG==='en'?'✦ Your info was saved':'✦ 检测到你的信息'}</div>
 
-        <div style="font-size:13px;color:var(--text)">${saved.year}年生 · ${gLabel} · ${sx}年</div>
+        <div style="font-size:13px;color:var(--text)">${saved.year}${LANG==='en'?' · ':'年生 · '}${LANG==='en'?(saved.gender==='male'?'Male':'Female'):gLabel} · ${sx}${LANG==='en'?' year':''}</div>
 
       </div>
 
       <div style="display:flex;gap:8px">
 
-        <button onclick="applyAndSkip(${JSON.stringify(saved).replace(/"/g,'&quot;')})" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;color:#fff;font-size:12px;padding:8px 16px;cursor:pointer;font-weight:600">直接看今日运势 →</button>
+        <button onclick="applyAndSkip(${JSON.stringify(saved).replace(/"/g,'&quot;')})" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;color:#fff;font-size:12px;padding:8px 16px;cursor:pointer;font-weight:600">${LANG==='en'?'See Today\'s Fortune →':'直接看今日运势 →'}</button>
 
-        <button onclick="localStorage.removeItem('${LS_KEY}');this.parentElement.parentElement.remove()" style="background:none;border:1px solid var(--border2);border-radius:10px;color:var(--muted);font-size:12px;padding:8px 12px;cursor:pointer">重新填写</button>
+        <button onclick="localStorage.removeItem('${LS_KEY}');this.parentElement.parentElement.remove()" style="background:none;border:1px solid var(--border2);border-radius:10px;color:var(--muted);font-size:12px;padding:8px 12px;cursor:pointer">${LANG==='en'?'Re-enter':'重新填写'}</button>
 
       </div>
 
@@ -2045,7 +2243,7 @@ function updateDays(){
 
   for(let d=1;d<=days;d++){
 
-    const o=document.createElement('option');o.value=d;o.textContent=d+'日';
+    const o=document.createElement('option');o.value=d;o.textContent=LANG==='en'?d:(d+'日');
 
     if(d===Math.min(cur,days))o.selected=true;dEl.appendChild(o);
 
@@ -2095,6 +2293,30 @@ const MOOD_HINTS=[
 
 ];
 
+const MOOD_HINTS_EN=[
+
+  'Energy is low today — take good care of yourself',
+
+  'Feeling off — no need to push for top performance',
+
+  'A bit tired — slow down and go easy',
+
+  'Calm and steady',
+
+  'Feeling okay — energy is stable',
+
+  'Doing well — make steady progress',
+
+  'Pretty good — you have drive today',
+
+  'Great state — go for it',
+
+  'Full of energy — today is a good opportunity',
+
+  'Fully charged! Your energy is wide open today',
+
+];
+
 function updateMood(v){
 
   const val=parseInt(v);
@@ -2109,7 +2331,7 @@ function updateMood(v){
 
   setTimeout(()=>el.style.transform='scale(1)',300);
 
-  document.getElementById('moodHint').textContent=MOOD_HINTS[val-1];
+  document.getElementById('moodHint').textContent=LANG==='en'?MOOD_HINTS_EN[val-1]:MOOD_HINTS[val-1];
 
 }
 
@@ -2275,9 +2497,9 @@ function renderResult(){
 
   document.getElementById('resGua').textContent=gua.sym;
 
-  document.getElementById('resGuaName').textContent=gua.name;
+  document.getElementById('resGuaName').textContent=LANG==='en'?gua.en:gua.name;
 
-  document.getElementById('resGuaSub').textContent=gua.sub;
+  document.getElementById('resGuaSub').textContent=LANG==='en'?(gua.sub_en||gua.sub):gua.sub;
 
 
 
@@ -2295,7 +2517,9 @@ function renderResult(){
 
   const taglines=['✦ 紫气东来，诸事顺遂','✦ 厚积薄发，时机已至','✦ 守正待时，运势渐开','✦ 贵人扶持，事半功倍','✦ 内外和谐，进退有据'];
 
-  const tagline=pick(taglines,seed+3);
+  const taglines_en=['✦ Auspicious qi rises — all flows well','✦ Steady effort, the moment has come','✦ Hold your ground — fortune builds','✦ Mentors appear, effort multiplies','✦ Inner and outer harmony — balanced steps'];
+
+  const tagline=LANG==='en'?pick(taglines_en,seed+3):pick(taglines,seed+3);
 
   document.getElementById('resTagline').textContent=tagline;
 
@@ -2315,9 +2539,9 @@ function renderResult(){
 
       <div style="font-size:44px;font-weight:800;background:linear-gradient(135deg,#fff,${scoreColor});-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1">${finalScore}</div>
 
-      <div style="font-size:10px;color:var(--muted);margin:4px 0 10px">分</div>
+      <div style="font-size:10px;color:var(--muted);margin:4px 0 10px">${LANG==='en'?'pts':'分'}</div>
 
-      <div style="font-size:11px;color:${scoreColor};letter-spacing:.5px">${gua.sym} ${gua.name}</div>
+      <div style="font-size:11px;color:${scoreColor};letter-spacing:.5px">${gua.sym} ${LANG==='en'?gua.en:gua.name}</div>
 
       <div style="font-size:10px;color:var(--muted2);margin-top:6px;line-height:1.6">${tagline.replace('✦ ','')}</div>
 
@@ -2355,13 +2579,15 @@ function renderResult(){
 
   }
 
-  document.getElementById('guaText').textContent=gua.text;
+  document.getElementById('guaText').textContent=LANG==='en'?(gua.text_en||gua.text):gua.text;
 
 
 
   // 五行
 
   const wuKeys=['木','火','土','金','水'];
+
+  const wuKeys_en=['Wood','Fire','Earth','Metal','Water'];
 
   const wuVals=wuKeys.map((k,i)=>rng(30,95,seed+i+20));
 
@@ -2377,9 +2603,11 @@ function renderResult(){
 
     const div=document.createElement('div');div.className='wx-row';
 
+    const displayName=LANG==='en'?wuKeys_en[i]:k;
+
     div.innerHTML=`
 
-      <div class="wx-name"><div class="wx-dot" style="background:${WUXING_COLORS[k]}"></div>${k}</div>
+      <div class="wx-name"><div class="wx-dot" style="background:${WUXING_COLORS[k]}"></div>${displayName}</div>
 
       <div class="wx-track"><div class="wx-fill" id="wx${i}" style="background:${WUXING_COLORS[k]}"></div></div>
 
@@ -2413,13 +2641,17 @@ function renderResult(){
 
     const div=document.createElement('div');div.className='radar-item';
 
+    const displayLabel=LANG==='en'?(d.en||d.label):d.label;
+
+    const scoreUnit=LANG==='en'?'pts':'分';
+
     div.innerHTML=`
 
       <div class="radar-dot" style="background:${d.color}"></div>
 
       <div class="radar-info">
 
-        <div class="radar-label">${d.label} <span class="radar-score">${radarScores[i]}分</span></div>
+        <div class="radar-label">${displayLabel} <span class="radar-score">${radarScores[i]}${scoreUnit}</span></div>
 
         <div class="radar-bar-wrap"><div class="radar-bar-fill" id="rb${i}" style="background:${d.color}"></div></div>
 
@@ -2447,15 +2679,17 @@ function renderResult(){
 
     const div=document.createElement('div');div.className='tl-item';
 
+    const tagText=LANG==='en'?(t.tag==='good'?'Auspicious':t.tag==='caution'?'Caution':'Rest'):(t.tag==='good'?'吉':t.tag==='caution'?'慎':'宜静');
+
     div.innerHTML=`
 
       <div class="tl-time">${t.time}</div>
 
       <div class="tl-content">
 
-        <h4>${t.title} <span class="tl-tag ${t.tag}">${t.tag==='good'?'吉':t.tag==='caution'?'慎':'宜静'}</span></h4>
+        <h4>${LANG==='en'?(t.title_en||t.title):t.title} <span class="tl-tag ${t.tag}">${tagText}</span></h4>
 
-        <p>${t.desc}</p>
+        <p>${LANG==='en'?(t.desc_en||t.desc):t.desc}</p>
 
       </div>`;
 
@@ -2471,25 +2705,43 @@ function renderResult(){
 
   // 直觉对应的幸运色池：让选择真正影响结果
 
-  const INTUITION_COLOR_POOLS=[
+  const INTUITION_COLOR_POOLS_ZH=[
 
-    ['金色','橙红','暖黄','珊瑚橙'],   // 🌅 感觉会有好事 → 暖色系
+    ['金色','橙红','暖黄','珊瑚橙'],
 
-    ['深靛蓝','烟灰','暗青','墨绿'],   // 🌧 隐约需谨慎 → 冷静深色
+    ['深靛蓝','烟灰','暗青','墨绿'],
 
-    ['薄雾紫','浅灰蓝','淡米','月光白'], // 🌀 心绪不定 → 中性淡色
+    ['薄雾紫','浅灰蓝','淡米','月光白'],
 
-    ['深紫','宝石红','暗金','翡翠绿'], // ⚡ 想大干一场 → 高饱和深色
+    ['深紫','宝石红','暗金','翡翠绿'],
 
-    ['天青蓝','浅绿','米白','淡金'],   // 🍃 顺其自然 → 清淡自然色
+    ['天青蓝','浅绿','米白','淡金'],
 
   ];
+
+  const INTUITION_COLOR_POOLS_EN=[
+
+    ['Gold','Coral Orange','Warm Yellow','Tangerine'],
+
+    ['Indigo','Smoke Gray','Dark Teal','Forest Green'],
+
+    ['Misty Violet','Pale Steel Blue','Cream','Moonlight White'],
+
+    ['Deep Purple','Ruby Red','Dark Gold','Jade Green'],
+
+    ['Sky Blue','Sage Green','Off White','Pale Gold'],
+
+  ];
+
+  const INTUITION_COLOR_POOLS=LANG==='en'?INTUITION_COLOR_POOLS_EN:INTUITION_COLOR_POOLS_ZH;
 
   const luckyThings=LUCKY_THINGS.map((lt,i)=>{
 
     if(lt.l==='幸运色' && state.intuition>=0){
 
-      return {...lt, pool: INTUITION_COLOR_POOLS[state.intuition]};
+      const usePool=INTUITION_COLOR_POOLS[state.intuition]||lt.pool;
+
+      return {...lt, pool: usePool, pool_en: INTUITION_COLOR_POOLS_EN[state.intuition]||lt.pool_en};
 
     }
 
@@ -2501,13 +2753,17 @@ function renderResult(){
 
   luckyThings.forEach((lt,i)=>{
 
-    const v=pick(lt.pool,seed+i+50);
+    const activePool=LANG==='en'?(lt.pool_en||lt.pool):lt.pool;
 
-    luckyData.push({l:lt.l,v});
+    const v=pick(activePool,seed+i+50);
+
+    const displayLabel=LANG==='en'?(lt.l_en||lt.l):lt.l;
+
+    luckyData.push({l:displayLabel,v});
 
     const div=document.createElement('div');div.className='lucky-item';
 
-    div.innerHTML=`<div class="lucky-l">${lt.l}</div><div class="lucky-v">${v}</div>`;
+    div.innerHTML=`<div class="lucky-l">${displayLabel}</div><div class="lucky-v">${v}</div>`;
 
     lgEl.appendChild(div);
 
@@ -2517,9 +2773,9 @@ function renderResult(){
 
   // ── 左侧宜忌侧边栏 ──
 
-  const YI_POOL=[['出行','宜出行，道路顺畅'],['社交','宜结交新友'],['签约','宜签订合同'],['创作','宜创作构思'],['学习','宜深度学习'],['理财','宜审视财务'],['运动','宜户外运动'],['会友','宜拜访贵人']];
+  const YI_POOL=[['出行','Travel'],['社交','Socializing'],['签约','Signing Contracts'],['创作','Creative Work'],['学习','Deep Study'],['理财','Financial Review'],['运动','Exercise'],['会友','Meeting Mentors']];
 
-  const JI_POOL=[['争吵','忌口角冲突'],['冒险','忌鲁莽行事'],['熬夜','忌耗散精力'],['大额支出','忌冲动消费'],['独自决策','忌独断专行'],['高处作业','忌粗心大意']];
+  const JI_POOL=[['争吵','Arguments'],['冒险','Recklessness'],['熬夜','Staying Up Late'],['大额支出','Impulse Spending'],['独自决策','Going It Alone'],['高处作业','Careless Tasks']];
 
   const yiList=YI_POOL.filter((_,i)=>sr(seed+i+70)>0.55).slice(0,3);
 
@@ -2529,9 +2785,9 @@ function renderResult(){
 
   if(sbYJ){
 
-    document.getElementById('sbYiList').innerHTML=yiList.map(([k])=>`<span class="sidebar-tag good">✓ 宜${k}</span>`).join('');
+    document.getElementById('sbYiList').innerHTML=yiList.map(([zh,en])=>`<span class="sidebar-tag good">✓ ${LANG==='en'?en:'宜'+zh}</span>`).join('');
 
-    document.getElementById('sbJiList').innerHTML=jiList.map(([k])=>`<span class="sidebar-tag bad">✗ 忌${k}</span>`).join('');
+    document.getElementById('sbJiList').innerHTML=jiList.map(([zh,en])=>`<span class="sidebar-tag bad">✗ ${LANG==='en'?en:'忌'+zh}</span>`).join('');
 
     sbYJ.style.display='block';
 
@@ -2645,17 +2901,18 @@ function drawRadar(scores){
 
 function renderConclusion(seed, score, gua) {
 
-  const focusNames = state.focuses.map(i => FOCUSES[i].text);
+  const focusNames_zh = state.focuses.map(i => FOCUSES[i].text);
 
-  const gender = state.gender === 'male' ? '你' : '你';
+  const focusNames_en = state.focuses.map(i => FOCUSES[i].en);
+
+  const focusNames = LANG==='en' ? focusNames_en : focusNames_zh;
 
   const moodLevel = state.mood;
 
 
 
-  // 开场白（根据分数段）
-
-  const openings = score >= 85 ? [
+  // 开场白
+  const openings_zh = score >= 85 ? [
 
     '今天的气场对你来说相当不错。',
 
@@ -2681,11 +2938,36 @@ function renderConclusion(seed, score, gua) {
 
   ];
 
+  const openings_en = score >= 85 ? [
 
+    "Today's energy is genuinely in your favor.",
 
-  // 关注领域的针对性建议
+    "Today is worth showing up for — make the most of it.",
 
-  const focusAdvice = {
+    "The chart looks good today — there's a current flowing your way.",
+
+  ] : score >= 70 ? [
+
+    "Today is steady — no big waves, but opportunity hides in the details.",
+
+    "A quiet, consistent day. Not flashy, but things can move forward.",
+
+    "Your fortune today is solid, not spectacular — no surprises, but no pitfalls either.",
+
+  ] : [
+
+    "Today's energy turns inward — looking inside serves you better than pushing outward.",
+
+    "Forcing progress today won't pay off, but reflection will.",
+
+    "Quiet yin energy today. That's not bad — sometimes slowing down is how you go further.",
+
+  ];
+
+  const openings = LANG==='en' ? openings_en : openings_zh;
+
+  // 关注领域建议
+  const focusAdvice_zh = {
 
     '事业与工作': score >= 80
 
@@ -2737,11 +3019,62 @@ function renderConclusion(seed, score, gua) {
 
   };
 
+  const focusAdvice_en = {
 
+    'Career & Work': score >= 80
 
-  // 心情对应的收尾
+      ? "Work has good momentum today. Push that stuck thing — it's easier than usual to get it moving."
 
-  const closings = moodLevel >= 8 ? [
+      : "Work energy is inward today. Better for planning and organizing than forcing outcomes.",
+
+    'Love & Relationships': score >= 80
+
+      ? "Warm relationship energy today. If there's something you've been wanting to say, now's a good time — the other person is more receptive than you think."
+
+      : "Emotions can run sensitive today. Don't project your feelings onto others — take care of yourself first.",
+
+    'Wealth & Investment': score >= 80
+
+      ? "A small pleasant surprise in finances is possible. Notice offhand mentions of opportunities — no need to move big though."
+
+      : "Financial energy is flat today. Holding what you have beats chasing something new.",
+
+    'Study & Exams': score >= 80
+
+      ? "Your mind is sharp today — memory and comprehension are both working well. Tackle that topic you've been stuck on."
+
+      : "Focus drifts today. Instead of forcing long study sessions, break it into short bursts.",
+
+    'Health & Body': score >= 80
+
+      ? "Your body feels open and energetic today — a great day for exercise or getting outside."
+
+      : "Watch your energy levels today. When your body asks for rest, listen — don't push through.",
+
+    'Family & Kinship': score >= 80
+
+      ? "Family energy flows smoothly today. A small gesture of care will land better than usual."
+
+      : "Family interactions may feel a bit tense today. Be patient — listen before speaking, most friction is just bad timing.",
+
+    'Connections & Mentors': score >= 80
+
+      ? "High social energy today — reach out to the people you've been meaning to connect with. Helpful people often show up in casual conversation."
+
+      : "Social energy is low today. No need to force it — focus on your own work and let connections happen naturally.",
+
+    'Personal Growth': score >= 80
+
+      ? "Today is perfect for starting that thing you've 'always been meaning to do.' The energy supports first steps."
+
+      : "Growth today is inward — reading, journaling, or reviewing past work will yield more than taking action.",
+
+  };
+
+  const focusAdvice = LANG==='en' ? focusAdvice_en : focusAdvice_zh;
+
+  // 心情收尾
+  const closings_zh = moodLevel >= 8 ? [
 
     '你现在的状态本身就是今天最大的资产，把这份能量用在真正重要的事上。',
 
@@ -2761,16 +3094,33 @@ function renderConclusion(seed, score, gua) {
 
   ];
 
+  const closings_en = moodLevel >= 8 ? [
 
+    "Your current state is your greatest asset today — direct that energy toward what truly matters.",
+
+    "When you're feeling great, it's easy to overestimate. Leave a little slack for the unexpected.",
+
+  ] : moodLevel >= 5 ? [
+
+    "A steady state is actually the best state for good decisions — not impulsive, not negative.",
+
+    "Keep that steady energy going. Take things one at a time and you'll get more than you expected.",
+
+  ] : [
+
+    "When you're not at your best, don't force performance. Today's job is to take care of yourself.",
+
+    "On low-energy days, finishing one small thing is a win. Don't hold yourself to a high standard today.",
+
+  ];
+
+  const closings = LANG==='en' ? closings_en : closings_zh;
 
   const opening = pick(openings, seed + 200);
 
   const closing = pick(closings, seed + 201);
 
-
-
   // 组合正文
-
   let body = `${opening} `;
 
   if (focusNames.length > 0) {
@@ -2783,25 +3133,20 @@ function renderConclusion(seed, score, gua) {
 
   }
 
-  body += `今日起卦为<span class="c-highlight">「${gua.name}」</span>，`;
+  const guaDisplay = LANG==='en' ? `<span class="c-highlight">"${gua.en}"</span>` : `<span class="c-highlight">「${gua.name}」</span>`;
 
-  body += score >= 80
+  body += LANG==='en'
 
-    ? `整体上是个<span class="c-highlight">顺势而为</span>的好时机，该推的事今天推，该说的话今天说。`
+    ? `Today's hexagram is ${guaDisplay}. ${score>=80?"The overall reading suggests <span class='c-highlight'>going with the flow</span> — push what needs pushing, say what needs saying.":"A reminder to <span class='c-highlight'>keep it steady</span> today. Don't force outcomes; things work out better when you let them unfold."}`
 
-    : `提醒你今天<span class="c-highlight">以稳为主</span>，不必强求结果，顺其自然反而更顺。`;
+    : `今日起卦为${guaDisplay}，${score >= 80?"整体上是个<span class='c-highlight'>顺势而为</span>的好时机，该推的事今天推，该说的话今天说。":"提醒你今天<span class='c-highlight'>以稳为主</span>，不必强求结果，顺其自然反而更顺。"}`;
 
   body += `<br><br><span class="c-soft">${closing}</span>`;
 
-
-
   document.getElementById('conclusionBody').innerHTML = body;
 
-
-
-  // Tips（3条针对性小建议）
-
-  const allTips = [
+  // Tips
+  const allTips_zh = [
 
     { icon: '☀️', text: `<b>最佳行动时段</b>：今天上午精力最旺，把最难的事排在早上。` },
 
@@ -2809,15 +3154,27 @@ function renderConclusion(seed, score, gua) {
 
     { icon: '🌙', text: `<b>今晚建议</b>：${moodLevel >= 6 ? '今天消耗了不少能量，晚上早点收工，好好睡一觉。' : '今晚适合做让自己放松的事，不要强迫自己继续工作。'}` },
 
-    { icon: '⚡', text: `<b>一件值得做的事</b>：${focusNames.length > 0 ? '把今天最在意的「' + focusNames[0] + '」相关的事，写下来一个具体的下一步行动。' : '今天随便做一件拖了很久的小事，完成它会让你心情变好。'}` },
+    { icon: '⚡', text: `<b>一件值得做的事</b>：${focusNames_zh.length > 0 ? '把今天最在意的「' + focusNames_zh[0] + '」相关的事，写下来一个具体的下一步行动。' : '今天随便做一件拖了很久的小事，完成它会让你心情变好。'}` },
 
     { icon: '🧘', text: `<b>心态提示</b>：${score >= 80 ? '今天运势不错，但别把所有事都堆在今天——好状态要细水长流。' : '今天不是展示自己的最佳时机，踏实做好本分，积累比爆发更持久。'}` },
 
   ];
 
+  const allTips_en = [
 
+    { icon: '☀️', text: `<b>Best action window</b>: Morning energy is highest — save your hardest task for before noon.` },
 
-  // 选3条
+    { icon: '💬', text: `<b>Communication note</b>: Your expressive energy is ${score >= 75 ? 'strong today — important conversations are worth having now' : 'lower today — save key talks for tomorrow, use today to clarify your thoughts'}.` },
+
+    { icon: '🌙', text: `<b>Tonight</b>: ${moodLevel >= 6 ? "You've spent a lot of energy today — wrap up early and get a good night's sleep." : "Tonight, do something relaxing. Don't push yourself to keep working."}` },
+
+    { icon: '⚡', text: `<b>One thing worth doing</b>: ${focusNames_en.length > 0 ? 'Write down one concrete next step related to "' + focusNames_en[0] + '" — the thing you care most about today.' : "Do one small task you've been putting off. Finishing it will lift your mood."}` },
+
+    { icon: '🧘', text: `<b>Mindset note</b>: ${score >= 80 ? "Good fortune today — but don't pile everything into one day. Steady flow beats burst-and-crash." : "Today isn't your peak performance day. Do your work quietly; consistency outlasts breakthroughs."}` },
+
+  ];
+
+  const allTips = LANG==='en' ? allTips_en : allTips_zh;
 
   const tipIdx = [0, 1 + (seed % 2), 3];
 
@@ -2827,13 +3184,13 @@ function renderConclusion(seed, score, gua) {
 
   tipIdx.forEach(i => {
 
-    const t = allTips[i % allTips.length];
+    const tip = allTips[i % allTips.length];
 
     const div = document.createElement('div');
 
     div.className = 'c-tip';
 
-    div.innerHTML = `<span class="c-tip-icon">${t.icon}</span><span>${t.text}</span>`;
+    div.innerHTML = `<span class="c-tip-icon">${tip.icon}</span><span>${tip.text}</span>`;
 
     tipsEl.appendChild(div);
 
@@ -2871,7 +3228,7 @@ function resetAll(){
 
   const shareBtn=document.querySelector('#shareSection button');
 
-  if(shareBtn){shareBtn.textContent='✦ 生成今日运势卡片（可保存分享）';shareBtn.disabled=false;}
+  if(shareBtn){shareBtn.textContent=LANG==='en'?'✦ Generate Fortune Card (Save & Share)':'✦ 生成今日运势卡片（可保存分享）';shareBtn.disabled=false;}
 
   // 右侧侧边栏：重置运势分数卡
 
@@ -2936,6 +3293,9 @@ function resetAll(){
 
 
 initForm();
+
+// 初始化语言状态（按 localStorage 偏好）
+setLang(LANG);
 
 loadCount();
 
@@ -3059,7 +3419,7 @@ async function generateShareCard(){
 
   const btn=document.querySelector('#shareSection button');
 
-  if(btn){btn.textContent='⏳ 绘制中…';btn.disabled=true;}
+  if(btn){btn.textContent=LANG==='en'?'⏳ Generating…':'⏳ 绘制中…';btn.disabled=true;}
 
 
 
@@ -3131,7 +3491,7 @@ async function generateShareCard(){
 
   ctx.font='500 22px PingFang SC,Hiragino Sans GB,sans-serif';
 
-  ctx.fillText('✦  今天，适合做什么？  ✦',W/2,P+38);
+  ctx.fillText(LANG==='en'?'✦  What Should I Do Today?  ✦':'✦  今天，适合做什么？  ✦',W/2,P+38);
 
 
 
@@ -3325,15 +3685,15 @@ async function generateShareCard(){
 
   ctx.fillStyle='rgba(255,255,255,0.75)';ctx.font='700 32px PingFang SC,sans-serif';
 
-  ctx.fillText('扫码测算今日运势',P,BOTTOM+72);
+  ctx.fillText(LANG==='en'?'Scan to check your daily fortune':'扫码测算今日运势',P,BOTTOM+72);
 
   ctx.fillStyle='rgba(255,255,255,0.2)';ctx.font='400 22px PingFang SC,sans-serif';
 
-  ctx.fillText('1723933974-cloud.github.io/fortune',P,BOTTOM+114);
+  ctx.fillText('pboboo.cn',P,BOTTOM+114);
 
   ctx.fillStyle='rgba(255,255,255,0.1)';ctx.font='400 20px PingFang SC,sans-serif';
 
-  ctx.fillText('✦ 娱乐参考，非决策建议 ✦',P,BOTTOM+158);
+  ctx.fillText(LANG==='en'?'✦ For fun only · Not life advice ✦':'✦ 娱乐参考，非决策建议 ✦',P,BOTTOM+158);
 
 
 
@@ -3359,11 +3719,13 @@ async function generateShareCard(){
 
     <div style="background:rgba(157,123,255,0.1);border:1px solid rgba(157,123,255,0.25);border-radius:12px;padding:12px 16px;margin-top:8px;font-size:12px;line-height:2;color:var(--muted2)">
 
-      📱 <strong style="color:var(--text)">微信用户</strong>：截图保存这张卡片，直接分享给朋友<br>
+      ${LANG==='en'
 
-      💻 <strong style="color:var(--text)">电脑用户</strong>：
+        ? `📱 <strong style="color:var(--text)">Mobile</strong>: Screenshot and share this card with friends<br>💻 <strong style="color:var(--text)">Desktop</strong>: <button onclick="downloadCardDirect()" style="background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;padding:0;text-decoration:underline">Click to download</button>`
 
-      <button onclick="downloadCardDirect()" style="background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;padding:0;text-decoration:underline">点击下载图片</button>
+        : `📱 <strong style="color:var(--text)">微信用户</strong>：截图保存这张卡片，直接分享给朋友<br>💻 <strong style="color:var(--text)">电脑用户</strong>：<button onclick="downloadCardDirect()" style="background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;padding:0;text-decoration:underline">点击下载图片</button>`
+
+      }
 
     </div>
 
@@ -3371,9 +3733,9 @@ async function generateShareCard(){
 
 
 
-  if(btn){btn.textContent='✦ 重新生成卡片';btn.disabled=false;}
+  if(btn){btn.textContent=LANG==='en'?'✦ Regenerate Card':'✦ 重新生成卡片';btn.disabled=false;}
 
-  showToast('卡片已生成，截图保存分享 🎉','success');
+  showToast(LANG==='en'?'Card ready — screenshot to share 🎉':'卡片已生成，截图保存分享 🎉','success');
 
 }
 
@@ -3385,7 +3747,7 @@ function downloadCardDirect(){
 
   const a=document.createElement('a');
 
-  a.download=`今日运势_${new Date().toISOString().slice(0,10)}.jpg`;
+  a.download=`${LANG==='en'?'daily-fortune':'今日运势'}_${new Date().toISOString().slice(0,10)}.jpg`;
 
   a.href=canvas.toDataURL('image/jpeg',0.92);
 
@@ -3401,7 +3763,11 @@ function shareToWeibo(){
 
   const score = document.getElementById('resBigScore')?.textContent||'';
 
-  const text = `今天测了一下运势，${gua}，得分${score}分！快来测测你的今日运势 → https://pboboo.cn`;
+  const text = LANG==='en'
+
+    ? `My daily fortune: ${gua}, score ${score}! Check yours → https://pboboo.cn/en.html`
+
+    : `今天测了一下运势，${gua}，得分${score}分！快来测测你的今日运势 → https://pboboo.cn`;
 
   window.open('https://service.weibo.com/share/share.php?url=https://pboboo.cn&title='+encodeURIComponent(text),'_blank');
 
@@ -3417,15 +3783,19 @@ function copyShareText(){
 
   const tagline = document.getElementById('resTagline')?.textContent||'';
 
-  const text = `今日运势：${gua} · ${score}分\n${tagline}\n测测你的今日运势 → https://pboboo.cn`;
+  const text = LANG==='en'
+
+    ? `Daily Fortune: ${gua} · ${score} pts\n${tagline}\nCheck yours → https://pboboo.cn/en.html`
+
+    : `今日运势：${gua} · ${score}分\n${tagline}\n测测你的今日运势 → https://pboboo.cn`;
 
   navigator.clipboard.writeText(text).then(()=>{
 
-    alert('✅ 已复制到剪贴板，快去分享给朋友吧！');
+    alert(LANG==='en'?'✅ Copied to clipboard!':'✅ 已复制到剪贴板，快去分享给朋友吧！');
 
   }).catch(()=>{
 
-    prompt('复制以下内容：', text);
+    prompt(LANG==='en'?'Copy this:':'复制以下内容：', text);
 
   });
 
