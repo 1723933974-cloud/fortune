@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2026丙午年运势解读：今年的整体气场方向 | pboboo.cn</title>
-<meta name="description" content="2026年是丙午年，天干丙火，地支午火，双火叠加。本文解读丙午年的整体气场特征、对五行各属人群的影响，以及今年特别需要关注的方向。">
+<title id="pageTitle">2026丙午年运势解读：今年的整体气场方向 | pboboo.cn</title>
+<meta id="pageDesc" name="description" content="2026年是丙午年，天干丙火，地支午火，双火叠加。本文解读丙午年的整体气场特征、对五行各属人群的影响，以及今年特别需要关注的方向。">
 <link rel="canonical" href="https://pboboo.cn/blog-2026-bingwu.html">
+<link rel="alternate" hreflang="zh" href="https://pboboo.cn/blog-2026-bingwu.html">
+<link rel="alternate" hreflang="en" href="https://pboboo.cn/blog-2026-bingwu.html">
+<link rel="alternate" hreflang="x-default" href="https://pboboo.cn/blog-2026-bingwu.html">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5612817044381809" crossorigin="anonymous"></script>
 <style>
 :root{
@@ -42,99 +45,132 @@ p{color:var(--muted2);margin-bottom:16px;line-height:1.9}
 .wx-card.neutral h3{color:var(--accent)}
 footer{text-align:center;margin-top:60px;padding-top:32px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
 footer a{color:var(--muted2);text-decoration:none;margin:0 8px}
+/* 语言切换 */
+.lang-switch{position:fixed;top:16px;right:16px;z-index:999;display:flex;gap:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:4px 6px;backdrop-filter:blur(8px)}
+.lang-btn{background:none;border:none;color:var(--muted);font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;cursor:pointer;transition:all .25s;letter-spacing:.5px}
+.lang-btn.active{background:rgba(157,123,255,0.25);color:var(--accent);border:1px solid rgba(157,123,255,0.35)}
+.lang-btn:not(.active):hover{color:var(--text)}
+@media(max-width:600px){.lang-switch{top:10px;right:10px}.container{padding-top:52px}}
 </style>
 </head>
 <body>
+
+<div class="lang-switch">
+  <button class="lang-btn active" id="btnZH" onclick="setLang('zh')">中文</button>
+  <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
+</div>
+
 <div class="container">
-  <a href="/" class="back">← 返回首页</a>
+  <a href="/" class="back" data-zh="← 返回首页" data-en="← Back to Home">← 返回首页</a>
 
-  <div class="badge">流年解读</div>
-  <h1>2026丙午年运势解读：今年的整体气场方向</h1>
-  <div class="meta">发布于 2026年3月 · 阅读约需 6 分钟</div>
+  <div class="badge" data-zh="流年解读" data-en="ANNUAL FORECAST">流年解读</div>
+  <h1 data-zh="2026丙午年运势解读：今年的整体气场方向" data-en="2026 Year of Bǐngwǔ (Fire Horse): The Year's Overall Energy Direction">2026丙午年运势解读：今年的整体气场方向</h1>
+  <div class="meta" data-zh="发布于 2026年3月 · 阅读约需 6 分钟" data-en="Published March 2026 · 6-minute read">发布于 2026年3月 · 阅读约需 6 分钟</div>
 
-  <p>2026年是农历丙午年。从命理角度来看，这是一个能量强烈、变化显著的年份。丙火天干加上午火地支，双火叠加，整体气场炽烈而充满动能。如果你想知道今年的整体趋势对自己意味着什么，这篇文章会给你一个方向性的参考。</p>
+  <p data-zh="2026年是农历丙午年。从命理角度来看，这是一个能量强烈、变化显著的年份。丙火天干加上午火地支，双火叠加，整体气场炽烈而充满动能。如果你想知道今年的整体趋势对自己意味着什么，这篇文章会给你一个方向性的参考。" data-en="2026 is the Year of Bǐngwǔ (Fire Horse) in the Chinese lunar calendar. From a destiny perspective, this is a year of intense energy and significant change. With Yang Fire in the Heavenly Stem and Horse Fire in the Earthly Branch, double fire energy dominates — the overall atmosphere is blazing and full of momentum. This article offers a directional reference for what this year's trends mean for you.">2026年是农历丙午年。从命理角度来看，这是一个能量强烈、变化显著的年份。丙火天干加上午火地支，双火叠加，整体气场炽烈而充满动能。如果你想知道今年的整体趋势对自己意味着什么，这篇文章会给你一个方向性的参考。</p>
 
   <div class="year-badge">
     <div class="yb-char">丙午</div>
     <div class="yb-info">
-      <strong style="color:var(--text)">2026年 · 丙午年</strong><br>
-      天干：丙（阳火）· 地支：午（阳火）<br>
-      生肖：马年 · 五行：双火叠旺
+      <strong style="color:var(--text)" data-zh="2026年 · 丙午年" data-en="2026 · Year of Bǐngwǔ">2026年 · 丙午年</strong><br>
+      <span data-zh="天干：丙（阳火）· 地支：午（阳火）<br>生肖：马年 · 五行：双火叠旺" data-en="Heavenly Stem: Bǐng (Yang Fire) · Earthly Branch: Wǔ (Yang Fire)<br>Zodiac: Year of the Horse · Element: Double Fire">天干：丙（阳火）· 地支：午（阳火）<br>生肖：马年 · 五行：双火叠旺</span>
     </div>
   </div>
 
-  <h2>丙午年的核心特征</h2>
+  <h2 data-zh="丙午年的核心特征" data-en="Core Characteristics of the Bǐngwǔ Year">丙午年的核心特征</h2>
 
-  <p>在天干中，<strong style="color:var(--text)">丙</strong>是阳火，象征太阳——光明、温暖、普照万物，也代表热情、扩张与社交。在地支中，<strong style="color:var(--text)">午</strong>也属火，且是十二地支中火气最旺的支。两者相叠，火的特质在2026年会格外突出。</p>
+  <p data-zh="在天干中，<strong style='color:var(--text)'>丙</strong>是阳火，象征太阳——光明、温暖、普照万物，也代表热情、扩张与社交。在地支中，<strong style='color:var(--text)'>午</strong>也属火，且是十二地支中火气最旺的支。两者相叠，火的特质在2026年会格外突出。" data-en="In the Heavenly Stems, <strong style='color:var(--text)'>Bǐng</strong> is Yang Fire, symbolizing the sun — brilliance, warmth, illuminating all things, representing passion, expansion, and social connection. In the Earthly Branches, <strong style='color:var(--text)'>Wǔ</strong> (Horse) also belongs to Fire and carries the strongest fire energy of all twelve branches. With both combined, the qualities of Fire will be especially prominent throughout 2026.">在天干中，<strong style="color:var(--text)">丙</strong>是阳火，象征太阳——光明、温暖、普照万物，也代表热情、扩张与社交。在地支中，<strong style="color:var(--text)">午</strong>也属火，且是十二地支中火气最旺的支。两者相叠，火的特质在2026年会格外突出。</p>
 
-  <p>从历史规律来看，丙午年通常是充满活力和变动的年份。热情高涨，但也容易急躁；机会涌现，但也需要更稳健的判断力。这是一个「快」的年份，节奏加速，不适合拖延和犹豫。</p>
+  <p data-zh="从历史规律来看，丙午年通常是充满活力和变动的年份。热情高涨，但也容易急躁；机会涌现，但也需要更稳健的判断力。这是一个「快」的年份，节奏加速，不适合拖延和犹豫。" data-en="Historically, Bǐngwǔ years tend to be vibrant and eventful. Enthusiasm runs high, but so does the tendency toward impatience. Opportunities emerge, but sharp judgment is essential. This is a 'fast' year — the pace accelerates, and procrastination or hesitation doesn't serve you well.">从历史规律来看，丙午年通常是充满活力和变动的年份。热情高涨，但也容易急躁；机会涌现，但也需要更稳健的判断力。这是一个「快」的年份，节奏加速，不适合拖延和犹豫。</p>
 
   <div class="highlight">
-    <p>🔥 <strong>丙午年关键词：</strong>热情、光明、扩张、速度、变化、创新、人际互动、情绪波动、能量消耗</p>
+    <p data-zh="🔥 <strong>丙午年关键词：</strong>热情、光明、扩张、速度、变化、创新、人际互动、情绪波动、能量消耗" data-en="🔥 <strong>Bǐngwǔ Year Keywords:</strong> Passion, Brightness, Expansion, Speed, Change, Innovation, Social Interaction, Emotional Fluctuation, Energy Consumption">🔥 <strong>丙午年关键词：</strong>热情、光明、扩张、速度、变化、创新、人际互动、情绪波动、能量消耗</p>
   </div>
 
-  <h2>丙午年对五行各属人群的影响</h2>
+  <h2 data-zh="丙午年对五行各属人群的影响" data-en="How Bǐngwǔ Year Affects Each Element Type">丙午年对五行各属人群的影响</h2>
 
-  <p>你的五行属性（由出生日的天干决定，即「日主」）与流年五行的关系，决定了你今年的整体气场走向：</p>
+  <p data-zh="你的五行属性（由出生日的天干决定，即「日主」）与流年五行的关系，决定了你今年的整体气场走向：" data-en="Your elemental type (determined by your birth day's Heavenly Stem, known as the 'Day Master') and its relationship with this year's Fire energy determines your overall fortune direction:">你的五行属性（由出生日的天干决定，即「日主」）与流年五行的关系，决定了你今年的整体气场走向：</p>
 
   <div class="wuxing-grid">
     <div class="wx-card good">
-      <h3>🌳 木属日主（甲、乙日生）</h3>
-      <p>木生火，今年流年火旺，木的能量持续输出。事业上有展示机会，人际关系活跃。注意不要过度消耗，留有余力。</p>
+      <h3 data-zh="🌳 木属日主（甲、乙日生）" data-en="🌳 Wood Day Masters (Born on Jiǎ or Yǐ Days)">🌳 木属日主（甲、乙日生）</h3>
+      <p data-zh="木生火，今年流年火旺，木的能量持续输出。事业上有展示机会，人际关系活跃。注意不要过度消耗，留有余力。" data-en="Wood feeds Fire — with annual Fire surging, your Wood energy keeps outputting. Career opportunities to shine arise, and social life is lively. Watch out for over-expenditure; preserve your reserves.">木生火，今年流年火旺，木的能量持续输出。事业上有展示机会，人际关系活跃。注意不要过度消耗，留有余力。</p>
     </div>
     <div class="wx-card caution">
-      <h3>🔥 火属日主（丙、丁日生）</h3>
-      <p>比劫年（同类能量旺盛），竞争感增强，容易焦虑急躁。但也是展现自我、建立影响力的好时机，需要稳定心态。</p>
+      <h3 data-zh="🔥 火属日主（丙、丁日生）" data-en="🔥 Fire Day Masters (Born on Bǐng or Dīng Days)">🔥 火属日主（丙、丁日生）</h3>
+      <p data-zh="比劫年（同类能量旺盛），竞争感增强，容易焦虑急躁。但也是展现自我、建立影响力的好时机，需要稳定心态。" data-en="A 'peer competition' year — same element is strong, intensifying rivalry and anxiety. However, it's also a prime time to assert yourself and build influence. Keeping a steady mindset is key.">比劫年（同类能量旺盛），竞争感增强，容易焦虑急躁。但也是展现自我、建立影响力的好时机，需要稳定心态。</p>
     </div>
     <div class="wx-card neutral">
-      <h3>🌍 土属日主（戊、己日生）</h3>
-      <p>火生土，今年对土属人来说整体有贵人和资源的助力。适合稳步推进计划，避免冒进，财运有所提升。</p>
+      <h3 data-zh="🌍 土属日主（戊、己日生）" data-en="🌍 Earth Day Masters (Born on Wù or Jǐ Days)">🌍 土属日主（戊、己日生）</h3>
+      <p data-zh="火生土，今年对土属人来说整体有贵人和资源的助力。适合稳步推进计划，避免冒进，财运有所提升。" data-en="Fire generates Earth — this year brings helpful people and resources for Earth types. Steadily advancing plans works well; avoid rashness. Wealth luck sees some improvement.">火生土，今年对土属人来说整体有贵人和资源的助力。适合稳步推进计划，避免冒进，财运有所提升。</p>
     </div>
     <div class="wx-card caution">
-      <h3>⚔️ 金属日主（庚、辛日生）</h3>
-      <p>火克金，今年压力感较强，容易遇到阻碍和挑战。建议低调行事，专注核心，不适合大规模扩张或冒险。</p>
+      <h3 data-zh="⚔️ 金属日主（庚、辛日生）" data-en="⚔️ Metal Day Masters (Born on Gēng or Xīn Days)">⚔️ 金属日主（庚、辛日生）</h3>
+      <p data-zh="火克金，今年压力感较强，容易遇到阻碍和挑战。建议低调行事，专注核心，不适合大规模扩张或冒险。" data-en="Fire overcomes Metal — pressure runs high this year, and obstacles and challenges are more frequent. Keeping a low profile, focusing on core matters, and avoiding large-scale expansion or risk-taking is advisable.">火克金，今年压力感较强，容易遇到阻碍和挑战。建议低调行事，专注核心，不适合大规模扩张或冒险。</p>
     </div>
     <div class="wx-card good">
-      <h3>💧 水属日主（壬、癸日生）</h3>
-      <p>水克火，今年你有制衡流年旺火的能力，整体气场相对平稳。适合在变动中寻找机会，独立思考能力突出。</p>
+      <h3 data-zh="💧 水属日主（壬、癸日生）" data-en="💧 Water Day Masters (Born on Rén or Guǐ Days)">💧 水属日主（壬、癸日生）</h3>
+      <p data-zh="水克火，今年你有制衡流年旺火的能力，整体气场相对平稳。适合在变动中寻找机会，独立思考能力突出。" data-en="Water controls Fire — you have the capacity to balance this year's intense fire energy, keeping your overall outlook relatively stable. Look for opportunities within change; independent thinking stands out.">水克火，今年你有制衡流年旺火的能力，整体气场相对平稳。适合在变动中寻找机会，独立思考能力突出。</p>
     </div>
   </div>
 
-  <p style="font-size:12px;color:var(--muted)">注：以上分析基于日主五行与流年五行的基本关系，实际命局受八字整体格局影响，仅供参考。</p>
+  <p style="font-size:12px;color:var(--muted)" data-zh="注：以上分析基于日主五行与流年五行的基本关系，实际命局受八字整体格局影响，仅供参考。" data-en="Note: The above analysis is based on the basic relationship between your Day Master element and the year's element. Actual destiny patterns are influenced by the full Bazi chart and are for reference only.">注：以上分析基于日主五行与流年五行的基本关系，实际命局受八字整体格局影响，仅供参考。</p>
 
-  <h2>2026年特别值得关注的方向</h2>
+  <h2 data-zh="2026年特别值得关注的方向" data-en="Key Areas to Focus On in 2026">2026年特别值得关注的方向</h2>
 
-  <h3>人际与社交</h3>
-  <p>丙火主礼仪与光明，今年人际关系的质量对很多人都有显著影响。主动建立连接、维护重要关系，在丙午年会有意想不到的回报。</p>
+  <h3 data-zh="人际与社交" data-en="Relationships and Social Connection">人际与社交</h3>
+  <p data-zh="丙火主礼仪与光明，今年人际关系的质量对很多人都有显著影响。主动建立连接、维护重要关系，在丙午年会有意想不到的回报。" data-en="Bǐng Fire governs ritual and radiance — the quality of your relationships will have a significant impact on many people this year. Proactively building connections and maintaining important relationships will bring unexpected rewards in a Bǐngwǔ year.">丙火主礼仪与光明，今年人际关系的质量对很多人都有显著影响。主动建立连接、维护重要关系，在丙午年会有意想不到的回报。</p>
 
-  <h3>速度与执行</h3>
-  <p>这是一个节奏快的年份，想太多不如动起来。过去积累的计划，今年是付诸行动的好时机。但也要注意：速度快不等于冲动，保持方向清晰很重要。</p>
+  <h3 data-zh="速度与执行" data-en="Speed and Execution">速度与执行</h3>
+  <p data-zh="这是一个节奏快的年份，想太多不如动起来。过去积累的计划，今年是付诸行动的好时机。但也要注意：速度快不等于冲动，保持方向清晰很重要。" data-en="This is a fast-paced year — acting beats overthinking. Plans you've been accumulating are ready to be put into motion. But remember: moving fast isn't the same as acting impulsively. Staying clear on your direction is essential.">这是一个节奏快的年份，想太多不如动起来。过去积累的计划，今年是付诸行动的好时机。但也要注意：速度快不等于冲动，保持方向清晰很重要。</p>
 
-  <h3>健康与情绪</h3>
-  <p>火旺的年份容易有心火旺、情绪波动、睡眠质量下降等问题。多关注心脏、血压、睡眠，饮食上适当清热降火，保持情绪稳定比什么都重要。</p>
+  <h3 data-zh="健康与情绪" data-en="Health and Emotions">健康与情绪</h3>
+  <p data-zh="火旺的年份容易有心火旺、情绪波动、睡眠质量下降等问题。多关注心脏、血压、睡眠，饮食上适当清热降火，保持情绪稳定比什么都重要。" data-en="High-fire years often bring elevated heart energy, emotional volatility, and declining sleep quality. Pay extra attention to your heart, blood pressure, and sleep. Cooling foods in your diet and staying emotionally grounded matter more than anything else.">火旺的年份容易有心火旺、情绪波动、睡眠质量下降等问题。多关注心脏、血压、睡眠，饮食上适当清热降火，保持情绪稳定比什么都重要。</p>
 
-  <h3>财运</h3>
-  <p>丙午年整体财气偏向「主动出击型」——守株待兔不如主动创造机会。有创业想法或副业计划的人，今年适合迈出第一步，但资金管理要保守。</p>
+  <h3 data-zh="财运" data-en="Wealth Fortune">财运</h3>
+  <p data-zh="丙午年整体财气偏向「主动出击型」——守株待兔不如主动创造机会。有创业想法或副业计划的人，今年适合迈出第一步，但资金管理要保守。" data-en="Wealth fortune in a Bǐngwǔ year favors those who actively create opportunities — waiting for luck to arrive is less effective than going after it. Those with entrepreneurial ideas or side projects would do well to take the first step this year, but manage capital conservatively.">丙午年整体财气偏向「主动出击型」——守株待兔不如主动创造机会。有创业想法或副业计划的人，今年适合迈出第一步，但资金管理要保守。</p>
 
-  <h2>怎么结合每日运势使用？</h2>
+  <h2 data-zh="怎么结合每日运势使用？" data-en="How to Use This with Your Daily Fortune">怎么结合每日运势使用？</h2>
 
-  <p>流年分析给的是整体方向，但落实到每一天，还需要结合当日的天干地支来判断。每天的干支不同，与流年丙午的互动关系也不同，有些日子顺势而为，有些日子则需要格外谨慎。</p>
+  <p data-zh="流年分析给的是整体方向，但落实到每一天，还需要结合当日的天干地支来判断。每天的干支不同，与流年丙午的互动关系也不同，有些日子顺势而为，有些日子则需要格外谨慎。" data-en="Annual analysis gives the big picture, but applying it to each day requires reading that day's Stems and Branches. The relationship between each day's Ganzhi and the year's Bǐngwǔ energy differs — some days flow naturally, others call for extra caution.">流年分析给的是整体方向，但落实到每一天，还需要结合当日的天干地支来判断。每天的干支不同，与流年丙午的互动关系也不同，有些日子顺势而为，有些日子则需要格外谨慎。</p>
 
-  <p>这也是每日运势工具的意义所在——它不是替你做决定，而是帮你感知今天的气场节奏，找到最顺势的行动方向。</p>
+  <p data-zh="这也是每日运势工具的意义所在——它不是替你做决定，而是帮你感知今天的气场节奏，找到最顺势的行动方向。" data-en="This is the purpose of a daily fortune tool — not to make decisions for you, but to help you sense today's energetic rhythm and find the most aligned path forward.">这也是每日运势工具的意义所在——它不是替你做决定，而是帮你感知今天的气场节奏，找到最顺势的行动方向。</p>
 
   <div class="highlight">
-    <p>🔮 <strong>每天测一测：</strong>在丙午年这个快节奏的年份，每天早晨花2分钟感受一下今日气场，会帮助你更有节奏地应对变化。</p>
+    <p data-zh="🔮 <strong>每天测一测：</strong>在丙午年这个快节奏的年份，每天早晨花2分钟感受一下今日气场，会帮助你更有节奏地应对变化。" data-en="🔮 <strong>Check daily:</strong> In this fast-paced Bǐngwǔ year, spending 2 minutes each morning sensing today's energy will help you navigate change with better rhythm.">🔮 <strong>每天测一测：</strong>在丙午年这个快节奏的年份，每天早晨花2分钟感受一下今日气场，会帮助你更有节奏地应对变化。</p>
   </div>
 
-  <p style="margin-top:32px;color:var(--muted)">想看今天具体的运势推算？<a href="/" style="color:var(--accent2);text-decoration:none">回到首页</a>，输入你的生辰信息开始测算。</p>
+  <p style="margin-top:32px;color:var(--muted)"><span data-zh="想看今天具体的运势推算？" data-en="Want to see today's specific fortune reading?">想看今天具体的运势推算？</span> <a href="/" style="color:var(--accent2);text-decoration:none" data-zh="回到首页" data-en="Go back to the homepage">回到首页</a><span data-zh="，输入你的生辰信息开始测算。" data-en=", enter your birth info, and start your reading.">，输入你的生辰信息开始测算。</span></p>
 
   <footer>
-    <a href="/">首页</a>
-    <a href="/about.html">关于本站</a>
-    <a href="/faq.html">常见问题</a>
-    <a href="/privacy.html">隐私政策</a>
-    <div style="margin-top:12px">© 2026 pboboo.cn · 传统文化娱乐工具</div>
+    <a href="/" data-zh="首页" data-en="Home">首页</a>
+    <a href="/about.html" data-zh="关于本站" data-en="About">关于本站</a>
+    <a href="/faq.html" data-zh="常见问题" data-en="FAQ">常见问题</a>
+    <a href="/privacy.html" data-zh="隐私政策" data-en="Privacy">隐私政策</a>
+    <div style="margin-top:12px" data-zh="© 2026 pboboo.cn · 传统文化娱乐工具" data-en="© 2026 pboboo.cn · Traditional Culture & Entertainment">© 2026 pboboo.cn · 传统文化娱乐工具</div>
   </footer>
 </div>
+
+<script>
+function setLang(lang){
+  document.getElementById('htmlRoot').lang = lang==='en'?'en':'zh-CN';
+  document.getElementById('btnZH').classList.toggle('active', lang==='zh');
+  document.getElementById('btnEN').classList.toggle('active', lang==='en');
+  document.querySelectorAll('[data-zh]').forEach(el=>{
+    const val = lang==='en' ? el.dataset.en : el.dataset.zh;
+    if(!val) return;
+    if(el.tagName==='META') el.setAttribute('content', val);
+    else if(el.tagName==='TITLE') el.textContent = val;
+    else el.innerHTML = val;
+  });
+  try{ localStorage.setItem('lang', lang); }catch(e){}
+}
+(function(){
+  try{
+    const saved = localStorage.getItem('lang');
+    if(saved==='en') setLang('en');
+  }catch(e){}
+})();
+</script>
 </body>
 </html>

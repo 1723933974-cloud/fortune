@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5612817044381809" crossorigin="anonymous"></script>
-<title>晨间运势：为什么每天测一测能提升你的状态 | pboboo.cn</title>
-<meta name="description" content="每天花两分钟测运势，不是迷信，而是一种有效的晨间心理仪式。本文解释为什么这个习惯能帮助你更好地开始每一天。">
+<title id="pageTitle">晨间运势：为什么每天测一测能提升你的状态 | pboboo.cn</title>
+<meta id="pageDesc" name="description" content="每天花两分钟测运势，不是迷信，而是一种有效的晨间心理仪式。本文解释为什么这个习惯能帮助你更好地开始每一天。">
 <link rel="canonical" href="https://pboboo.cn/blog-morning-ritual.html">
+<link rel="alternate" hreflang="zh" href="https://pboboo.cn/blog-morning-ritual.html">
+<link rel="alternate" hreflang="en" href="https://pboboo.cn/blog-morning-ritual.html">
+<link rel="alternate" hreflang="x-default" href="https://pboboo.cn/blog-morning-ritual.html">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#07070f;--surface:#0e0e1c;--card:#13131f;--border:rgba(255,255,255,0.06);--accent:#9d7bff;--accent2:#ff7eb3;--accent3:#ffbe5c;--text:#eeeeff;--muted:#6b6b90;--muted2:#9494b8}
@@ -26,65 +29,99 @@ nav a:hover{text-decoration:underline}
 .step-num{min-width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;color:#fff}
 .step-content h3{color:var(--text);font-size:1rem;margin-bottom:4px}
 .step-content p{color:var(--muted2);font-size:0.9rem;margin:0}
+/* 语言切换 */
+.lang-switch{position:fixed;top:16px;right:16px;z-index:999;display:flex;gap:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:4px 6px;backdrop-filter:blur(8px)}
+.lang-btn{background:none;border:none;color:var(--muted);font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;cursor:pointer;transition:all .25s;letter-spacing:.5px}
+.lang-btn.active{background:rgba(157,123,255,0.25);color:var(--accent);border:1px solid rgba(157,123,255,0.35)}
+.lang-btn:not(.active):hover{color:var(--text)}
+@media(max-width:600px){.lang-switch{top:10px;right:10px}.wrap{padding-top:52px}}
 </style>
 </head>
 <body>
+
+<div class="lang-switch">
+  <button class="lang-btn active" id="btnZH" onclick="setLang('zh')">中文</button>
+  <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
+</div>
+
 <div class="wrap">
-  <nav><a href="/">← 返回今日运势</a></nav>
-  <h1>晨间运势：为什么每天测一测能提升你的状态</h1>
-  <div class="meta">生活方式 · 心理习惯 · 约680字</div>
+  <nav><a href="/" data-zh="← 返回今日运势" data-en="← Back to Fortune">← 返回今日运势</a></nav>
+  <h1 data-zh="晨间运势：为什么每天测一测能提升你的状态" data-en="Morning Fortune: Why Checking Your Daily Fortune Boosts Your Day">晨间运势：为什么每天测一测能提升你的状态</h1>
+  <div class="meta" data-zh="生活方式 · 心理习惯 · 约680字" data-en="Lifestyle · Mental Habits · ~680 words">生活方式 · 心理习惯 · 约680字</div>
 
-  <p>很多人把每天测运势当作一个迷信行为，但越来越多的心理学研究表明：晨间仪式感本身，无论其形式是冥想、写日记还是看运势，都对一天的心理状态有显著的积极影响。</p>
+  <p data-zh="很多人把每天测运势当作一个迷信行为，但越来越多的心理学研究表明：晨间仪式感本身，无论其形式是冥想、写日记还是看运势，都对一天的心理状态有显著的积极影响。" data-en="Many people dismiss daily fortune checking as superstition, but a growing body of psychological research shows that morning rituals — whether meditation, journaling, or checking your fortune — have a measurable positive effect on your mental state throughout the day.">很多人把每天测运势当作一个迷信行为，但越来越多的心理学研究表明：晨间仪式感本身，无论其形式是冥想、写日记还是看运势，都对一天的心理状态有显著的积极影响。</p>
 
-  <h2>什么是晨间仪式？</h2>
-  <p>晨间仪式（Morning Ritual）是指在每天早晨固定时间完成的一套行为模式。它的核心价值不在于具体内容，而在于"有意识地开始新的一天"这个行为本身。</p>
-  <p>当你在早晨花两分钟测一测运势，你实际上完成了几件心理层面的工作：</p>
+  <h2 data-zh="什么是晨间仪式？" data-en="What Is a Morning Ritual?">什么是晨间仪式？</h2>
+  <p data-zh="晨间仪式（Morning Ritual）是指在每天早晨固定时间完成的一套行为模式。它的核心价值不在于具体内容，而在于"有意识地开始新的一天"这个行为本身。" data-en="A morning ritual is a set of behaviors performed at a fixed time each morning. Its core value isn't in the specific activity, but in the act of 'consciously choosing how to begin a new day.'">晨间仪式（Morning Ritual）是指在每天早晨固定时间完成的一套行为模式。它的核心价值不在于具体内容，而在于"有意识地开始新的一天"这个行为本身。</p>
+  <p data-zh="当你在早晨花两分钟测一测运势，你实际上完成了几件心理层面的工作：" data-en="When you spend two minutes checking your fortune each morning, you're actually completing several meaningful psychological tasks:">当你在早晨花两分钟测一测运势，你实际上完成了几件心理层面的工作：</p>
 
   <div class="step">
     <div class="step-num">1</div>
     <div class="step-content">
-      <h3>设定今天的心理基调</h3>
-      <p>运势结果给你一个关于今天的"框架"，这个框架会影响你接下来做决策的底层情绪。</p>
+      <h3 data-zh="设定今天的心理基调" data-en="Setting Today's Mental Tone">设定今天的心理基调</h3>
+      <p data-zh="运势结果给你一个关于今天的"框架"，这个框架会影响你接下来做决策的底层情绪。" data-en="The fortune result gives you a 'frame' for today, which subtly influences the emotional baseline behind your decisions.">运势结果给你一个关于今天的"框架"，这个框架会影响你接下来做决策的底层情绪。</p>
     </div>
   </div>
   <div class="step">
     <div class="step-num">2</div>
     <div class="step-content">
-      <h3>强化自我关注意识</h3>
-      <p>输入生辰、选择直觉的过程，让你短暂地把注意力拉回自己身上，而不是直接被信息流淹没。</p>
+      <h3 data-zh="强化自我关注意识" data-en="Strengthening Self-Awareness">强化自我关注意识</h3>
+      <p data-zh="输入生辰、选择直觉的过程，让你短暂地把注意力拉回自己身上，而不是直接被信息流淹没。" data-en="The process of entering your birth info and choosing your intuition briefly draws your attention inward, preventing you from being immediately swept away by the news feed.">输入生辰、选择直觉的过程，让你短暂地把注意力拉回自己身上，而不是直接被信息流淹没。</p>
     </div>
   </div>
   <div class="step">
     <div class="step-num">3</div>
     <div class="step-content">
-      <h3>获得一个行动建议</h3>
-      <p>今日运势会给出具体的建议方向，哪怕只是"适合创作"或"注意人际关系"，这种小提示足以微妙地影响你今天的行为选择。</p>
+      <h3 data-zh="获得一个行动建议" data-en="Receiving an Actionable Suggestion">获得一个行动建议</h3>
+      <p data-zh="今日运势会给出具体的建议方向，哪怕只是"适合创作"或"注意人际关系"，这种小提示足以微妙地影响你今天的行为选择。" data-en="Your daily fortune offers a concrete direction, even something as simple as 'good for creative work' or 'watch your relationships' — small prompts that can subtly shift how you move through the day.">今日运势会给出具体的建议方向，哪怕只是"适合创作"或"注意人际关系"，这种小提示足以微妙地影响你今天的行为选择。</p>
     </div>
   </div>
   <div class="step">
     <div class="step-num">4</div>
     <div class="step-content">
-      <h3>制造期待感</h3>
-      <p>知道今天可能有好事，会让你更愿意主动出击去寻找机会，这是一种积极的自我实现预言。</p>
+      <h3 data-zh="制造期待感" data-en="Creating a Sense of Anticipation">制造期待感</h3>
+      <p data-zh="知道今天可能有好事，会让你更愿意主动出击去寻找机会，这是一种积极的自我实现预言。" data-en="Knowing today might bring something good makes you more likely to go out and seek opportunities — a positive self-fulfilling prophecy.">知道今天可能有好事，会让你更愿意主动出击去寻找机会，这是一种积极的自我实现预言。</p>
     </div>
   </div>
 
-  <h2>安慰剂效应：迷信的科学基础</h2>
-  <p>心理学中有个著名的"安慰剂效应"——即使是无效的干预，只要当事人相信它有效，也会产生真实的心理和生理改变。晨间运势的"效果"也部分来自这里：你相信今天是好日子，你就更可能以积极的方式去迎接挑战。</p>
+  <h2 data-zh="安慰剂效应：迷信的科学基础" data-en="The Placebo Effect: The Science Behind Belief">安慰剂效应：迷信的科学基础</h2>
+  <p data-zh="心理学中有个著名的"安慰剂效应"——即使是无效的干预，只要当事人相信它有效，也会产生真实的心理和生理改变。晨间运势的"效果"也部分来自这里：你相信今天是好日子，你就更可能以积极的方式去迎接挑战。" data-en="Psychology has a well-known 'placebo effect' — even an inactive intervention produces real psychological and physiological changes if the person believes it works. Part of the morning fortune's 'effect' comes from exactly this: believing today is a good day makes you more likely to approach challenges with a positive mindset.">心理学中有个著名的"安慰剂效应"——即使是无效的干预，只要当事人相信它有效，也会产生真实的心理和生理改变。晨间运势的"效果"也部分来自这里：你相信今天是好日子，你就更可能以积极的方式去迎接挑战。</p>
 
   <div class="highlight">
-    <p>💡 关键不在于运势是否准确，而在于你是否以更好的状态开始了今天。</p>
+    <p data-zh="💡 关键不在于运势是否准确，而在于你是否以更好的状态开始了今天。" data-en="💡 The key isn't whether the fortune is accurate — it's whether you started today in a better state of mind.">💡 关键不在于运势是否准确，而在于你是否以更好的状态开始了今天。</p>
   </div>
 
-  <h2>如何建立你的晨间运势习惯？</h2>
-  <p>建议固定在早晨起床后、刷手机之前的5分钟内完成。这段时间大脑处于"默认模式"，对暗示最为敏感，也是最容易建立仪式感的时机。</p>
-  <p>每天保持同样的流程：打开页面 → 输入信息 → 选择直觉 → 阅读结果 → 记住今日幸运色和建议。整个过程不超过两分钟，却可能改变你一整天的心理底色。</p>
+  <h2 data-zh="如何建立你的晨间运势习惯？" data-en="How to Build Your Morning Fortune Habit">如何建立你的晨间运势习惯？</h2>
+  <p data-zh="建议固定在早晨起床后、刷手机之前的5分钟内完成。这段时间大脑处于"默认模式"，对暗示最为敏感，也是最容易建立仪式感的时机。" data-en="Try to do it within the first five minutes after waking up, before scrolling your phone. During this window, your brain is in 'default mode' — most receptive to suggestion and easiest to form rituals in.">建议固定在早晨起床后、刷手机之前的5分钟内完成。这段时间大脑处于"默认模式"，对暗示最为敏感，也是最容易建立仪式感的时机。</p>
+  <p data-zh="每天保持同样的流程：打开页面 → 输入信息 → 选择直觉 → 阅读结果 → 记住今日幸运色和建议。整个过程不超过两分钟，却可能改变你一整天的心理底色。" data-en="Keep the same flow every day: open the page → enter your info → choose your intuition → read the result → remember your lucky color and tip. The whole process takes under two minutes, yet can shift your entire day's mental foundation.">每天保持同样的流程：打开页面 → 输入信息 → 选择直觉 → 阅读结果 → 记住今日幸运色和建议。整个过程不超过两分钟，却可能改变你一整天的心理底色。</p>
 
   <div class="highlight">
-    <p>☀️ 今天还没测吗？现在就开始你的晨间运势仪式。</p>
+    <p data-zh="☀️ 今天还没测吗？现在就开始你的晨间运势仪式。" data-en="☀️ Haven't checked yet today? Start your morning fortune ritual right now.">☀️ 今天还没测吗？现在就开始你的晨间运势仪式。</p>
   </div>
 
-  <a href="/" class="back-btn">开始今日运势 →</a>
+  <a href="/" class="back-btn" data-zh="开始今日运势 →" data-en="Start Today's Fortune →">开始今日运势 →</a>
 </div>
+
+<script>
+function setLang(lang){
+  document.getElementById('htmlRoot').lang = lang==='en'?'en':'zh-CN';
+  document.getElementById('btnZH').classList.toggle('active', lang==='zh');
+  document.getElementById('btnEN').classList.toggle('active', lang==='en');
+  document.querySelectorAll('[data-zh]').forEach(el=>{
+    const val = lang==='en' ? el.dataset.en : el.dataset.zh;
+    if(!val) return;
+    if(el.tagName==='META') el.setAttribute('content', val);
+    else if(el.tagName==='TITLE') el.textContent = val;
+    else el.innerHTML = val;
+  });
+  try{ localStorage.setItem('lang', lang); }catch(e){}
+}
+(function(){
+  try{
+    const saved = localStorage.getItem('lang');
+    if(saved==='en') setLang('en');
+  }catch(e){}
+})();
+</script>
 </body>
 </html>

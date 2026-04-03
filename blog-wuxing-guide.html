@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5612817044381809" crossorigin="anonymous"></script>
-<title>金木水火土：五行相生相克完全指南 | pboboo.cn</title>
-<meta name="description" content="五行是中国传统哲学的核心框架。金木水火土如何相生相克？它们又如何影响我们的日常生活和运势？本文一文读懂。">
+<title id="pageTitle">金木水火土：五行相生相克完全指南 | pboboo.cn</title>
+<meta id="pageDesc" name="description" content="五行是中国传统哲学的核心框架。金木水火土如何相生相克？它们又如何影响我们的日常生活和运势？本文一文读懂。">
 <link rel="canonical" href="https://pboboo.cn/blog-wuxing-guide.html">
+<link rel="alternate" hreflang="zh" href="https://pboboo.cn/blog-wuxing-guide.html">
+<link rel="alternate" hreflang="en" href="https://pboboo.cn/blog-wuxing-guide.html">
+<link rel="alternate" hreflang="x-default" href="https://pboboo.cn/blog-wuxing-guide.html">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#07070f;--surface:#0e0e1c;--card:#13131f;--border:rgba(255,255,255,0.06);--accent:#9d7bff;--accent2:#ff7eb3;--accent3:#ffbe5c;--text:#eeeeff;--muted:#6b6b90;--muted2:#9494b8}
@@ -31,85 +34,119 @@ nav a:hover{text-decoration:underline}
 .relation-title{color:var(--accent2);font-weight:700;margin-bottom:12px}
 .relation-item{color:var(--muted2);font-size:0.9rem;padding:6px 0;border-bottom:1px solid var(--border)}
 .relation-item:last-child{border-bottom:none}
+/* 语言切换 */
+.lang-switch{position:fixed;top:16px;right:16px;z-index:999;display:flex;gap:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:4px 6px;backdrop-filter:blur(8px)}
+.lang-btn{background:none;border:none;color:var(--muted);font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;cursor:pointer;transition:all .25s;letter-spacing:.5px}
+.lang-btn.active{background:rgba(157,123,255,0.25);color:var(--accent);border:1px solid rgba(157,123,255,0.35)}
+.lang-btn:not(.active):hover{color:var(--text)}
+@media(max-width:600px){.lang-switch{top:10px;right:10px}.wrap{padding-top:52px}}
 </style>
 </head>
 <body>
+
+<div class="lang-switch">
+  <button class="lang-btn active" id="btnZH" onclick="setLang('zh')">中文</button>
+  <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
+</div>
+
 <div class="wrap">
-  <nav><a href="/">← 返回今日运势</a></nav>
-  <h1>金木水火土：五行相生相克完全指南</h1>
-  <div class="meta">传统文化 · 五行理论 · 约800字</div>
+  <nav><a href="/" data-zh="← 返回今日运势" data-en="← Back to Fortune">← 返回今日运势</a></nav>
+  <h1 data-zh="金木水火土：五行相生相克完全指南" data-en="Five Elements: The Complete Guide to Creation & Destruction">金木水火土：五行相生相克完全指南</h1>
+  <div class="meta" data-zh="传统文化 · 五行理论 · 约800字" data-en="Traditional Culture · Five Elements · ~800 words">传统文化 · 五行理论 · 约800字</div>
 
-  <p>五行学说是中国古典哲学的核心，它将世间万物归纳为五种基本元素：木、火、土、金、水。这五种元素不是孤立存在的，它们之间存在着微妙而深刻的生克制化关系，构成了一个动态平衡的宇宙观。</p>
+  <p data-zh="五行学说是中国古典哲学的核心，它将世间万物归纳为五种基本元素：木、火、土、金、水。这五种元素不是孤立存在的，它们之间存在着微妙而深刻的生克制化关系，构成了一个动态平衡的宇宙观。" data-en="The Five Elements theory is the cornerstone of Chinese classical philosophy. It categorizes everything in the universe into five fundamental elements: Wood, Fire, Earth, Metal, and Water. These elements do not exist in isolation — they interact through intricate relationships of creation and destruction, forming a dynamic and balanced worldview.">五行学说是中国古典哲学的核心，它将世间万物归纳为五种基本元素：木、火、土、金、水。这五种元素不是孤立存在的，它们之间存在着微妙而深刻的生克制化关系，构成了一个动态平衡的宇宙观。</p>
 
-  <h2>五行的基本属性</h2>
+  <h2 data-zh="五行的基本属性" data-en="Core Attributes of the Five Elements">五行的基本属性</h2>
   <div class="wuxing-row">
     <div class="wx-card">
       <div class="wx-emoji">🌿</div>
-      <div class="wx-name">木</div>
-      <div class="wx-desc">生长·仁慈<br>东方·春季</div>
+      <div class="wx-name" data-zh="木" data-en="Wood">木</div>
+      <div class="wx-desc" data-zh="生长·仁慈<br>东方·春季" data-en="Growth · Kindness<br>East · Spring">生长·仁慈<br>东方·春季</div>
     </div>
     <div class="wx-card">
       <div class="wx-emoji">🔥</div>
-      <div class="wx-name">火</div>
-      <div class="wx-desc">热情·礼仪<br>南方·夏季</div>
+      <div class="wx-name" data-zh="火" data-en="Fire">火</div>
+      <div class="wx-desc" data-zh="热情·礼仪<br>南方·夏季" data-en="Passion · Ritual<br>South · Summer">热情·礼仪<br>南方·夏季</div>
     </div>
     <div class="wx-card">
       <div class="wx-emoji">🏔️</div>
-      <div class="wx-name">土</div>
-      <div class="wx-desc">稳重·诚信<br>中央·四季末</div>
+      <div class="wx-name" data-zh="土" data-en="Earth">土</div>
+      <div class="wx-desc" data-zh="稳重·诚信<br>中央·四季末" data-en="Stability · Trust<br>Center · Late Seasons">稳重·诚信<br>中央·四季末</div>
     </div>
     <div class="wx-card">
       <div class="wx-emoji">⚙️</div>
-      <div class="wx-name">金</div>
-      <div class="wx-desc">果断·正义<br>西方·秋季</div>
+      <div class="wx-name" data-zh="金" data-en="Metal">金</div>
+      <div class="wx-desc" data-zh="果断·正义<br>西方·秋季" data-en="Decisiveness · Justice<br>West · Autumn">果断·正义<br>西方·秋季</div>
     </div>
     <div class="wx-card">
       <div class="wx-emoji">💧</div>
-      <div class="wx-name">水</div>
-      <div class="wx-desc">智慧·灵活<br>北方·冬季</div>
+      <div class="wx-name" data-zh="水" data-en="Water">水</div>
+      <div class="wx-desc" data-zh="智慧·灵活<br>北方·冬季" data-en="Wisdom · Flexibility<br>North · Winter">智慧·灵活<br>北方·冬季</div>
     </div>
   </div>
 
-  <h2>五行相生：能量的传递</h2>
-  <p>相生是指一种元素促进、滋养另一种元素的关系，就像母亲哺育孩子：</p>
+  <h2 data-zh="五行相生：能量的传递" data-en="Creation Cycle: The Flow of Energy">五行相生：能量的传递</h2>
+  <p data-zh="相生是指一种元素促进、滋养另一种元素的关系，就像母亲哺育孩子：" data-en="The creation cycle describes how one element nourishes and supports another, like a mother nurturing her child:">相生是指一种元素促进、滋养另一种元素的关系，就像母亲哺育孩子：</p>
   <div class="relation-box">
-    <div class="relation-title">🌱 相生循环</div>
-    <div class="relation-item">🌿 木生火 — 木材燃烧，给予火能量</div>
-    <div class="relation-item">🔥 火生土 — 燃烧后的灰烬化为土壤</div>
-    <div class="relation-item">🏔️ 土生金 — 大地孕育矿物金属</div>
-    <div class="relation-item">⚙️ 金生水 — 金属冷凝产生水珠</div>
-    <div class="relation-item">💧 水生木 — 水滋润木的生长</div>
+    <div class="relation-title" data-zh="🌱 相生循环" data-en="🌱 Creation Cycle">🌱 相生循环</div>
+    <div class="relation-item" data-zh="🌿 木生火 — 木材燃烧，给予火能量" data-en="🌿 Wood feeds Fire — burning wood gives fire its energy">🌿 木生火 — 木材燃烧，给予火能量</div>
+    <div class="relation-item" data-zh="🔥 火生土 — 燃烧后的灰烬化为土壤" data-en="🔥 Fire creates Earth — ash from fire becomes fertile soil">🔥 火生土 — 燃烧后的灰烬化为土壤</div>
+    <div class="relation-item" data-zh="🏔️ 土生金 — 大地孕育矿物金属" data-en="🏔️ Earth produces Metal — the ground yields precious minerals">🏔️ 土生金 — 大地孕育矿物金属</div>
+    <div class="relation-item" data-zh="⚙️ 金生水 — 金属冷凝产生水珠" data-en="⚙️ Metal carries Water — condensation forms on cold metal">⚙️ 金生水 — 金属冷凝产生水珠</div>
+    <div class="relation-item" data-zh="💧 水生木 — 水滋润木的生长" data-en="💧 Water nourishes Wood — water feeds the growth of plants">💧 水生木 — 水滋润木的生长</div>
   </div>
 
-  <h2>五行相克：能量的制衡</h2>
-  <p>相克是指一种元素抑制、制约另一种元素，这种关系维持着五行系统的动态平衡：</p>
+  <h2 data-zh="五行相克：能量的制衡" data-en="Destruction Cycle: The Balance of Power">五行相克：能量的制衡</h2>
+  <p data-zh="相克是指一种元素抑制、制约另一种元素，这种关系维持着五行系统的动态平衡：" data-en="The destruction cycle describes how one element controls and restrains another, maintaining the dynamic balance of the system:">相克是指一种元素抑制、制约另一种元素，这种关系维持着五行系统的动态平衡：</p>
   <div class="relation-box">
-    <div class="relation-title">⚔️ 相克循环</div>
-    <div class="relation-item">🌿 木克土 — 树根穿透土壤</div>
-    <div class="relation-item">🏔️ 土克水 — 堤坝拦截水流</div>
-    <div class="relation-item">💧 水克火 — 水浇灭火焰</div>
-    <div class="relation-item">🔥 火克金 — 烈火熔化金属</div>
-    <div class="relation-item">⚙️ 金克木 — 刀斧砍断树木</div>
+    <div class="relation-title" data-zh="⚔️ 相克循环" data-en="⚔️ Destruction Cycle">⚔️ 相克循环</div>
+    <div class="relation-item" data-zh="🌿 木克土 — 树根穿透土壤" data-en="🌿 Wood overcomes Earth — roots break through the ground">🌿 木克土 — 树根穿透土壤</div>
+    <div class="relation-item" data-zh="🏔️ 土克水 — 堤坝拦截水流" data-en="🏔️ Earth controls Water — dams hold back the flow">🏔️ 土克水 — 堤坝拦截水流</div>
+    <div class="relation-item" data-zh="💧 水克火 — 水浇灭火焰" data-en="💧 Water extinguishes Fire — water puts out flames">💧 水克火 — 水浇灭火焰</div>
+    <div class="relation-item" data-zh="🔥 火克金 — 烈火熔化金属" data-en="🔥 Fire melts Metal — intense heat liquefies metal">🔥 火克金 — 烈火熔化金属</div>
+    <div class="relation-item" data-zh="⚙️ 金克木 — 刀斧砍断树木" data-en="⚙️ Metal cuts Wood — an axe fells a tree">⚙️ 金克木 — 刀斧砍断树木</div>
   </div>
 
-  <h2>五行失衡意味着什么？</h2>
-  <p>当一个人的命盘中某种五行过于旺盛或极度匮乏时，就会形成失衡状态，在命理层面表现为性格上的偏颇或特定方面的运势起伏。</p>
+  <h2 data-zh="五行失衡意味着什么？" data-en="What Does Imbalance Mean?">五行失衡意味着什么？</h2>
+  <p data-zh="当一个人的命盘中某种五行过于旺盛或极度匮乏时，就会形成失衡状态，在命理层面表现为性格上的偏颇或特定方面的运势起伏。" data-en="When one element is excessively strong or critically weak in a person's birth chart, imbalance forms. This manifests as personality tendencies or fluctuations in specific areas of fortune.">当一个人的命盘中某种五行过于旺盛或极度匮乏时，就会形成失衡状态，在命理层面表现为性格上的偏颇或特定方面的运势起伏。</p>
   <div class="highlight">
-    <p>例如：五行缺水的人，往往在智慧、灵活性和人脉方面需要额外培养；五行火过旺的人，则可能情绪波动较大，需要注意水来调节。</p>
+    <p data-zh="例如：五行缺水的人，往往在智慧、灵活性和人脉方面需要额外培养；五行火过旺的人，则可能情绪波动较大，需要注意水来调节。" data-en="For example: A person lacking Water may need to consciously develop wisdom, adaptability, and social connections. Someone with excessive Fire may experience emotional volatility and benefit from Water-element influences to restore balance.">例如：五行缺水的人，往往在智慧、灵活性和人脉方面需要额外培养；五行火过旺的人，则可能情绪波动较大，需要注意水来调节。</p>
   </div>
 
-  <h2>如何在生活中应用五行？</h2>
-  <p>了解自己的五行结构后，可以在以下几个方面有意识地做出调整：</p>
-  <p><strong>居家环境：</strong>在缺金的空间增添金属质感的装饰；缺木则多放置绿植。</p>
-  <p><strong>饮食选择：</strong>五味与五行对应——酸养木、苦养火、甘养土、辛养金、咸养水。</p>
-  <p><strong>颜色穿搭：</strong>穿上对应五行的颜色，强化或补充自身的五行能量。</p>
-  <p><strong>行动时机：</strong>在与自己五行相生的日子里推进重要事务，更容易顺水推舟。</p>
+  <h2 data-zh="如何在生活中应用五行？" data-en="Applying the Five Elements in Daily Life">如何在生活中应用五行？</h2>
+  <p data-zh="了解自己的五行结构后，可以在以下几个方面有意识地做出调整：" data-en="Once you understand your elemental profile, you can make intentional adjustments in these areas:">了解自己的五行结构后，可以在以下几个方面有意识地做出调整：</p>
+  <p><strong data-zh="居家环境：" data-en="Home Environment:">居家环境：</strong><span data-zh="在缺金的空间增添金属质感的装饰；缺木则多放置绿植。" data-en="Add metallic décor for a Metal-deficient space; bring in plants where Wood is lacking.">在缺金的空间增添金属质感的装饰；缺木则多放置绿植。</span></p>
+  <p><strong data-zh="饮食选择：" data-en="Diet Choices:">饮食选择：</strong><span data-zh="五味与五行对应——酸养木、苦养火、甘养土、辛养金、咸养水。" data-en="Five tastes correspond to five elements — sour nurtures Wood, bitter nurtures Fire, sweet nurtures Earth, spicy nurtures Metal, salty nurtures Water.">五味与五行对应——酸养木、苦养火、甘养土、辛养金、咸养水。</span></p>
+  <p><strong data-zh="颜色穿搭：" data-en="Color Choices:">颜色穿搭：</strong><span data-zh="穿上对应五行的颜色，强化或补充自身的五行能量。" data-en="Wearing colors that correspond to your needed element strengthens or supplements your elemental energy.">穿上对应五行的颜色，强化或补充自身的五行能量。</span></p>
+  <p><strong data-zh="行动时机：" data-en="Timing Your Actions:">行动时机：</strong><span data-zh="在与自己五行相生的日子里推进重要事务，更容易顺水推舟。" data-en="Advancing important matters on days whose energy supports your element makes progress feel more natural.">在与自己五行相生的日子里推进重要事务，更容易顺水推舟。</span></p>
 
   <div class="highlight">
-    <p>🔮 想知道今天的五行气场如何？结合你的命盘五行，看看今天适合做什么。</p>
+    <p data-zh="🔮 想知道今天的五行气场如何？结合你的命盘五行，看看今天适合做什么。" data-en="🔮 Curious about today's elemental energy? Combine your birth chart with today's energy and discover what's best for you.">🔮 想知道今天的五行气场如何？结合你的命盘五行，看看今天适合做什么。</p>
   </div>
 
-  <a href="/" class="back-btn">测今日五行运势 →</a>
+  <a href="/" class="back-btn" data-zh="测今日五行运势 →" data-en="Check Today's Fortune →">测今日五行运势 →</a>
 </div>
+
+<script>
+function setLang(lang){
+  document.getElementById('htmlRoot').lang = lang==='en'?'en':'zh-CN';
+  document.getElementById('btnZH').classList.toggle('active', lang==='zh');
+  document.getElementById('btnEN').classList.toggle('active', lang==='en');
+  document.querySelectorAll('[data-zh]').forEach(el=>{
+    const val = lang==='en' ? el.dataset.en : el.dataset.zh;
+    if(!val) return;
+    if(el.tagName==='META') el.setAttribute('content', val);
+    else if(el.tagName==='TITLE') el.textContent = val;
+    else el.innerHTML = val;
+  });
+  try{ localStorage.setItem('lang', lang); }catch(e){}
+}
+(function(){
+  try{
+    const saved = localStorage.getItem('lang');
+    if(saved==='en') setLang('en');
+  }catch(e){}
+})();
+</script>
 </body>
 </html>

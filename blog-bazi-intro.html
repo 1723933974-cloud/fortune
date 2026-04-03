@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5612817044381809" crossorigin="anonymous"></script>
-<title>八字五行入门：认识你的命盘 | pboboo.cn</title>
-<meta name="description" content="什么是八字？五行金木水火土如何影响你的性格与运势？本文带你轻松入门八字五行的基础知识，读懂自己的命盘。">
+<title id="pageTitle">八字五行入门：认识你的命盘 | pboboo.cn</title>
+<meta id="pageDesc" name="description" content="什么是八字？五行金木水火土如何影响你的性格与运势？本文带你轻松入门八字五行的基础知识，读懂自己的命盘。">
 <link rel="canonical" href="https://pboboo.cn/blog-bazi-intro.html">
+<link rel="alternate" hreflang="zh" href="https://pboboo.cn/blog-bazi-intro.html">
+<link rel="alternate" hreflang="en" href="https://pboboo.cn/blog-bazi-intro.html">
+<link rel="alternate" hreflang="x-default" href="https://pboboo.cn/blog-bazi-intro.html">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#07070f;--surface:#0e0e1c;--card:#13131f;--border:rgba(255,255,255,0.06);--accent:#9d7bff;--accent2:#ff7eb3;--accent3:#ffbe5c;--text:#eeeeff;--muted:#6b6b90;--muted2:#9494b8}
@@ -26,52 +29,115 @@ table{width:100%;border-collapse:collapse;margin:20px 0}
 th,td{padding:10px 14px;border:1px solid var(--border);text-align:left;font-size:0.9rem}
 th{background:var(--surface);color:var(--accent3)}
 td{color:var(--muted2)}
+/* 语言切换 */
+.lang-switch{position:fixed;top:16px;right:16px;z-index:999;display:flex;gap:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:4px 6px;backdrop-filter:blur(8px)}
+.lang-btn{background:none;border:none;color:var(--muted);font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;cursor:pointer;transition:all .25s;letter-spacing:.5px}
+.lang-btn.active{background:rgba(157,123,255,0.25);color:var(--accent);border:1px solid rgba(157,123,255,0.35)}
+.lang-btn:not(.active):hover{color:var(--text)}
+@media(max-width:600px){.lang-switch{top:10px;right:10px}.wrap{padding-top:52px}}
 </style>
 </head>
 <body>
+
+<div class="lang-switch">
+  <button class="lang-btn active" id="btnZH" onclick="setLang('zh')">中文</button>
+  <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
+</div>
+
 <div class="wrap">
-  <nav><a href="/">← 返回今日运势</a></nav>
-  <h1>八字五行入门：认识你的命盘</h1>
-  <div class="meta">传统文化 · 命理入门 · 约800字</div>
+  <nav><a href="/" data-zh="← 返回今日运势" data-en="← Back to Fortune">← 返回今日运势</a></nav>
+  <h1 data-zh="八字五行入门：认识你的命盘" data-en="Bazi & Five Elements: A Beginner's Guide to Your Birth Chart">八字五行入门：认识你的命盘</h1>
+  <div class="meta" data-zh="传统文化 · 命理入门 · 约800字" data-en="Traditional Culture · Astrology Basics · ~800 words">传统文化 · 命理入门 · 约800字</div>
 
-  <p>八字，又称"四柱命理"，是中国流传数千年的传统命理学体系。它以人出生的年、月、日、时四个时间维度为基础，每个维度对应一个天干和一个地支，合称"四柱八字"。</p>
+  <p data-zh="八字，又称"四柱命理"，是中国流传数千年的传统命理学体系。它以人出生的年、月、日、时四个时间维度为基础，每个维度对应一个天干和一个地支，合称"四柱八字"。" data-en="Bazi, also known as the 'Four Pillars of Destiny,' is a Chinese fortune-telling system with thousands of years of history. It is based on four dimensions of a person's birth time — year, month, day, and hour — each corresponding to a Heavenly Stem and an Earthly Branch, forming the eight characters (八字).">八字，又称"四柱命理"，是中国流传数千年的传统命理学体系。它以人出生的年、月、日、时四个时间维度为基础，每个维度对应一个天干和一个地支，合称"四柱八字"。</p>
 
-  <h2>什么是天干地支？</h2>
-  <p>天干共十个：甲、乙、丙、丁、戊、己、庚、辛、壬、癸。地支共十二个：子、丑、寅、卯、辰、巳、午、未、申、酉、戌、亥。天干地支组合形成六十甲子循环，也就是我们常说的"六十年一甲子"。</p>
-  <p>每一个天干和地支都对应五行属性，而五行——金、木、水、火、土——构成了八字命理的核心框架。</p>
+  <h2 data-zh="什么是天干地支？" data-en="What Are the Heavenly Stems and Earthly Branches?">什么是天干地支？</h2>
+  <p data-zh="天干共十个：甲、乙、丙、丁、戊、己、庚、辛、壬、癸。地支共十二个：子、丑、寅、卯、辰、巳、午、未、申、酉、戌、亥。天干地支组合形成六十甲子循环，也就是我们常说的"六十年一甲子"。" data-en="There are ten Heavenly Stems: Jiǎ, Yǐ, Bǐng, Dīng, Wù, Jǐ, Gēng, Xīn, Rén, and Guǐ. There are twelve Earthly Branches: Zǐ, Chǒu, Yín, Mǎo, Chén, Sì, Wǔ, Wèi, Shēn, Yǒu, Xū, and Hài. Together they create 60 unique combinations — the 'Sixty Jiǎzǐ' cycle, hence the saying 'one jiǎzǐ equals sixty years.'">天干共十个：甲、乙、丙、丁、戊、己、庚、辛、壬、癸。地支共十二个：子、丑、寅、卯、辰、巳、午、未、申、酉、戌、亥。天干地支组合形成六十甲子循环，也就是我们常说的"六十年一甲子"。</p>
+  <p data-zh="每一个天干和地支都对应五行属性，而五行——金、木、水、火、土——构成了八字命理的核心框架。" data-en="Every Stem and Branch corresponds to a Five Element attribute, and those five elements — Metal, Wood, Water, Fire, and Earth — form the core framework of Bazi analysis.">每一个天干和地支都对应五行属性，而五行——金、木、水、火、土——构成了八字命理的核心框架。</p>
 
-  <h2>五行与你的性格</h2>
-  <p>五行不仅仅是抽象符号，它们对应着不同的性格特质和能量方向：</p>
+  <h2 data-zh="五行与你的性格" data-en="Five Elements and Your Personality">五行与你的性格</h2>
+  <p data-zh="五行不仅仅是抽象符号，它们对应着不同的性格特质和能量方向：" data-en="The Five Elements are not just abstract symbols — each one corresponds to distinct personality traits and energetic directions:">五行不仅仅是抽象符号，它们对应着不同的性格特质和能量方向：</p>
   <table>
-    <tr><th>五行</th><th>性格特质</th><th>方向</th><th>季节</th></tr>
-    <tr><td>木</td><td>生机、进取、仁慈</td><td>东</td><td>春</td></tr>
-    <tr><td>火</td><td>热情、表达、领导力</td><td>南</td><td>夏</td></tr>
-    <tr><td>土</td><td>稳重、踏实、包容</td><td>中</td><td>四季末</td></tr>
-    <tr><td>金</td><td>果断、严谨、执行力</td><td>西</td><td>秋</td></tr>
-    <tr><td>水</td><td>智慧、灵活、内敛</td><td>北</td><td>冬</td></tr>
+    <tr>
+      <th data-zh="五行" data-en="Element">五行</th>
+      <th data-zh="性格特质" data-en="Traits">性格特质</th>
+      <th data-zh="方向" data-en="Direction">方向</th>
+      <th data-zh="季节" data-en="Season">季节</th>
+    </tr>
+    <tr>
+      <td data-zh="木" data-en="Wood">木</td>
+      <td data-zh="生机、进取、仁慈" data-en="Vitality, ambition, kindness">生机、进取、仁慈</td>
+      <td data-zh="东" data-en="East">东</td>
+      <td data-zh="春" data-en="Spring">春</td>
+    </tr>
+    <tr>
+      <td data-zh="火" data-en="Fire">火</td>
+      <td data-zh="热情、表达、领导力" data-en="Passion, expression, leadership">热情、表达、领导力</td>
+      <td data-zh="南" data-en="South">南</td>
+      <td data-zh="夏" data-en="Summer">夏</td>
+    </tr>
+    <tr>
+      <td data-zh="土" data-en="Earth">土</td>
+      <td data-zh="稳重、踏实、包容" data-en="Stability, groundedness, tolerance">稳重、踏实、包容</td>
+      <td data-zh="中" data-en="Center">中</td>
+      <td data-zh="四季末" data-en="Late Seasons">四季末</td>
+    </tr>
+    <tr>
+      <td data-zh="金" data-en="Metal">金</td>
+      <td data-zh="果断、严谨、执行力" data-en="Decisiveness, precision, execution">果断、严谨、执行力</td>
+      <td data-zh="西" data-en="West">西</td>
+      <td data-zh="秋" data-en="Autumn">秋</td>
+    </tr>
+    <tr>
+      <td data-zh="水" data-en="Water">水</td>
+      <td data-zh="智慧、灵活、内敛" data-en="Wisdom, adaptability, introversion">智慧、灵活、内敛</td>
+      <td data-zh="北" data-en="North">北</td>
+      <td data-zh="冬" data-en="Winter">冬</td>
+    </tr>
   </table>
 
-  <h2>五行相生相克</h2>
-  <p>五行之间存在"相生"和"相克"两种关系，这正是命理判断的关键所在。</p>
+  <h2 data-zh="五行相生相克" data-en="Creation and Destruction Cycles">五行相生相克</h2>
+  <p data-zh="五行之间存在"相生"和"相克"两种关系，这正是命理判断的关键所在。" data-en="The Five Elements interact through two key cycles — creation and destruction — which are central to all fortune analysis.">五行之间存在"相生"和"相克"两种关系，这正是命理判断的关键所在。</p>
   <div class="highlight">
-    <p>相生：木生火 → 火生土 → 土生金 → 金生水 → 水生木<br>
-    相克：木克土 → 土克水 → 水克火 → 火克金 → 金克木</p>
+    <p data-zh="相生：木生火 → 火生土 → 土生金 → 金生水 → 水生木<br>相克：木克土 → 土克水 → 水克火 → 火克金 → 金克木" data-en="Creation: Wood → Fire → Earth → Metal → Water → Wood<br>Destruction: Wood → Earth → Water → Fire → Metal → Wood">相生：木生火 → 火生土 → 土生金 → 金生水 → 水生木<br>相克：木克土 → 土克水 → 水克火 → 火克金 → 金克木</p>
   </div>
-  <p>在八字中，某种五行过旺或过弱，都会影响一个人的运势走向。命理师通过分析八字中五行的平衡状态，来判断一个人的性格优势、人生机遇和需要注意的方向。</p>
+  <p data-zh="在八字中，某种五行过旺或过弱，都会影响一个人的运势走向。命理师通过分析八字中五行的平衡状态，来判断一个人的性格优势、人生机遇和需要注意的方向。" data-en="In Bazi, an overly strong or weak element affects a person's life trajectory. Practitioners analyze the elemental balance within the eight characters to determine personality strengths, life opportunities, and areas requiring attention.">在八字中，某种五行过旺或过弱，都会影响一个人的运势走向。命理师通过分析八字中五行的平衡状态，来判断一个人的性格优势、人生机遇和需要注意的方向。</p>
 
-  <h2>日柱——最重要的那一柱</h2>
-  <p>八字中，"日柱"（出生当天的天干地支）被认为是最核心的部分，代表一个人的本我与核心气质。日柱天干称为"日主"，是整个命盘分析的出发点。</p>
-  <p>比如，日主为甲木的人，通常具有开拓精神和向上的生命力；日主为壬水的人，往往思维灵活、善于变通。</p>
+  <h2 data-zh="日柱——最重要的那一柱" data-en="The Day Pillar — The Most Important of the Four">日柱——最重要的那一柱</h2>
+  <p data-zh="八字中，"日柱"（出生当天的天干地支）被认为是最核心的部分，代表一个人的本我与核心气质。日柱天干称为"日主"，是整个命盘分析的出发点。" data-en="In Bazi, the 'Day Pillar' (the Stem and Branch of your birth day) is considered the most central element, representing your core self. The Day Stem, known as the 'Day Master,' is the starting point for all analysis.">八字中，"日柱"（出生当天的天干地支）被认为是最核心的部分，代表一个人的本我与核心气质。日柱天干称为"日主"，是整个命盘分析的出发点。</p>
+  <p data-zh="比如，日主为甲木的人，通常具有开拓精神和向上的生命力；日主为壬水的人，往往思维灵活、善于变通。" data-en="For example, a person with Jiǎ Wood as their Day Master often has a pioneering spirit and strong upward drive. A person with Rén Water tends to be flexible-minded and adaptable.">比如，日主为甲木的人，通常具有开拓精神和向上的生命力；日主为壬水的人，往往思维灵活、善于变通。</p>
 
-  <h2>命理是娱乐，还是智慧？</h2>
-  <p>现代人看待八字，更多是作为一种了解自我的工具——就像心理学中的MBTI一样，它提供了一套语言框架，帮助我们更清晰地认识自己的性格底色和能量节律。</p>
-  <p>不必迷信，但也无需全盘否定。把它当作一面镜子，照出你可能忽视的自己，便是最好的用法。</p>
+  <h2 data-zh="命理是娱乐，还是智慧？" data-en="Is Astrology Entertainment or Wisdom?">命理是娱乐，还是智慧？</h2>
+  <p data-zh="现代人看待八字，更多是作为一种了解自我的工具——就像心理学中的MBTI一样，它提供了一套语言框架，帮助我们更清晰地认识自己的性格底色和能量节律。" data-en="Modern people tend to view Bazi as a self-discovery tool — much like the MBTI in psychology. It provides a language framework to help us better understand our core personality and energy rhythms.">现代人看待八字，更多是作为一种了解自我的工具——就像心理学中的MBTI一样，它提供了一套语言框架，帮助我们更清晰地认识自己的性格底色和能量节律。</p>
+  <p data-zh="不必迷信，但也无需全盘否定。把它当作一面镜子，照出你可能忽视的自己，便是最好的用法。" data-en="You don't need to believe it blindly, but you don't need to dismiss it entirely either. Use it as a mirror — one that reveals the aspects of yourself you may have overlooked.">不必迷信，但也无需全盘否定。把它当作一面镜子，照出你可能忽视的自己，便是最好的用法。</p>
 
   <div class="highlight">
-    <p>🌟 想看看今天的五行气场如何影响你？<br>回到首页，输入你的生辰信息，测一测今日运势。</p>
+    <p data-zh="🌟 想看看今天的五行气场如何影响你？<br>回到首页，输入你的生辰信息，测一测今日运势。" data-en="🌟 Want to see how today's Five Element energy affects you?<br>Head back to the homepage, enter your birth info, and check your daily fortune.">🌟 想看看今天的五行气场如何影响你？<br>回到首页，输入你的生辰信息，测一测今日运势。</p>
   </div>
 
-  <a href="/" class="back-btn">测今日运势 →</a>
+  <a href="/" class="back-btn" data-zh="测今日运势 →" data-en="Check Today's Fortune →">测今日运势 →</a>
 </div>
+
+<script>
+function setLang(lang){
+  document.getElementById('htmlRoot').lang = lang==='en'?'en':'zh-CN';
+  document.getElementById('btnZH').classList.toggle('active', lang==='zh');
+  document.getElementById('btnEN').classList.toggle('active', lang==='en');
+  document.querySelectorAll('[data-zh]').forEach(el=>{
+    const val = lang==='en' ? el.dataset.en : el.dataset.zh;
+    if(!val) return;
+    if(el.tagName==='META') el.setAttribute('content', val);
+    else if(el.tagName==='TITLE') el.textContent = val;
+    else el.innerHTML = val;
+  });
+  try{ localStorage.setItem('lang', lang); }catch(e){}
+}
+(function(){
+  try{
+    const saved = localStorage.getItem('lang');
+    if(saved==='en') setLang('en');
+  }catch(e){}
+})();
+</script>
 </body>
 </html>
